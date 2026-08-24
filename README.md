@@ -57,4 +57,6 @@ uv run create-assembly-view-pdf output/quadruped_site/plan.yaml -o output/quadru
 # docs/assembly/quadruped/stl/ の配布用 STL も同じ CAD メッシュ（3dxml）から
 # trimesh で書き出したもの（merge_vertices して watertight 化、単位 mm）。
 # 対象: body, bracket_outline, leg_link1
+# quadruped_parts.3mf は同メッシュを trimesh.Scene に 1+4+4 個配置して
+# export したもの（unit="millimeter"、原点合わせで z=0 接地）
 ```
