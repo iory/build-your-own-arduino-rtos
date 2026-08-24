@@ -54,9 +54,9 @@ uv run create-assembly-view-pdf output/quadruped_site/plan.yaml -o output/quadru
 # → index.html/glb/vendor/instructions.pdf を docs/assembly/quadruped/ に、
 #   steps/*.png と units/ を docs/ja/source/hardware/assembly_img/ にコピー
 #
-# docs/assembly/quadruped/stl/ の配布用 STL も同じ CAD メッシュ（3dxml）から
-# trimesh で書き出したもの（merge_vertices して watertight 化、単位 mm）。
-# 対象: body, bracket_outline, leg_link1
-# quadruped_parts.3mf は同メッシュを trimesh.Scene に 1+4+4 個配置して
-# export したもの（unit="millimeter"、原点合わせで z=0 接地）
+# docs/assembly/quadruped/stl/ の配布物は create-assembly-view リポジトリの
+# cad/ からコピーしたもの:
+#   body.stl / bracket_outline.stl / leg_link1.stl ← cad/*.STL（SolidWorks 直接出力、mm）
+#   body.3mf / leg_parts.3mf ← cad/*.3mf（Bambu Studio プロジェクト、設定・配置込み）
+# docs/ja/source/hardware/print_img/ のプレート画像も cad/bambulab-*.png から
 ```
