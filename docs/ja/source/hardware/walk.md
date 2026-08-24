@@ -58,6 +58,9 @@ RL 方策を比べられます。sin/cos 側は、遊脚を sin で山なりに�
 書いてあります:
 
 - コードを見る: [code/13_quadruped/rl](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped/rl)
+- ロボット記述一式（**URDF**・MJCF・メッシュ・RViz 設定、SolidWorks
+  エクスポートから MJCF を再現するスクリプト付き）:
+  [code/13_quadruped/arduino_os_quad_robot](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped/arduino_os_quad_robot)
 
 sim2real のために、摩擦（0.4〜1.1）・付加質量（電装ぶん 0〜250 g）・
 ゼロ点誤差（±1.7°）・関節角（±8.6°）などをランダム化して学習したあと、
