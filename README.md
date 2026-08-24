@@ -17,7 +17,8 @@ sphinx-design）を参考に、言語ごとに独立したツリーを持つ:
 ```
 docs/ja/source/   # 日本語（サイトのルートに配信）
 docs/en/source/   # English（/en/ に配信）
-scripts/build.sh  # 両言語を _site/ にビルド
+docs/assembly/    # CAD から自動生成した組み立てビューア（静的バンドル、/assembly/ に配信）
+scripts/build.sh  # 両言語を _site/ にビルドし docs/assembly をコピー
 ```
 
 言語切替はナビバーの Language ドロップダウン
@@ -34,3 +35,22 @@ python3 -m http.server -d _site 8000   # http://localhost:8000/
 
 main へ push すると GitHub Actions が GitHub Pages へ自動デプロイする
 （リポジトリ設定の Pages で Source: GitHub Actions を選んでおくこと）。
+
+## 組み立てビューアの再生成
+
+`docs/assembly/quadruped/`（three.js ビューア・GLB・PDF）と
+`docs/ja/source/hardware/assembly_img/`（手順 PNG）は
+[create-assembly-view](https://github.com/iory/create-assembly-view) で
+CAD の graph.json から自動生成したもの。モデルを更新したら:
+
+```bash
+cd ~/src/create-assembly-view
+uv run create-assembly-view models/sts3215_quadruped/graph.json -o output/quadruped_site
+PYOPENGL_PLATFORM=egl uv run create-assembly-view-render \
+    models/sts3215_quadruped/graph.json output/quadruped_site/plan.yaml -o output/quadruped_site
+uv run create-assembly-view-viewer \
+    models/sts3215_quadruped/graph.json output/quadruped_site/plan.yaml -o output/quadruped_site
+uv run create-assembly-view-pdf output/quadruped_site/plan.yaml -o output/quadruped_site
+# → index.html/glb/vendor/instructions.pdf を docs/assembly/quadruped/ に、
+#   steps/*.png と units/ を docs/ja/source/hardware/assembly_img/ にコピー
+```
