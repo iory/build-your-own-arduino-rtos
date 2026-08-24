@@ -18,8 +18,12 @@ sphinx-design）を参考に、言語ごとに独立したツリーを持つ:
 docs/ja/source/   # 日本語（サイトのルートに配信）
 docs/en/source/   # English（/en/ に配信）
 docs/assembly/    # CAD から自動生成した組み立てビューア（静的バンドル、/assembly/ に配信）
+code/             # 書籍のサンプルコード（原稿リポジトリから自動同期。直接編集しない）
 scripts/build.sh  # 両言語を _site/ にビルドし docs/assembly をコピー
 ```
+
+`code/` は書籍の原稿側から一方向にミラーされる。誤植・バグ修正は原稿側で
+行うので、ここで直しても次回の同期で上書きされる。
 
 言語切替はナビバーの Language ドロップダウン
 （`BASE_URL` 環境変数でリンク先のベースパスを指定。

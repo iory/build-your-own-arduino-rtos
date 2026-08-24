@@ -12,10 +12,7 @@ pio run -d adv3_heap -t upload
 pio device monitor -b 115200
 ```
 
-```{note}
-サンプルコードは公開準備中です。公開され次第、このページから
-リンクします。
-```
+コードを見る: [code/adv3_heap](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/adv3_heap)
 
 ## つまずきやすいポイント
 
