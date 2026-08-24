@@ -53,4 +53,8 @@ uv run create-assembly-view-viewer \
 uv run create-assembly-view-pdf output/quadruped_site/plan.yaml -o output/quadruped_site
 # → index.html/glb/vendor/instructions.pdf を docs/assembly/quadruped/ に、
 #   steps/*.png と units/ を docs/ja/source/hardware/assembly_img/ にコピー
+#
+# docs/assembly/quadruped/stl/ の配布用 STL も同じ CAD メッシュ（3dxml）から
+# trimesh で書き出したもの（merge_vertices して watertight 化、単位 mm）。
+# 対象: body, bracket_outline, leg_link1
 ```
