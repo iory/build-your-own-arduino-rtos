@@ -15,7 +15,9 @@ cd build-your-own-arduino-rtos/code
 ```
 
 全章のプロジェクトは PlatformIO で、Arduino UNO R4 WiFi 実機で
-動作確認済みです。
+動作確認済みです。サンプルコードは
+[MIT ライセンス](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/LICENSE)
+で、自分のプロジェクトに自由に組み込めます。
 
 ## 本編
 
