@@ -152,3 +152,57 @@ export function makeController(mujoco, model, data, policy) {
     },
   };
 }
+
+// ---------------------------------------------------------------------------
+// 本文 13.5 の naive 歩行 (状態機械 + trot)。src/gait.cpp + leg_ik.cpp の
+// JS 移植。方策を使わない側で、遊脚を sin で山なりに持ち上げ、接地脚を
+// 体の下で後ろへ流す。対角 2 脚が同位相の trot。
+const L2 = 0.0883, L3 = 0.1087;        // 大腿・下腿 [m] (CAD 実測)
+const KNEE_OFFSET = -0.0761;           // 下腿ブラケットの折れ [rad]
+
+export function legIk(fx, fr) {
+  const u = -fx;
+  const d2 = u * u + fr * fr;
+  let c = (d2 - L2 * L2 - L3 * L3) / (2 * L2 * L3);
+  c = Math.max(-1, Math.min(1, c));
+  const gamma = -Math.acos(c);         // 膝は後ろへ折れる側の解
+  const a = Math.atan2(u, fr);
+  const b = Math.atan2(L3 * Math.sin(gamma), L2 + L3 * Math.cos(gamma));
+  return [a - b, gamma - KNEE_OFFSET];
+}
+
+export class NaiveGait {
+  constructor() {
+    this.periodS = 0.32;               // 学習した方策と同じ歩容周期
+    this.stepX = 0.06;                 // ストライド長 [m]
+    this.stepH = 0.030;                // 遊脚の持ち上げ [m]
+    this.stanceR = 0.1205;             // 接地時の股軸からの下向き距離 [m]
+    this.phaseOffset = [0.0, 0.5, 0.0, 0.5];   // FL, RL, RR, FR
+    this.reset();
+  }
+  reset() { this.phase = 0; }
+
+  _swingFoot(phi) {
+    if (phi < 0.5) {
+      const t = phi * 2;
+      return [(t - 0.5) * this.stepX,
+              this.stanceR - this.stepH * Math.sin(Math.PI * t)];
+    }
+    const t = (phi - 0.5) * 2;
+    return [(0.5 - t) * this.stepX, this.stanceR];
+  }
+
+  // dt [s] 進めて 8 関節の目標角 (FL_hip, FL_knee, RL..., RR..., FR...) を返す
+  step(dt) {
+    this.phase = (this.phase + dt / this.periodS) % 1;
+    const q = new Float32Array(8);
+    for (let leg = 0; leg < 4; leg++) {
+      const phi = (this.phase + this.phaseOffset[leg]) % 1;
+      const [fx, fr] = this._swingFoot(phi);
+      const [hip, knee] = legIk(fx, fr);
+      q[leg * 2] = hip;
+      q[leg * 2 + 1] = knee;
+    }
+    return q;
+  }
+}

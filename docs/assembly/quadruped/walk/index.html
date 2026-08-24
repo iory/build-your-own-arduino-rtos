@@ -36,6 +36,12 @@
   <div id="bar">
     <button id="walkBtn" class="primary">歩く</button>
     <button id="resetBtn">リセット</button>
+    <label>制御
+      <select id="mode">
+        <option value="rl">RL 方策</option>
+        <option value="naive">sin/cos 歩行（本文 13.5）</option>
+      </select>
+    </label>
     <label>前進 <input type="range" id="vx" min="-0.05" max="0.15" step="0.01" value="0.12">
       <span id="vxVal">0.12</span> m/s</label>
     <label>旋回 <input type="range" id="wz" min="-0.35" max="0.35" step="0.05" value="0">
@@ -57,7 +63,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import loadMujoco from './vendor/mujoco.js';
-import {QuadPolicy, makeController} from './walk_core.js';
+import {QuadPolicy, makeController, NaiveGait} from './walk_core.js';
 
 const $ = id => document.getElementById(id);
 const setProgress = (v, msg) => {
@@ -92,6 +98,7 @@ async function main() {
   const data = new mujoco.MjData(model);
   const policy = new QuadPolicy(bundle);
   const ctl = makeController(mujoco, model, data, policy);
+  const gait = new NaiveGait();   // 本文 13.5 の trot (sin/cos + 2リンク IK)
 
   // ---------- three.js ----------
   const canvas = $('canvas3d');
@@ -178,17 +185,38 @@ async function main() {
     mujoco.mj_resetDataKeyframe(model, data, 0);
     mujoco.mj_forward(model, data);
     policy.reset();
+    gait.reset();
     for (let i = 0; i < policy.nj; i++) data.ctrl[i] = policy.defaultQ[i];
     walking = false;
     $('walkBtn').textContent = '歩く';
   }
   reset();
 
+  // 1 制御周期 (0.02 s) ぶん進める。RL は速度指令、naive はストライド長で
+  // 前進量を変える (vx 0.15 -> ストライド 0.06 m)。naive に旋回は無い。
+  function stepOnce() {
+    const vx = +$('vx').value;
+    if ($('mode').value === 'rl') {
+      ctl.controlStep([vx, 0, +$('wz').value]);
+    } else {
+      gait.stepX = vx * 0.4;
+      const q = gait.step(policy.dt);
+      for (let i = 0; i < policy.nj; i++) data.ctrl[i] = q[i];
+      for (let s = 0; s < ctl.nSub; s++) mujoco.mj_step(model, data);
+    }
+  }
+
   $('walkBtn').onclick = () => {
     walking = !walking;
     $('walkBtn').textContent = walking ? '一時停止' : '歩く';
   };
   $('resetBtn').onclick = reset;
+  $('mode').onchange = () => {
+    policy.reset();
+    gait.reset();
+    $('wz').disabled = $('mode').value !== 'rl';
+    if ($('wz').disabled) { $('wz').value = 0; $('wzVal').textContent = '0.00'; }
+  };
   $('vx').oninput = () => $('vxVal').textContent = (+$('vx').value).toFixed(2);
   $('wz').oninput = () => $('wzVal').textContent = (+$('wz').value).toFixed(2);
 
@@ -202,9 +230,8 @@ async function main() {
     if (walking) {
       acc += dt;
       let n = 0;
-      const cmd = [+$('vx').value, 0, +$('wz').value];
       while (acc >= policy.dt && n < 4) {   // 実時間に追従 (最大 4 制御周期/フレーム)
-        ctl.controlStep(cmd);
+        stepOnce();
         acc -= policy.dt;
         n += 1;
       }
