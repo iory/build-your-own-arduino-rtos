@@ -19,9 +19,9 @@ The full bill of materials with purchase links, power-supply sizing, and
 
 ## Interactive assembly guide
 
-An interactive 3D assembly viewer, auto-generated from the CAD assembly,
-shows every step as an animation (UI labels are in Japanese, but the 3D
-animation itself is language-independent):
+An interactive 3D assembly viewer shows every step as an animation
+(UI labels are in Japanese, but the 3D animation itself is
+language-independent):
 
 ```{raw} html
 <p><a href="../../assembly/quadruped/index.html" target="_blank" rel="noopener">
