@@ -17,12 +17,13 @@
 | 2 | [シリアルバスサーボドライバーボード (Waveshare 25514)](https://akizukidenshi.com/catalog/g/g131227/) | 秋月 131227 | ¥1,280 | 1 | ¥1,280 |
 | 3 | [スイッチング AC アダプター 12V5A AD-A120P500](https://akizukidenshi.com/catalog/g/g110663/) | 秋月 110663 | ¥2,380 | 1 | ¥2,380 |
 | 4 | [ブレッドボード・ジャンパーワイヤ (オス−メス) 15cm](https://akizukidenshi.com/catalog/g/g108932/) | 秋月 108932 ほか | ¥280 | 1 | ¥280 |
-| 5 | [ピンヘッダー 1×3 (3P) 10 個入](https://akizukidenshi.com/catalog/g/g103949/) | 秋月 103949 | ¥40 | 1 | ¥40 |
-| 6 | [ピンソケット (メス) 1×3 (3P)](https://akizukidenshi.com/catalog/g/g110098/) | 秋月 110098 | ¥15 | 4 | ¥60 |
-| 7 | USB Type-C ケーブル 2m（データ通信対応のもの） | — | ¥1,500〜 | 1 | ¥1,500 |
-| 8 | [ROBOTIS 3P Extension PCB](https://e-shop.robotis.co.jp/product.php?id=96)（バスの分岐。任意） | 903-0142-000 | ¥495 | 2 | ¥990 |
+| 5 | USB Type-C ケーブル（データ通信対応）: [C-to-C — CIO SL30000-CC](https://www.amazon.co.jp/dp/B0B2PQ5N71) / [A-to-C — CIO SL30000-AC](https://www.amazon.co.jp/dp/B09LC5T7YL) | — | ¥1,500〜 | 1 | ¥1,500 |
+| 6 | [ROBOTIS 3P Extension PCB](https://e-shop.robotis.co.jp/product.php?id=96)（バスの分岐。任意） | 903-0142-000 | ¥495 | 2 | ¥990 |
 
-**合計 約 ¥35,200。** サーボが 81% を占める。
+ケーブルは**どちらか 1 本でよい**。PC の USB ポートが Type-C なら C-to-C、
+**Type-A しかないなら A-to-C** を買う。
+
+**合計 約 ¥35,100。** サーボが 81% を占める。
 
 このほかに **Arduino UNO R4 WiFi** と、走行用の **12V バッテリ（3S LiPo 相当）** が要る。
 
@@ -108,9 +109,9 @@ PPS（3.3〜11V などの可変）しか無い製品も、**普通の 12V 固定
 「Arduino から UART で叩く」を切り替える。立ち上げと校正は USB 側が早いので、
 **両方使えるようにしておくとよい**。
 
-サーボの 3 ピンコネクタと、#5/#6 の 2.54 mm ピンヘッダは**別物**。#5/#6 は Arduino 側専用で、
-まずはジャンパーワイヤ 3 本（ボードの UART ヘッダ ←→ D0/D1/GND）で足りる。
-歩行中に抜けると転倒するので、固くしたいときにピンヘッダで自作する。
+Arduino とボードの接続はジャンパーワイヤ 3 本
+（ボードの UART ヘッダ ←→ D0/D1/GND）で足りる。歩行中に抜けると転倒するので、
+固くしたいときは 2.54 mm のピンヘッダ・ピンソケットで自作する。
 
 ### バスの分岐（任意）
 
