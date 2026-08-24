@@ -1,0 +1,4 @@
+_site/
+docs/*/source/_build/
+.venv/
+__pycache__/
