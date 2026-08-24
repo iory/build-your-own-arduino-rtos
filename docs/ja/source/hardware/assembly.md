@@ -3,7 +3,8 @@
 先に 3 種類のユニット（サーボ入りの胴体・左脚・右脚）を組み、最後に脚を
 胴体へ取り付けます。
 
-ネジの**長さ・ワッシャ有無は実物で確認**してください。
+ネジは **M3×6 が 40 本、M2×6 が 16 本** — どちらも **STS3215 に付属している
+ネジだけで足ります**（8 個買えば十分な本数が付いてきます）。別途購入は不要です。
 
 ## インタラクティブ 3D ビューア
 
@@ -39,9 +40,8 @@
 
 | 部品 | 個数 |
 |---|---|
-| ISO 7045 M3x6 | ×24 |
-| ISO 7045 M2x6 | ×16 |
-| ISO 7045 M3x4 | ×16 |
+| ネジ M3×6 | ×40 |
+| ネジ M2×6 | ×16 |
 | STS3215（ケース + ホーン） | ×8 |
 | bracket_outline | ×4 |
 | leg_link1 | ×4 |
@@ -179,7 +179,7 @@
 
 ![Step 2](assembly_img/step_002.png)
 
-### Step 3: 🔩 M3x4 ×4 を締める
+### Step 3: 🔩 M3x6 ×4 を締める
 
 ![Step 3](assembly_img/step_003.png)
 
@@ -187,7 +187,7 @@
 
 ![Step 4](assembly_img/step_004.png)
 
-### Step 5: 🔩 M3x4 ×4 を締める
+### Step 5: 🔩 M3x6 ×4 を締める
 
 ![Step 5](assembly_img/step_005.png)
 
@@ -197,7 +197,7 @@
 
 ![Step 6](assembly_img/step_006.png)
 
-### Step 7: 🔩 M3x4 ×4 を締める
+### Step 7: 🔩 M3x6 ×4 を締める
 
 ![Step 7](assembly_img/step_007.png)
 
@@ -205,7 +205,7 @@
 
 ![Step 8](assembly_img/step_008.png)
 
-### Step 9: 🔩 M3x4 ×4 を締める
+### Step 9: 🔩 M3x6 ×4 を締める
 
 ![Step 9](assembly_img/step_009.png)
 
