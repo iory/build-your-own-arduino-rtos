@@ -27,6 +27,7 @@ the same parts). Units are millimeters.
   <li><a href="../../assembly/quadruped/stl/body.stl">body.stl</a> (×1, 230 × 110 × 50 mm)</li>
   <li><a href="../../assembly/quadruped/stl/bracket_outline.stl">bracket_outline.stl</a> (×4, 128 × 52 × 12 mm)</li>
   <li><a href="../../assembly/quadruped/stl/leg_link1.stl">leg_link1.stl</a> (×4, 80 × 52 × 26 mm)</li>
+  <li><a href="../../assembly/quadruped/stl/quadruped_parts.3mf">quadruped_parts.3mf</a> (all 9 parts, millimeters)</li>
 </ul>
 ```
 
