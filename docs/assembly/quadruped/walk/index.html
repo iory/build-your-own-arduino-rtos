@@ -50,8 +50,11 @@
   <div class="small">初回は約 16 MB ダウンロードします</div>
 </div>
 
+<script type="importmap">
+{ "imports": { "three": "../vendor/three.module.min.js" } }
+</script>
 <script type="module">
-import * as THREE from '../vendor/three.module.min.js';
+import * as THREE from 'three';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import loadMujoco from './vendor/mujoco.js';
 import {QuadPolicy, makeController} from './walk_core.js';
