@@ -18,8 +18,14 @@ sphinx-design）を参考に、言語ごとに独立したツリーを持つ:
 docs/ja/source/   # 日本語（サイトのルートに配信）
 docs/en/source/   # English（/en/ に配信）
 docs/assembly/    # CAD から自動生成した組み立てビューア（静的バンドル、/assembly/ に配信）
+code/             # 書籍のサンプルコード（原稿リポジトリから自動同期。直接編集しない）
 scripts/build.sh  # 両言語を _site/ にビルドし docs/assembly をコピー
 ```
+
+`code/` は private の原稿リポジトリ（learning-os-from-arduino）の
+`docs/os-on-arduino/code/` から GitHub Actions（publish-code workflow）で
+一方向ミラーされる。誤植・バグ修正は原稿リポジトリ側で行うこと —
+ここで直しても次回の同期で上書きされる。
 
 言語切替はナビバーの Language ドロップダウン
 （`BASE_URL` 環境変数でリンク先のベースパスを指定。

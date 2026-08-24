@@ -5,9 +5,13 @@
 
 ## サンプルコードの入手
 
-```{note}
-サンプルコード一式は現在公開準備中です。公開後、ここに
-リポジトリへのリンクと `git clone` の手順を掲載します。
+サンプルコード一式はこのリポジトリの
+[`code/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code)
+にあります:
+
+```bash
+git clone https://github.com/iory/build-your-own-arduino-rtos.git
+cd build-your-own-arduino-rtos/code
 ```
 
 全章のプロジェクトは PlatformIO で、Arduino UNO R4 WiFi 実機で

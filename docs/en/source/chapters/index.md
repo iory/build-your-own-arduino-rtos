@@ -1,8 +1,12 @@
 # Chapter Support
 
-```{note}
-The sample-code repository is being prepared for release; links will
-appear here once public.
+All sample code lives in this repository's
+[`code/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code)
+directory:
+
+```bash
+git clone https://github.com/iory/build-your-own-arduino-rtos.git
+cd build-your-own-arduino-rtos/code
 ```
 
 ## Main chapters

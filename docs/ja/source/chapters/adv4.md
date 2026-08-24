@@ -12,10 +12,7 @@ pio run -d adv4_fs -t upload
 pio device monitor -b 115200
 ```
 
-```{note}
-サンプルコードは公開準備中です。公開され次第、このページから
-リンクします。
-```
+コードを見る: [code/adv4_fs](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/adv4_fs)
 
 ## つまずきやすいポイント
 
