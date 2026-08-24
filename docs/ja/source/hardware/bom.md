@@ -159,9 +159,9 @@ STL は下からダウンロードできます（単位はミリメートル。
 
 | 部品 | ファイル | 外形 [mm] | 個数 | 実体積 |
 |---|---|---|---|---|
-| 胴体 | `body.stl` | **230.0 × 110.0 × 50.0** | 1 | 240.6 cm³ |
-| 脚ブラケット | `bracket_outline.stl` | 127.8 × 52.2 × 12.0 | 4 | 19.0 cm³ |
-| 脚リンク | `leg_link1.stl` | 80.0 × 52.0 × 26.0 | 4 | 39.4 cm³ |
+| 胴体 | `body.stl` | **230.0 × 110.0 × 50.0** | 1 | 243.6 cm³ |
+| 脚ブラケット | `bracket_outline.stl` | 127.9 × 52.2 × 12.0 | 4 | 19.1 cm³ |
+| 脚リンク | `leg_link1.stl` | 80.0 × 52.0 × 26.0 | 4 | 39.2 cm³ |
 
 ::::{grid} 3
 :gutter: 2
@@ -189,15 +189,35 @@ leg_link1.stl（×4）
 :::
 ::::
 
-まとめて読み込むなら 3MF が楽です（単位ミリ指定・必要個数（1 + 4 + 4）を配置済み。
-1 プレートに収まらない分はスライサの自動整列で分割してください）:
+### スライス済みプロジェクト（Bambu Studio 用）
 
-```{button-link} ../assembly/quadruped/stl/quadruped_parts.3mf
+実機を刷ったときと同じ設定・配置が入ったプロジェクトファイルです
+（Bambu Lab X1C・0.4 ノズル・0.28mm・**ABS**・ツリーサポート自動・
+Textured PEI プレート）。PLA で刷る場合はフィラメントを変えるだけで
+かまいません。
+
+::::{grid} 2
+:gutter: 2
+
+:::{grid-item}
+```{button-link} ../assembly/quadruped/stl/body.3mf
 :color: secondary
-quadruped_parts.3mf（9 部品入り）
+:expand:
+body.3mf（胴体プレート）
 ```
+![body plate](print_img/bambulab-body-parts.png)
+:::
+:::{grid-item}
+```{button-link} ../assembly/quadruped/stl/leg_parts.3mf
+:color: secondary
+:expand:
+leg_parts.3mf（脚 8 部品プレート）
+```
+![leg plate](print_img/bambulab-leg-parts.png)
+:::
+::::
 
-**9 部品、実体積の合計 約 474 cm³。**
+**9 部品、実体積の合計 約 477 cm³。**
 
 **左右の脚は同じ部品。** ブラケットもリンクも 1 つの STL を 4 回刷ればよく、
 左右の作り分けは要らない。
@@ -234,7 +254,7 @@ quadruped_parts.3mf（9 部品入り）
 
 プリンタが無い、ベッドが 230 mm に足りない、ナイロンの粘りが欲しい、のいずれかのとき。
 
-| サービス | 方式 | 単価の目安 | 474 cm³ だと |
+| サービス | 方式 | 単価の目安 | 477 cm³ だと |
 |---|---|---|---|
 | [PCBWay Shared Projects](https://www.pcbway.com/project/shareproject/?category=3D+Printing) | FDM / SLA / MJF ほか | FDM が選べるので安い | 要見積もり |
 | [DMM.make 3Dプリント](https://make.dmm.com/print/) | MJF PA12 | 113 円/cm³〜 | **約 ¥54,000〜** |
@@ -251,7 +271,7 @@ quadruped_parts.3mf（9 部品入り）
 
 ## 質量はシミュレーションモデルと違う
 
-プリント部品の質量は素材と充填率で大きく変わる（474 cm³ を PLA 中実で刷れば
+プリント部品の質量は素材と充填率で大きく変わる（477 cm³ を PLA 中実で刷れば
 約 590 g、充填 20% なら 240 g 程度）。シミュレーションモデルの質量とは必ず
 ずれるので、シミュレーションと突き合わせたいときは、**作った部品を秤で量って
 モデル側の質量を直す**こと。慣性も重心も変わる。

@@ -27,7 +27,8 @@ the same parts). Units are millimeters.
   <li><a href="../../assembly/quadruped/stl/body.stl">body.stl</a> (×1, 230 × 110 × 50 mm)</li>
   <li><a href="../../assembly/quadruped/stl/bracket_outline.stl">bracket_outline.stl</a> (×4, 128 × 52 × 12 mm)</li>
   <li><a href="../../assembly/quadruped/stl/leg_link1.stl">leg_link1.stl</a> (×4, 80 × 52 × 26 mm)</li>
-  <li><a href="../../assembly/quadruped/stl/quadruped_parts.3mf">quadruped_parts.3mf</a> (all 9 parts, millimeters)</li>
+  <li><a href="../../assembly/quadruped/stl/body.3mf">body.3mf</a> — Bambu Studio project, body plate, author-tested settings (X1C, 0.28 mm, ABS)</li>
+  <li><a href="../../assembly/quadruped/stl/leg_parts.3mf">leg_parts.3mf</a> — Bambu Studio project, all 8 leg parts</li>
 </ul>
 ```
 
