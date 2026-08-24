@@ -19,9 +19,11 @@
 | `runner.py` | 学習・再生・エクスポートの入り口 |
 | `_compat.py` | mjlab のバージョン差の吸収 |
 
-ロボットモデル (MJCF + STL) はサポートページの
-[歩行シミュレーションのモデル一式](https://iory.github.io/build-your-own-arduino-rtos/assembly/quadruped/walk/model/)
-と同一のもの。
+ロボット記述一式（URDF・MJCF・メッシュ・RViz 設定・MJCF を SolidWorks
+エクスポートから再現するスクリプト）は
+[`../arduino_os_quad_robot/`](../arduino_os_quad_robot/) にある。
+ROS 2 なら `ros2 launch arduino_os_quad_robot display.launch.py` で
+RViz 表示できる。
 
 ## 方策の仕様（学習結果）
 
