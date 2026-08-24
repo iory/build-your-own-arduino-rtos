@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>四脚ロボット 歩行シミュレーション</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #f4f5f7; font-family: system-ui, sans-serif; }
+  #wrap { display: flex; flex-direction: column; height: 100%; }
+  #canvas3d { flex: 1; min-height: 0; width: 100%; display: block; touch-action: none; }
+  #bar {
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+    padding: 10px 14px; background: #fff; border-top: 1px solid #ddd;
+    font-size: 14px;
+  }
+  #bar label { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  #bar input[type=range] { width: 130px; }
+  button {
+    padding: 6px 14px; border: 1px solid #bbb; border-radius: 6px;
+    background: #fff; cursor: pointer; font-size: 14px;
+  }
+  button.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+  #status { color: #555; margin-left: auto; font-variant-numeric: tabular-nums; }
+  #overlay {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    background: #f4f5f7; z-index: 10; color: #333;
+  }
+  #overlay progress { width: 260px; }
+  #overlay .small { font-size: 12px; color: #888; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="canvas3d"></canvas>
+  <div id="bar">
+    <button id="walkBtn" class="primary">歩く</button>
+    <button id="resetBtn">リセット</button>
+    <label>前進 <input type="range" id="vx" min="-0.05" max="0.15" step="0.01" value="0.12">
+      <span id="vxVal">0.12</span> m/s</label>
+    <label>旋回 <input type="range" id="wz" min="-0.35" max="0.35" step="0.05" value="0">
+      <span id="wzVal">0.00</span> rad/s</label>
+    <label><input type="checkbox" id="follow" checked> カメラ追従</label>
+    <span id="status"></span>
+  </div>
+</div>
+<div id="overlay">
+  <div id="loadMsg">物理エンジン (MuJoCo WASM) を読み込み中…</div>
+  <progress id="loadBar" max="100" value="0"></progress>
+  <div class="small">初回は約 16 MB ダウンロードします</div>
+</div>
+
+<script type="module">
+import * as THREE from '../vendor/three.module.min.js';
+import {OrbitControls} from '../vendor/OrbitControls.js';
+import loadMujoco from './vendor/mujoco.js';
+import {QuadPolicy, makeController} from './walk_core.js';
+
+const $ = id => document.getElementById(id);
+const setProgress = (v, msg) => {
+  $('loadBar').value = v;
+  if (msg) $('loadMsg').textContent = msg;
+};
+
+async function fetchBinary(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(url + ': ' + res.status);
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+async function main() {
+  const mujoco = await loadMujoco();
+  setProgress(30, 'ロボットモデルを読み込み中…');
+
+  const xml = await (await fetch('model/arduino_os_quad_robot.xml')).text();
+  const meshFiles = [...xml.matchAll(/file="([^"]+\.stl)"/g)].map(m => m[1]);
+  const vfs = new mujoco.MjVFS();
+  let done = 0;
+  await Promise.all(meshFiles.map(async f => {
+    vfs.addBuffer('assets/' + f, await fetchBinary('model/assets/' + f));
+    done += 1;
+    setProgress(30 + 50 * done / meshFiles.length);
+  }));
+
+  setProgress(85, '学習済み方策を読み込み中…');
+  const bundle = await (await fetch('policy.json')).json();
+
+  const model = mujoco.MjModel.from_xml_string(xml, vfs);
+  const data = new mujoco.MjData(model);
+  const policy = new QuadPolicy(bundle);
+  const ctl = makeController(mujoco, model, data, policy);
+
+  // ---------- three.js ----------
+  const canvas = $('canvas3d');
+  const renderer = new THREE.WebGLRenderer({canvas, antialias: true});
+  renderer.setPixelRatio(window.devicePixelRatio);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf4f5f7);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.01, 100);
+  camera.up.set(0, 0, 1);   // MuJoCo は Z-up
+  camera.position.set(0.55, -0.55, 0.35);
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.target.set(0, 0, 0.1);
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x99a, 1.5));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+  sun.position.set(1, -2, 3);
+  scene.add(sun);
+
+  // 床: グリッド (MuJoCo 側の plane と同じ z=0)
+  const grid = new THREE.GridHelper(10, 100, 0xbbbbbb, 0xdddddd);
+  grid.rotation.x = Math.PI / 2;
+  scene.add(grid);
+  const floor = new THREE.Mesh(
+      new THREE.CircleGeometry(5, 48),
+      new THREE.MeshLambertMaterial({color: 0xe8eaee}));
+  floor.position.z = -0.001;
+  scene.add(floor);
+
+  // MuJoCo の mesh geom を three.js メッシュにする
+  const mjGEOM_MESH = mujoco.mjtGeom.mjGEOM_MESH.value;
+  const meshVert = model.mesh_vert, meshFace = model.mesh_face;
+  const meshVertadr = model.mesh_vertadr, meshVertnum = model.mesh_vertnum;
+  const meshFaceadr = model.mesh_faceadr, meshFacenum = model.mesh_facenum;
+  const geomObjs = [];   // {idx, obj}
+  for (let g = 0; g < model.ngeom; g++) {
+    if (model.geom_type[g] !== mjGEOM_MESH) continue;
+    const mid = model.geom_dataid[g];
+    const va = meshVertadr[mid], vn = meshVertnum[mid];
+    const fa = meshFaceadr[mid], fn = meshFacenum[mid];
+    const pos = new Float32Array(vn * 3);
+    for (let i = 0; i < vn * 3; i++) pos[i] = meshVert[va * 3 + i];
+    const idx = new Uint32Array(fn * 3);
+    for (let i = 0; i < fn * 3; i++) idx[i] = meshFace[fa * 3 + i] ;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setIndex(new THREE.BufferAttribute(idx, 1));
+    geo.computeVertexNormals();
+    const r = model.geom_rgba[g * 4], gg = model.geom_rgba[g * 4 + 1],
+          b = model.geom_rgba[g * 4 + 2];
+    const mat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(r, gg, b), metalness: 0.1, roughness: 0.7});
+    const obj = new THREE.Mesh(geo, mat);
+    obj.matrixAutoUpdate = false;
+    scene.add(obj);
+    geomObjs.push({idx: g, obj});
+  }
+
+  const m4 = new THREE.Matrix4();
+  function syncPose() {
+    const xpos = data.geom_xpos, xmat = data.geom_xmat;
+    for (const {idx, obj} of geomObjs) {
+      const p = idx * 3, r = idx * 9;
+      m4.set(xmat[r], xmat[r + 1], xmat[r + 2], xpos[p],
+             xmat[r + 3], xmat[r + 4], xmat[r + 5], xpos[p + 1],
+             xmat[r + 6], xmat[r + 7], xmat[r + 8], xpos[p + 2],
+             0, 0, 0, 1);
+      obj.matrix.copy(m4);
+    }
+  }
+
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (canvas.width !== w || canvas.height !== h) {
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+  }
+
+  // ---------- simulation ----------
+  let walking = false;
+  function reset() {
+    mujoco.mj_resetDataKeyframe(model, data, 0);
+    mujoco.mj_forward(model, data);
+    policy.reset();
+    for (let i = 0; i < policy.nj; i++) data.ctrl[i] = policy.defaultQ[i];
+    walking = false;
+    $('walkBtn').textContent = '歩く';
+  }
+  reset();
+
+  $('walkBtn').onclick = () => {
+    walking = !walking;
+    $('walkBtn').textContent = walking ? '一時停止' : '歩く';
+  };
+  $('resetBtn').onclick = reset;
+  $('vx').oninput = () => $('vxVal').textContent = (+$('vx').value).toFixed(2);
+  $('wz').oninput = () => $('wzVal').textContent = (+$('wz').value).toFixed(2);
+
+  let acc = 0, lastT = performance.now();
+  const followTarget = new THREE.Vector3();
+  function frame(now) {
+    requestAnimationFrame(frame);
+    resize();
+    const dt = Math.min((now - lastT) / 1000, 0.1);
+    lastT = now;
+    if (walking) {
+      acc += dt;
+      let n = 0;
+      const cmd = [+$('vx').value, 0, +$('wz').value];
+      while (acc >= policy.dt && n < 4) {   // 実時間に追従 (最大 4 制御周期/フレーム)
+        ctl.controlStep(cmd);
+        acc -= policy.dt;
+        n += 1;
+      }
+      if (n === 4) acc = 0;
+    }
+    syncPose();
+    if ($('follow').checked) {
+      followTarget.set(data.qpos[0], data.qpos[1], 0.1);
+      const delta = followTarget.clone().sub(controls.target);
+      controls.target.add(delta);
+      camera.position.add(delta);
+    }
+    $('status').textContent =
+        `x ${data.qpos[0].toFixed(2)} m / t ${data.time.toFixed(1)} s`;
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  $('overlay').remove();
+  requestAnimationFrame(frame);
+}
+
+main().catch(err => {
+  $('loadMsg').textContent = '読み込みに失敗しました: ' + err;
+  console.error(err);
+});
+</script>
+</body>
+</html>
