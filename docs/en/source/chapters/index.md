@@ -9,6 +9,10 @@ git clone https://github.com/iory/build-your-own-arduino-rtos.git
 cd build-your-own-arduino-rtos/code
 ```
 
+The sample code is
+[MIT-licensed](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/LICENSE)
+— feel free to use it in your own projects.
+
 ## Main chapters
 
 ```{toctree}
