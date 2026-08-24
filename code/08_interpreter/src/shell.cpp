@@ -5,6 +5,7 @@
 
 #include "shell.h"
 #include "os_kernel.h"
+#include "os_fault.h"
 #include "interpreter.h"
 #include <Arduino.h>
 #include <string.h>
@@ -226,6 +227,9 @@ void shell_task(void)
     interp_init();
 
     while (1) {
+        // 保留中のフォルト情報をタスク文脈で表示する (第6章 6.3)
+        fault_print_pending();
+
         Serial.print("> ");
         read_line(cmd_buf, CMD_BUF_SIZE);
         shell_process_command(cmd_buf);

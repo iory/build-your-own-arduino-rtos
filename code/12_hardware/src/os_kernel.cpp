@@ -20,12 +20,21 @@ static uint32_t g_stack_used;   // 切り出し済みのワード数
 
 static void idle_task(void) { while (1) __WFI(); }
 
+// タスク関数が return したときの受け皿。例外フレームの LR スロットは
+// ここを指す (第3章 3.4)。EXC_RETURN を置く場所ではない。
+static void task_exit(void)
+{
+    g_tasks[g_current_task].state = TASK_TERMINATED;
+    os_yield();
+    while (1) { }  // ここには到達しない
+}
+
 static uint32_t* init_task_stack(uint32_t *stack_top, void (*entry)(void))
 {
     uint32_t *sp = stack_top;
     *(--sp) = 0x01000000;
     *(--sp) = (uint32_t)entry;
-    *(--sp) = 0xFFFFFFFD;
+    *(--sp) = (uint32_t)task_exit;  // LR: タスクが return したときの戻り先
     *(--sp) = 0; *(--sp) = 0; *(--sp) = 0; *(--sp) = 0; *(--sp) = 0;
     // FPU を使ったタスクは例外フレームが拡張される（FP レジスタ込み）。
     // どちらのフレームで中断したかは EXC_RETURN の値に現れるため、

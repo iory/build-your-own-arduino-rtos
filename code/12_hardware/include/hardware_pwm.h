@@ -102,6 +102,7 @@ public:
 
         // Step 6: カウンタクリア & タイマ開始
         gpt->GTCNT = 0;
+        gpt->GTSSR_b.CSTRT = 1;       // ソフトウェアスタートを起動要因として許可
         gpt->GTSTR = (1u << ch_num);  // カウント開始
 
         return true;

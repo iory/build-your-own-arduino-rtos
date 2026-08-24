@@ -112,13 +112,21 @@ static void draw_separator(void)
 
 void display_update(void)
 {
-    // CPU使用率を更新（アイドル以外の合計）
-    int total_cpu = 0;
-    int task_count = os_get_task_count();
+    // CPU 使用率を更新（アイドル以外の割合）。
+    // os_get_cpu_usage() は呼ぶたびに基準時刻を更新するので、ここから呼ぶと
+    // シェルの ps の計測窓を壊してしまう。生カウンタから自前で差分を取る。
+    static uint32_t last_total = 0;
+    static uint32_t last_idle  = 0;
 
-    for (int i = 1; i < task_count; i++) {  // アイドル(0)を除く
-        total_cpu += os_get_cpu_usage(i);
-    }
+    uint32_t total = os_get_tick();
+    uint32_t idle  = os_get_task_cpu_ticks(0);
+    uint32_t d_total = total - last_total;
+    uint32_t d_idle  = idle  - last_idle;
+    last_total = total;
+    last_idle  = idle;
+
+    int total_cpu = (d_total == 0) ? 0
+                  : (int)(100u - (d_idle * 100u) / d_total);
 
     // 履歴に追加
     cpu_history[history_index] = total_cpu;
