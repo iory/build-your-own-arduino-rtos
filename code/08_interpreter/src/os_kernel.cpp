@@ -20,12 +20,21 @@ static uint32_t g_stack_used;   // 切り出し済みのワード数
 
 static void idle_task(void) { while (1) __WFI(); }
 
+// タスク関数が return したときの受け皿。例外フレームの LR スロットは
+// ここを指す (第3章 3.4)。EXC_RETURN を置く場所ではない。
+static void task_exit(void)
+{
+    g_tasks[g_current_task].state = TASK_TERMINATED;
+    os_yield();
+    while (1) { }  // ここには到達しない
+}
+
 static uint32_t* init_task_stack(uint32_t *stack_top, void (*entry)(void))
 {
     uint32_t *sp = stack_top;
     *(--sp) = 0x01000000;
     *(--sp) = (uint32_t)entry;
-    *(--sp) = 0xFFFFFFFD;
+    *(--sp) = (uint32_t)task_exit;  // LR: タスクが return したときの戻り先
     *(--sp) = 0; *(--sp) = 0; *(--sp) = 0; *(--sp) = 0; *(--sp) = 0;
     // FPU を使ったタスクは例外フレームが拡張される（FP レジスタ込み）。
     // どちらのフレームで中断したかは EXC_RETURN の値に現れるため、
@@ -197,6 +206,16 @@ extern "C" __attribute__((naked)) void PendSV_Handler(void)
 // CPU使用率を取得（パーセント）
 // 直前にこの関数を呼んだ時点からの差分で計算する。
 // ps のようにタスクごとにループで呼ぶため、基準時刻もタスクごとに持つ。
+// CPU 使用カウンタの生値。os_get_cpu_usage() と違って状態を持たないので、
+// 何度呼んでも他の呼び手の計測窓を壊さない (第4章 4.7)。
+uint32_t os_get_task_cpu_ticks(int task_id)
+{
+    if (task_id < 0 || task_id >= g_task_count) {
+        return 0;
+    }
+    return g_tasks[task_id].cpu_ticks;
+}
+
 int os_get_cpu_usage(int task_id)
 {
     if (task_id < 0 || task_id >= g_task_count) {

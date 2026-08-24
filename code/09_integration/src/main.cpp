@@ -124,7 +124,7 @@ void setup()
     Serial.println();
 
     // 例外設定
-    SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk;
+    fault_init();
 
     // OS初期化
     os_init();

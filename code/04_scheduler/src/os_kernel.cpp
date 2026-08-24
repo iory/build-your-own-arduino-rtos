@@ -30,6 +30,15 @@ static void idle_task(void)
 }
 
 // Initialize stack for a task
+// タスク関数が return したときの受け皿。例外フレームの LR スロットは
+// ここを指す (第3章 3.4)。EXC_RETURN を置く場所ではない。
+static void task_exit(void)
+{
+    g_tasks[g_current_task].state = TASK_TERMINATED;
+    os_yield();
+    while (1) { }  // ここには到達しない
+}
+
 static uint32_t* init_task_stack(uint32_t *stack_top, void (*entry)(void))
 {
     uint32_t *sp = stack_top;
@@ -37,7 +46,7 @@ static uint32_t* init_task_stack(uint32_t *stack_top, void (*entry)(void))
     // Hardware auto-saved registers
     *(--sp) = 0x01000000;        // xPSR: Thumb bit
     *(--sp) = (uint32_t)entry;   // PC
-    *(--sp) = 0xFFFFFFFD;        // LR: EXC_RETURN
+    *(--sp) = (uint32_t)task_exit;  // LR: タスクが return したときの戻り先
     *(--sp) = 0;                 // R12
     *(--sp) = 0;                 // R3
     *(--sp) = 0;                 // R2

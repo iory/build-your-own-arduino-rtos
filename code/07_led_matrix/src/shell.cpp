@@ -5,6 +5,7 @@
 
 #include "shell.h"
 #include "os_kernel.h"
+#include "os_fault.h"
 #include <Arduino.h>
 #include <string.h>
 
@@ -155,6 +156,9 @@ void shell_task(void)
     Serial.println("Type 'help' for commands.");
 
     while (1) {
+        // 保留中のフォルト情報をタスク文脈で表示する (第6章 6.3)
+        fault_print_pending();
+
         Serial.print("> ");
 
         cmd_pos = 0;

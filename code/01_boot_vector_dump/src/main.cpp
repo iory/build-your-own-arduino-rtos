@@ -7,6 +7,7 @@ void setup()
 {
     Serial.begin(115200);
     while (!Serial) { }
+    while (Serial.read() != 'S') { delay(1); }
 
     Serial.println("=== Vector Table Dump ===");
     Serial.println();
@@ -40,9 +41,9 @@ void setup()
         Serial.print("] ");
 
         // アドレス
-        Serial.print("0x");
-        if (vtor[i] < 0x10000000) Serial.print("0");
-        Serial.print(vtor[i], HEX);
+        char hex[16];
+        snprintf(hex, sizeof(hex), "0x%08lX", (unsigned long)vtor[i]);
+        Serial.print(hex);
 
         // 名前
         Serial.print("  ");

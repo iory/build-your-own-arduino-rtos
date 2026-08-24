@@ -71,6 +71,7 @@ void setup()
 {
     Serial.begin(115200);
     while (!Serial) { }
+    while (Serial.read() != 'S') { delay(1); }
 
     Serial.println(F("=== Advanced 4: LittleFS on Data Flash ==="));
     Serial.print(F("data flash: "));

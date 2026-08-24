@@ -23,7 +23,7 @@
 
 #define LED_PIN    2
 #define SERVO_PIN  9
-#define POT_CH     0
+#define POT_CH     9   // A0 = P014 = AN009 (ch0 は A1)
 
 // タスク間共有データ（本書 9.2「タスク間共有データ」を参照）
 volatile uint16_t g_pot_raw = 0;   // 14bit 生値
@@ -91,7 +91,7 @@ void task_status(void)
         Serial.print(g_pot_10bit);
         Serial.print(F("  servo="));
         Serial.print(servo1.read());
-        Serial.println(F("us"));
+        Serial.println(F("deg"));
         os_sleep(1000);
     }
 }

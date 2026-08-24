@@ -58,6 +58,7 @@ const char* os_get_task_name(int id);
 TaskState os_get_task_state(int id);
 int os_get_current_task(void);
 int os_get_cpu_usage(int task_id);
+uint32_t os_get_task_cpu_ticks(int task_id);
 uint32_t os_get_tick(void);
 
 extern TCB g_tasks[MAX_TASKS];

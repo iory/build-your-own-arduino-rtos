@@ -25,6 +25,7 @@ void setup()
 {
     Serial.begin(115200);
     while (!Serial) { }
+    while (Serial.read() != 'S') { delay(1); }
 
     Serial.println(F("=== Advanced 3: my_malloc / my_free ==="));
 

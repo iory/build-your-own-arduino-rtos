@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 
-#define LED_PIN 13
+#define LED_PIN LED_BUILTIN
 #define SERVO_PIN 9
 
 // --- Scheduler Definition ---
