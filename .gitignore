@@ -2,3 +2,6 @@ _site/
 docs/*/source/_build/
 .venv/
 __pycache__/
+
+# グローバル gitignore の .* に .github が食われるのを防ぐ
+!.github/
