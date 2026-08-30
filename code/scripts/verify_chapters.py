@@ -278,12 +278,20 @@ CHAPTERS: list[Chapter] = [
             "matrix.fill(1) でマトリクスが全点灯する",
         ],
         try_cmds=["print(1 + 2)", "led.on()", "led.off()", "led.blink(5)", "for i in range(3): print(i)"],
-        send=["print(1 + 2)", "print(len('abc'))"],
+        send=["print(1 + 2)",
+              "def fact(n):", "    if n < 2:", "        return 1",
+              "    return n * fact(n - 1)", "",
+              "print(fact(7))",      # 課題11-2 の値。TP_MAX_SCOPES=8 の内側
+              "print(fact(30))",     # 上限超え。黙って固まらずエラーになること
+              "print(42)"],          # そのあとも REPL が生きていること
         checks=[
             Check(r"^3\s*$", "print(1 + 2) が 3 を返す（本文 11.11 の REPL）"),
             Check(r">>>", "REPL のプロンプトが出る"),
+            Check(r"^5040\s*$", "fact(7) は深さ上限の内側なので通る（課題11-2）"),
+            Check(r"RecursionError", "深すぎる再帰は TP_MAX_SCOPES で止まる"),
+            Check(r"^42\s*$", "RecursionError のあとも REPL が生きている"),
         ],
-        capture=10.0,
+        capture=22.0,
     ),
     Chapter(
         "12_hardware",
