@@ -505,23 +505,63 @@ def run_pio(chapter: str, target: str | None, port: str | None,
 # --------------------------------------------------------------------------
 
 def capture(ch: Chapter, port: str) -> str:
+    """出力を捕捉する。
+
+    macOS / Windows では、書き込み直後にボードが USB を張り直すことがある。
+    そのとき read() は「Device not configured」で例外を投げるので、捕まえて
+    ポートを開き直す。ここで落ちると、以降の章がまとめて検証できなくなる。
+    """
     buf: list[str] = []
     deadline = time.time() + ch.capture
+
+    def reopen():
+        for _ in range(20):
+            p = find_board_port() or port
+            try:
+                return serial.Serial(p, BAUD, timeout=0.2)
+            except Exception:  # noqa: BLE001  まだ列挙が終わっていない
+                time.sleep(0.5)
+        return None
+
+    ser = reopen()
+    if ser is None:
+        return f"[capture] ポートを開けません: {port}\n"
+
+    def rd(n=4096):
+        """読む。切れたら開き直して続ける。"""
+        nonlocal ser
+        try:
+            return ser.read(n)
+        except Exception:  # noqa: BLE001
+            try:
+                ser.close()
+            except Exception:  # noqa: BLE001
+                pass
+            ser = reopen()
+            buf.append("\n[capture] ポートが切れたので開き直しました\n")
+            return b""
+
+    def wr(data: bytes):
+        nonlocal ser
+        try:
+            ser.write(data)
+            ser.flush()
+        except Exception:  # noqa: BLE001
+            ser = reopen()
+
     try:
-        ser = serial.Serial(port, BAUD, timeout=0.2)
-    except Exception as exc:  # noqa: BLE001
-        return f"[capture] ポートを開けません: {exc}\n"
-    with ser:
         time.sleep(0.3)
-        ser.reset_input_buffer()
+        try:
+            ser.reset_input_buffer()
+        except Exception:  # noqa: BLE001
+            pass
         # setup() でしか出さない章は、出力が始まるまでハンドシェイク文字を送り続ける
         if ch.handshake:
             hs_deadline = time.time() + 6.0
             while time.time() < hs_deadline and not buf:
-                ser.write(ch.handshake.encode())
-                ser.flush()
+                wr(ch.handshake.encode())
                 time.sleep(0.25)
-                chunk = ser.read(4096)
+                chunk = rd()
                 if chunk:
                     buf.append(chunk.decode("utf-8", errors="replace"))
         for line in ch.send:
@@ -531,17 +571,22 @@ def capture(ch: Chapter, port: str) -> str:
                 deadline = max(deadline, time.time() + float(m.group(1)))
                 end = time.time() + float(m.group(1))
                 while time.time() < end:
-                    chunk = ser.read(4096)
+                    chunk = rd()
                     if chunk:
                         buf.append(chunk.decode("utf-8", errors="replace"))
                 continue
             time.sleep(0.8)
-            ser.write((line + "\n").encode())
-            ser.flush()
+            wr((line + "\n").encode())
         while time.time() < deadline:
-            chunk = ser.read(4096)
+            chunk = rd()
             if chunk:
                 buf.append(chunk.decode("utf-8", errors="replace"))
+    finally:
+        if ser is not None:
+            try:
+                ser.close()
+            except Exception:  # noqa: BLE001
+                pass
     return "".join(buf)
 
 
@@ -782,7 +827,11 @@ def main() -> int:
     for ch in targets:
         print(f"\n=== {ch.name} " + "=" * (60 - len(ch.name)), flush=True)
         t0 = time.time()
-        r = verify(ch, args)
+        try:
+            r = verify(ch, args)
+        except Exception as exc:  # noqa: BLE001  ここで止めると残りの章が測れない
+            r = {"chapter": ch.name, "build": None, "upload": None, "checks": [],
+                 "status": f"ERROR: {type(exc).__name__}: {exc}", "log": ""}
         r["seconds"] = round(time.time() - t0, 1)
         results.append(r)
         if r["log"]:
