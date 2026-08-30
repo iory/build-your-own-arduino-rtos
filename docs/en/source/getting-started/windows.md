@@ -174,6 +174,25 @@ after uploading, or press RESET once. In the Chapter 5 shell, typing `reboot`
 does the same thing.
 ```
 
+```{admonition} Why chapter 1 waits for an `S`
+:class: note
+
+Chapter 1's sketch **prints nothing until you send a single `S`** from the
+monitor. Type `S` once the monitor is open.
+
+The board starts running the instant it is powered, while you need a few
+seconds to open the monitor after flashing. In a chapter that prints once from
+`setup()` and stops, **written naively it would finish printing before your
+monitor is even open, and you would see nothing**.
+
+The `S` is how the PC says "I am ready":
+
+    while (Serial.read() != 'S') { delay(1); }
+
+`01_boot`, `01_boot_vector_dump`, `adv3_heap` and `adv4_fs` work this way.
+Chapters that keep printing (chapter 2, for example) do not need it.
+```
+
 ## 5. Where Windows trips you up
 
 ### You cannot upload while the monitor is open
@@ -211,6 +230,14 @@ Using manually specified: COM9
 is in use. Knowing which is which makes this a five-second diagnosis. Run
 `uv run pio device list` to confirm the number.
 
+**The number is not fixed.** Unplug and replug the board, or attach another USB
+serial device first, and the same board can move from `COM3` to `COM5`. If
+`FileNotFoundError` appears out of nowhere, check this first — Device Manager's
+"Ports (COM & LPT)" shows it too.
+
+The same happens on Linux (`/dev/ttyACM0` becomes `/dev/ttyACM1`). Section 6
+shows how to write code that does not depend on the number.
+
 ### It stops with `No device found on COMn`
 
 The board is not in bootloader mode. **Press RESET twice quickly** to drop into
@@ -238,7 +265,7 @@ installed by `uv sync`.
 
 ### The smallest example
 
-Run this with Chapter 5 (`05_shell`) on the board:
+Run this with {doc}`Chapter 5 (05_shell)<../chapters/ch05>` on the board:
 
 ```python
 import sys
