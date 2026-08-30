@@ -839,7 +839,11 @@ def main() -> int:
         print(f"  -> {r['status']}  ({r['seconds']}s)", flush=True)
         for c in r["checks"]:
             mark = "OK  " if c["ok"] else "NG  "
-            print(f"     {mark}{c['pattern']}" + (f"   … {c['why']}" if c["why"] else ""))
+            # 読者が見たいのは「何を確かめたか」なので、説明があればそれを出す。
+            # 正規表現そのものは、落ちたときだけ添える（直す手がかりになる）。
+            label = c["why"] or c["pattern"]
+            detail = "" if (c["ok"] or not c["why"]) else f"   [{c['pattern']}]"
+            print(f"     {mark}{label}{detail}")
 
     print("\n" + "=" * 72)
     print(f"{'章':24s} {'結果':12s} 秒")
