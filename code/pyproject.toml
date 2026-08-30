@@ -5,4 +5,5 @@ description = "PlatformIO build environment for Arduino UNO R4 WiFi OS book samp
 requires-python = ">=3.10"
 dependencies = [
     "platformio>=6.1",
+    "pyserial>=3.5",
 ]
