@@ -328,6 +328,8 @@ uv run python quad_host.py teleop      # w/s/a/d で歩かせる
 
 ポートを明示したいときは `--port /dev/ttyACM0` を足してください。
 
+組み立てと学習の全体像は {doc}`../hardware/walk` にあります。
+
 ## 9. Ubuntu 以外
 
 このページは Ubuntu 24.04 で確認したものです。他のディストリビューションでも
