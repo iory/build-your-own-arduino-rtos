@@ -138,6 +138,13 @@ Done in 2.803 seconds
 As `Auto-detected: COM3` shows, the port is normally found for you. Add
 `--upload-port COM3` only when another USB serial device is picked instead.
 
+```{figure} ../_static/windows_upload.gif
+:name: fig-windows-upload-en
+:width: 100%
+
+Checking the port and uploading, recorded from a real PowerShell session
+```
+
 ## 4. Watch the serial output
 
 ```powershell
@@ -274,6 +281,13 @@ Task Count:    5
 Time Slice:    10 ms
 
 >
+```
+
+```{figure} ../_static/windows_pyserial.gif
+:name: fig-windows-pyserial-en
+:width: 100%
+
+Running `hello_serial.py` and getting the board's shell to answer
 ```
 
 Send `ps` and the task table comes back the same way:
