@@ -1,2 +1,36 @@
 /* サポートページ共通スタイル */
 .sd-card { height: 100%; }
+
+/* ------------------------------------------------------------------
+   広い画面ではコードを広く見せる
+
+   pydata-sphinx-theme は本文カラムを 60em に固定しているため、画面を
+   広げても余白が増えるだけでコードが読みやすくならない。本書はコードを
+   そのまま載せるページが多いので、広い画面では本文カラムを広げる。
+
+   ただし地の文まで広げると 1 行が長くなって読みにくいので、段落・箇条書き・
+   表は 60em のままにする（コードブロックと折りたたみだけが広がる）。
+   ------------------------------------------------------------------ */
+@media (min-width: 1400px) {
+  .bd-page-width { max-width: 100rem; }
+  .bd-main .bd-content .bd-article-container { max-width: 78em; }
+}
+@media (min-width: 1800px) {
+  .bd-page-width { max-width: 130rem; }
+  .bd-main .bd-content .bd-article-container { max-width: 104em; }
+}
+@media (min-width: 2400px) {
+  .bd-page-width { max-width: 170rem; }
+  .bd-main .bd-content .bd-article-container { max-width: 140em; }
+}
+
+/* 読み物としての行長は保つ */
+@media (min-width: 1400px) {
+  .bd-article > section > p,
+  .bd-article > section > ul,
+  .bd-article > section > ol,
+  .bd-article > section > dl,
+  .bd-article > section > blockquote,
+  .bd-article > section > .admonition,
+  .bd-article > section > table { max-width: 60em; }
+}
