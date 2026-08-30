@@ -6,8 +6,9 @@ needs no MCU flashing, prints every intermediate value, and turns a fix-and-retr
 cycle into a keystroke. arduino_quad.ino is the eventual embedded target, not the
 thing to debug against first.
 
-    macOS:  pip install feetech-servo-sdk pyserial numpy
-            ls /dev/tty.usb*        # the adapter shows up as tty.usbserial-* or tty.usbmodem*
+    macOS:   pip install feetech-servo-sdk pyserial numpy
+             ls /dev/tty.usb*       # the adapter shows up as tty.usbserial-* or tty.usbmodem*
+    Windows: uv run pio device list # the adapter shows up as COM3, COM4, ...
 
     python quad_host.py --port /dev/tty.usbserial-XXXX scan
     python quad_host.py --port ... calibrate      # writes calib.json
@@ -32,12 +33,16 @@ import argparse
 import json
 import math
 import os
-import select
 import signal
 import sys
-import termios
 import time
-import tty
+
+if os.name == "nt":
+  import msvcrt
+else:
+  import select
+  import termios
+  import tty
 
 import numpy as np
 
@@ -689,7 +694,7 @@ def cmd_stepid(args) -> int:
   return 0
 
 
-class KeyReader:
+class _PosixKeyReader:
   """Single key presses from the terminal, without waiting for Enter.
 
   Uses cbreak rather than raw mode on purpose: cbreak leaves ISIG alone, so
@@ -718,6 +723,42 @@ class KeyReader:
         break
       out.append(ch)
     return out
+
+
+class _WindowsKeyReader:
+  """The same, for the Windows console, where there is no termios.
+
+  Nothing has to be put back on exit: msvcrt reads the console buffer directly
+  instead of changing a line discipline. Ctrl-C keeps working for the same
+  reason cbreak is used on POSIX -- the console leaves ENABLE_PROCESSED_INPUT
+  on, so Ctrl-C never reaches the input buffer and arrives as a
+  KeyboardInterrupt instead, which is what releases torque.
+  https://docs.python.org/3/library/msvcrt.html
+  """
+
+  def __enter__(self):
+    if not sys.stdin.isatty():
+      raise SystemExit("teleop は端末から実行してください (キー入力を読みます)")
+    return self
+
+  def __exit__(self, *exc) -> bool:
+    return False
+
+  def keys(self):
+    """Return every key pressed since the last call, oldest first."""
+    out = []
+    while msvcrt.kbhit():
+      ch = msvcrt.getwch()
+      if ch in ("\x00", "\xe0"):
+        # Arrow and function keys arrive as a two-character sequence. Drop the
+        # second half rather than let it read as a movement command.
+        msvcrt.getwch()
+        continue
+      out.append(ch)
+    return out
+
+
+KeyReader = _WindowsKeyReader if os.name == "nt" else _PosixKeyReader
 
 
 def apply_key(key: str, vx: float, wz: float, limits=None):
@@ -1162,7 +1203,8 @@ def main() -> int:
   ap.add_argument("mode",
                   choices=["scan", "calibrate", "stand", "run", "stepid",
                            "teleop", "wifi"])
-  ap.add_argument("--port", default=None, help="/dev/tty.usbserial-XXXX")
+  ap.add_argument("--port", default=None,
+                  help="/dev/tty.usbserial-XXXX (Windows は COM3 のような名前)")
   ap.add_argument("--baud", type=int, default=1000000)
   ap.add_argument("--bus", choices=["direct", "bridge"], default="direct",
                   help="サーボへの経路。direct=このPCのUSBアダプタ, "
