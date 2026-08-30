@@ -23,6 +23,7 @@ cd build-your-own-arduino-rtos/code
 
 ```{toctree}
 :maxdepth: 1
+verify
 ch01
 ch02
 ch03
