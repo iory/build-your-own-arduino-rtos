@@ -27,6 +27,10 @@ scripts/build.sh  # 両言語を _site/ にビルドし docs/assembly をコピ�
 一方向ミラーされる。誤植・バグ修正は原稿リポジトリ側で行うこと —
 ここで直しても次回の同期で上書きされる。
 
+章のページは `literalinclude` で `code/` を直接読み込んでいるので、
+コードが同期されるとサイトの表示も自動で最新になる（`docs` workflow は
+`code/` の変更でも再ビルドする）。
+
 言語切替はナビバーの Language ドロップダウン
 （`BASE_URL` 環境変数でリンク先のベースパスを指定。
 GitHub Pages では workflow が `/build-your-own-arduino-rtos/` を渡す）。
