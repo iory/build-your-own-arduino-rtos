@@ -86,6 +86,28 @@ Description: UNO WiFi R4 CMSIS-DAP - TinyUSB CDC
 `/dev/ttyS*` がたくさん出ることがありますが、これはマザーボード上の
 シリアルポートで、ボードとは関係ありません。**`ttyACM`** の行を見てください。
 
+```{admonition} 番号は固定ではありません
+:class: warning
+
+`/dev/ttyACM0` の **0 は「何番目に挿されたか」でしかありません**。
+抜き挿ししたり、ほかの USB シリアル機器を先につないだりすると、
+同じボードが `/dev/ttyACM1` になります。書き込みが急に
+`No such file or directory` で失敗したら、まずこれを疑ってください。
+
+いま何番かは、こう調べます。
+
+    uv run pio device list          # Hardware ID に 2341:1002 と出る行
+    ls /dev/ttyACM*                 # 手早く見るだけなら
+
+抜き挿しした直後に確認するなら、カーネルのログが確実です。
+
+    dmesg | tail -5
+    # [12345.678] cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+
+**Windows でも同じことが起きます**（`COM3` が `COM5` になる）。
+番号に依存しない書き方は「7. Python からボードと通信する」にあります。
+```
+
 ## 4. ビルドして書き込む
 
 ```bash
@@ -111,6 +133,33 @@ uv run pio device monitor -b 115200
 
 第1章は **`S` を 1 文字送ると出力が始まります**。モニタが開いたら `S` を
 打ってください。
+
+```{admonition} なぜ `S` を待たせているのか
+:class: note
+
+ボードは電源が入った瞬間から全速力で走り出します。一方こちらは、書き込みが
+終わってからシリアルモニタを開くまでに数秒かかります。第1章のスケッチは
+`setup()` の中で一度だけ印字して終わるので、**普通に書くとモニタが開く前に
+出力が終わってしまい、何も見えません**。しかも UNO R4 WiFi は、**シリアル
+ポートを開いてもリセットされません**（USB 通信はボード上の ESP32-S3 が
+受け持っていて、プログラムが動く RA4M1 とは独立しているためです）。
+つまりモニタを開き直しても、最初からやり直してはくれません。
+
+そこで「PC 側の準備ができた」ことをボードに伝える必要があります。
+`S` はその合図です。スケッチは
+
+    while (Serial.read() != 'S') { delay(1); }
+
+で足踏みし、`S` が届いてから印字を始めます。だからモニタを開くのが何秒
+遅れても、出力を最初から見られます。
+
+Linux ではもう一つ理由があります。**ModemManager** が書き込み直後にポートを
+開きにくるため、`while (!Serial)` だけでは「ホストが繋がった」と誤って
+判定されてしまいます（「6. Linux でつまずくところ」を参照）。
+
+書籍では `01_boot` / `01_boot_vector_dump` / 応用編の `adv3_heap` と
+`adv4_fs` がこの形です。ずっと印字し続ける章（第2章など）には要りません。
+```
 
 ```text
 === Boot Sequence Check ===
@@ -253,8 +302,8 @@ PC 側のプログラムからボードと話したくなります。`uv sync` �
 
 ### 最小の例
 
-第5章（`05_shell`）を書き込んだ状態で試してください。シェルが動いているので、
-`ps` を送るとタスク表が返ってきます。
+{doc}`第5章（05_shell）<../chapters/ch05>` を書き込んだ状態で試してください。
+シェルが動いているので、`ps` を送るとタスク表が返ってきます。
 
 ```python
 import time
@@ -266,7 +315,7 @@ port = next(p.device for p in serial.tools.list_ports.comports() if p.vid == 0x2
 print("見つかったポート:", port)
 
 ser = serial.Serial(port, 115200, timeout=0.2)
-time.sleep(1.6)          # 開くとボードがリセットされるので待つ
+time.sleep(1.6)          # 挿した直後は取りこぼすことがあるので少し待つ
 ser.reset_input_buffer()
 
 ser.write(b"ps\n")
@@ -283,7 +332,7 @@ uv run python hello_serial.py
 :name: fig-linux-pyserial
 :width: 100%
 
-`hello_serial.py` を実行して、ボードのシェルに応答させたところ
+`hello_serial.py` を実行したところ
 ```
 
 ```text
@@ -300,6 +349,56 @@ ID  NAME           STATE      CPU%
 
 >
 ```
+
+### 打ちながら試す
+
+送るコマンドを決め打ちにせず、その場で打ちたいときは、読む側を別スレッドに
+するだけの短いコンソールが書けます。
+
+```python
+"""ボードのシェルと対話する、最小のシリアルコンソール。Ctrl-D で終了。"""
+import sys
+import time
+import threading
+import serial
+import serial.tools.list_ports
+
+port = next(p.device for p in serial.tools.list_ports.comports() if p.vid == 0x2341)
+print(f"connected: {port}  (Ctrl-D で終了)")
+
+ser = serial.Serial(port, 115200, timeout=0.2)
+time.sleep(1.6)                      # 挿した直後は取りこぼすことがあるので少し待つ
+ser.reset_input_buffer()
+
+def reader():                        # ボードからの出力を流し続ける
+    while True:
+        data = ser.read(4096)
+        if data:
+            sys.stdout.write(data.decode("utf-8", errors="replace"))
+            sys.stdout.flush()
+
+threading.Thread(target=reader, daemon=True).start()
+
+# for line in sys.stdin: は読み溜めするので、対話では readline を使う
+for line in iter(sys.stdin.readline, ""):   # 打った行をボードへ送る
+    ser.write(line.encode())
+    ser.flush()
+```
+
+```bash
+uv run python serial_console.py
+```
+
+```{figure} ../_static/linux_console.gif
+:name: fig-linux-console
+:width: 100%
+
+`ps` でタスク表を見て、`kill 1` で LED1 を止め（`SUSPEND` に変わります）、
+`exec 1` で戻すところ。実機の Ubuntu 24.04 で打ったものです
+```
+
+`kill 1` を打つと基板の L LED の点滅が止まり、`exec 1` で再開します。
+画面の `STATE` と手元の LED が一致していることを確かめてください。
 
 ### 覚えておくと詰まらない 3 つ
 
@@ -327,6 +426,8 @@ uv run python quad_host.py teleop      # w/s/a/d で歩かせる
 ```
 
 ポートを明示したいときは `--port /dev/ttyACM0` を足してください。
+
+組み立てと学習の全体像は {doc}`../hardware/walk` にあります。
 
 ## 9. Ubuntu 以外
 

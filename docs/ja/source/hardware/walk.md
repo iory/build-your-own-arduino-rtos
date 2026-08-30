@@ -79,15 +79,27 @@ sim2real のために、摩擦（0.4〜1.1）・付加質量（電装ぶん 0〜
 
 ```bash
 # PC ─USB─ サーボドライバボード ─半二重TTL─ サーボ8個
-pip install feetech-servo-sdk pyserial numpy
-python host/quad_host.py --port /dev/tty.usbserial-XXXX scan
-python host/quad_host.py --port ... calibrate --write-middle
-python host/quad_host.py --port ... stand
-python host/quad_host.py --port ... run --vx 0.05
+cd code/13_quadruped/host
+uv sync                              # pyserial と numpy が入る
+
+uv run python quad_host.py scan      # バスに何個いるか、ボーレートは合っているか
+uv run python quad_host.py calibrate --write-middle
+uv run python quad_host.py stand     # home 姿勢を保持
+uv run python quad_host.py run --vx 0.05
 ```
 
-PC で歩いてから `arduino/arduino_quad/` のスケッチ（同じ数値・同じ観測の
-C 実装）に移します。校正は `arduino/calibrate/` の対話ウィザードでも
+ポートは Arduino の USB ベンダ ID から自動で探します。ほかに USB シリアル
+機器がつながっていて誤検出されるときだけ `--port` を足してください
+（Linux は `/dev/ttyACM0`、macOS は `/dev/cu.usbmodem...`、Windows は `COM3`
+のような名前です）。
+
+`w`/`s`/`a`/`d` で対話的に走らせる `teleop` もあります。OS ごとの詰まりどころ
+（権限、ポートの取り合い、Python からの通信）は
+{doc}`../getting-started/linux` と {doc}`../getting-started/windows` に
+まとめてあります。
+
+PC で歩いてから `walk/arduino/arduino_quad/` のスケッチ（同じ数値・同じ観測の
+C 実装）に移します。校正は `walk/arduino/calibrate/` の対話ウィザードでも
 できます。
 
 ```{warning}
