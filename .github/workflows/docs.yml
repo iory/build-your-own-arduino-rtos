@@ -3,10 +3,9 @@ name: docs
 on:
   push:
     branches: [main]
-    # code/ は private の原稿リポジトリから自動同期されるだけで、
-    # サイトのビルドには影響しない
-    paths-ignore:
-      - 'code/**'
+    # code/ の変更でも再ビルドする。章のページが literalinclude で code/ を
+    # 直接読み込んでいるため、ここを無視するとコードを直してもサイトの表示が
+    # 古いまま残る（code/ は原稿リポジトリから自動同期される）。
   workflow_dispatch:
 
 permissions:
