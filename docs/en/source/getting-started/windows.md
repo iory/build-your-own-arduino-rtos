@@ -18,7 +18,30 @@ the error class and numeric code stay the same.
 
 ## 1. Set up the environment
 
+### Open PowerShell
+
+The quickest way is **right-click the Start button → "Terminal"** (`Win` + `X`
+opens the same menu). Typing `PowerShell` into the Start menu works as well.
+No administrator rights are needed.
+
+Windows 11 ships with **Windows PowerShell 5.1**, and every command on this
+page runs there as written. To see which one you opened:
+
+```powershell
+$PSVersionTable.PSVersion
+```
+
+The newer [PowerShell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows)
+(invoked as `pwsh`, not `powershell`) is fine too — the outputs on this page
+were captured with PowerShell 7.6.2.
+
+Command Prompt (`cmd.exe`) can build and upload as well, but the examples here
+follow PowerShell syntax.
+
 ### Install uv
+
+[uv](https://docs.astral.sh/uv/) manages the Python environment and its
+packages in one tool; it is all the sample code needs.
 
 Open PowerShell and run:
 
@@ -26,8 +49,11 @@ Open PowerShell and run:
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-`winget install --id=astral-sh.uv -e` works too. Reopen PowerShell afterwards,
-then check:
+`winget install --id=astral-sh.uv -e` works too. Other options are in
+[uv's installation guide](https://docs.astral.sh/uv/getting-started/installation/).
+
+The installer drops uv in `%USERPROFILE%\.local\bin` and adds that to PATH, so
+**`uv` is not found until you reopen PowerShell.** Reopen it, then check:
 
 ```powershell
 uv --version
@@ -45,7 +71,8 @@ cd build-your-own-arduino-rtos\code
 uv sync
 ```
 
-`uv sync` installs PlatformIO and pyserial. Every command below is run through
+`uv sync` installs [PlatformIO](https://docs.platformio.org/) and
+[pyserial](https://pyserial.readthedocs.io/). Every command below is run through
 `uv run`.
 
 ## 2. Find the board
@@ -199,7 +226,8 @@ Driving the board from Python instead of a serial monitor lets you save the
 output, or read a reply and decide what to send next. The Chapter 13 quadruped
 is brought up exactly this way.
 
-The library is `pyserial`, already installed by `uv sync`.
+The library is [pyserial](https://pyserial.readthedocs.io/), already
+installed by `uv sync`.
 
 ### The smallest example
 

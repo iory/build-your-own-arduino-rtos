@@ -14,7 +14,31 @@ Windows でも Linux / macOS と同じコマンドで全章をビルド・書き
 
 ## 1. 環境をつくる
 
+### PowerShell を開く
+
+**スタートボタンを右クリック → 「ターミナル」** が一番早いです
+（`Win` + `X` でも同じメニューが出ます）。スタートメニューで `PowerShell` と
+打って選んでもかまいません。管理者権限は要りません。
+
+Windows 11 に最初から入っているのは **Windows PowerShell 5.1** です。
+このページのコマンドはそのまま動きます。開いているものが何かは、これで
+分かります。
+
+```powershell
+$PSVersionTable.PSVersion
+```
+
+より新しい [PowerShell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows)
+（コマンド名は `powershell` ではなく `pwsh`）でもかまいません。
+このページの出力例は PowerShell 7.6.2 で取ったものです。
+
+コマンドプロンプト（`cmd.exe`）でもビルドと書き込みはできますが、
+例は PowerShell の書きかたに揃えてあります。
+
 ### uv を入れる
+
+[uv](https://docs.astral.sh/uv/) は Python の環境とパッケージをまとめて
+面倒みてくれるツールです。本書のサンプルコードはこれ 1 つで動きます。
 
 PowerShell を開いて、次の 1 行を実行します。
 
@@ -22,8 +46,13 @@ PowerShell を開いて、次の 1 行を実行します。
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-`winget install --id=astral-sh.uv -e` でも入ります。
-入れたら PowerShell を開き直して確認してください。
+`winget install --id=astral-sh.uv -e` でも入ります。ほかの入れかたは
+[uv のインストール手順](https://docs.astral.sh/uv/getting-started/installation/)
+を参照してください。
+
+インストーラは `%USERPROFILE%\.local\bin` に置いて、そこを PATH に足します。
+**PowerShell を開き直さないと `uv` が見つかりません。** 開き直してから
+確認してください。
 
 ```powershell
 uv --version
@@ -41,7 +70,8 @@ cd build-your-own-arduino-rtos\code
 uv sync
 ```
 
-`uv sync` で PlatformIO と pyserial が入ります。以降、コマンドは
+`uv sync` で [PlatformIO](https://docs.platformio.org/) と
+[pyserial](https://pyserial.readthedocs.io/) が入ります。以降、コマンドは
 `uv run` を付けて呼びます。
 
 ## 2. ボードを見つける
@@ -193,7 +223,8 @@ Using manually specified: COM9
 応答を見て次のコマンドを送ったりできます。第13章の四脚ロボットも、この
 やりかたで PC 側から動かします。
 
-使うのは `pyserial` です（`uv sync` 済みなら入っています）。
+使うのは [pyserial](https://pyserial.readthedocs.io/) です
+（`uv sync` 済みなら入っています）。
 
 ### 最小の例
 
