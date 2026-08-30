@@ -22,17 +22,26 @@ OUT = os.path.expanduser("~/casts")
 
 
 class Demo:
-    def __init__(self, key, chapter, seconds, keys=(), handshake="", note=""):
+    def __init__(self, key, chapter, seconds, keys=(), handshake="", ready="",
+                 pre=1.5, note=""):
         self.key = key
         self.chapter = chapter
         self.seconds = seconds
         self.keys = keys          # (待ち秒, 送る文字列) の並び。改行は自分で付ける
         self.handshake = handshake
+        self.ready = ready        # これが出たらハンドシェイクをやめる
+        self.pre = pre            # モニタを開いてから動かし始めるまでの間
         self.note = note
 
 
 # (待つ秒数, 送る文字列)
 DEMOS = [
+    Demo("ch01", "01_boot", 7, handshake="S", ready=r"=== Boot", pre=2.5,
+         note="S を送ると起動時の値がまとめて出る。読者が最初に見る画面"),
+    Demo("ch02", "02_baremetal", 16,
+         note="協調スケジューラが 3 タスクを回す。Servo の角度が動き続ける"),
+    Demo("ch03", "03_context_switch", 18,
+         note="os_yield() でタスクが切り替わる"),
     Demo("ch04", "04_scheduler", 18,
          note="重いタスクが 1 秒ごとのカウンタに割り込まれる。プリエンプションが見える"),
     Demo("ch06", "06_memory_protection", 26,
@@ -78,7 +87,8 @@ def record(demo):
     with open(driver, "w") as f:
         f.write(DRIVER.format(chapter=repr(demo.chapter), uv=repr(UV), code=repr(CODE),
                               seconds=demo.seconds, keys=repr(list(demo.keys)),
-                              handshake=repr(demo.handshake)))
+                              handshake=repr(demo.handshake), ready=repr(demo.ready),
+                              pre=demo.pre))
 
     print(f"=== recording {demo.key} ({demo.seconds}s) ===", flush=True)
     subprocess.run(["asciinema", "rec", "--overwrite", "--cols", "68", "--rows", "18",
@@ -100,11 +110,16 @@ def pump(sec):
     except Exception:
         pass
 
-hs = {handshake}
+pump({pre})                       # 開いた直後は静かなので、少し置いてから動かす
+hs, ready = {handshake}, {ready}
 if hs:
-    for _ in range(40):          # 出力が始まるまで送り続ける
+    for _ in range(60):          # 出力が始まるまで送り続ける
         c.send(hs)
-        pump(0.25)
+        try:
+            c.expect(ready, timeout=0.25)
+            break                # 出はじめたら、もう送らない
+        except pexpect.TIMEOUT:
+            pass
 
 start = time.time()
 for wait, text in {keys}:
