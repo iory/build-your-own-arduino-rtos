@@ -115,6 +115,14 @@ Arduino UNO R4 WiFi の実機で実際に取得した出力です（macOS / Wind
 
 5 人の哲学者の食事回数です。全員が増え続けていれば、誰も飢えていない（デッドロックしていない）ことになります。
 
+```{figure} ../_static/adv1_philosophers.gif
+:name: fig-adv1-philosophers
+:width: 100%
+
+5 人の回数が横並びのまま伸びていくところ。特定の番号だけ取り残されない
+ことが、止めずに見ていると分かります
+```
+
 ```text
 meals: P0=31 P1=31 P2=31 P3=30 P4=31
 meals: P0=47 P1=46 P2=46 P3=46 P4=46
