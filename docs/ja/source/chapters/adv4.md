@@ -82,12 +82,12 @@ Arduino UNO R4 WiFi の実機で実際に取得した出力です（macOS / Wind
 
 リセットするたびに `boot count` が増えます。Data Flash に残っている証拠です。
 
-```{figure} ../_static/adv4_fs.gif
-:name: fig-adv4-fs
+```{figure} ../_static/adv4_bootcount.gif
+:name: fig-adv4-bootcount
 :width: 100%
 
-`S` を送ると、mount してから中身を出すまでが一気に流れます。この収録では
-`boot count = 8` で、RESET を押すたびに 9, 10 と増えていきます
+RESET を 6 回押しながら録ったところ。押すたびに `boot count` が
+9, 10, 11 … と増えていきます。電源が切れても Data Flash に残っている証拠です
 ```
 
 ```text
