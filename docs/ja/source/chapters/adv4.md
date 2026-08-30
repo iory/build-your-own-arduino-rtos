@@ -82,6 +82,14 @@ Arduino UNO R4 WiFi の実機で実際に取得した出力です（macOS / Wind
 
 リセットするたびに `boot count` が増えます。Data Flash に残っている証拠です。
 
+```{figure} ../_static/adv4_bootcount.gif
+:name: fig-adv4-bootcount
+:width: 100%
+
+RESET を 6 回押しながら録ったところ。押すたびに `boot count` が
+9, 10, 11 … と増えていきます。電源が切れても Data Flash に残っている証拠です
+```
+
 ```text
 === Advanced 4: LittleFS on Data Flash ===
 data flash: 8192 B / sector 1024 B
