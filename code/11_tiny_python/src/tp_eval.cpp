@@ -51,6 +51,13 @@ static void tp_error(const char *type, const char *msg)
     Serial.println(msg);
 }
 
+// 再帰が深すぎてスコープを積めないとき。掲載コードの行数を増やさないよう関数にしてある。
+static TpValue tp_recursion_error(void)
+{
+    tp_error("RecursionError", "maximum recursion depth exceeded");
+    return tp_none();
+}
+
 static void tp_error_name(const char *name)
 {
     g_error_flag = 1;
@@ -309,7 +316,7 @@ static TpValue parse_atom(void)
             // User-defined function
             TpFunc *fn = tp_func_find(name);
             if (fn) {
-                tp_env_push_scope();
+                if (tp_env_push_scope() < 0) return tp_recursion_error();
                 for (int i = 0; i < fn->param_count && i < argc; i++) {
                     tp_env_set(fn->params[i], args[i]);
                 }
