@@ -137,6 +137,13 @@ Done in 2.803 seconds
 ほかに USB シリアル機器がつながっていて誤検出されるときだけ
 `--upload-port COM3` を足してください。
 
+```{figure} ../_static/windows_upload.gif
+:name: fig-windows-upload
+:width: 100%
+
+ポートを確認して書き込むところ。実機の PowerShell で流したものです
+```
+
 ## 4. シリアルモニタで見る
 
 ```powershell
@@ -271,6 +278,13 @@ Task Count:    5
 Time Slice:    10 ms
 
 >
+```
+
+```{figure} ../_static/windows_pyserial.gif
+:name: fig-windows-pyserial
+:width: 100%
+
+`hello_serial.py` を実行して、ボードのシェルに応答させたところ
 ```
 
 `ps` を送れば、そのままタスク表が返ってきます。
