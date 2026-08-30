@@ -93,6 +93,14 @@ Arduino UNO R4 WiFi の実機で実際に取得した出力です（macOS / Wind
 
 出力はすべて `svc` 経由（`sys_putchar`）で出ています。
 
+```{figure} ../_static/adv2_svc.gif
+:name: fig-adv2-svc
+:width: 100%
+
+`[A]` と `[B]` が交互に出続けるところ。1 文字ずつ `svc` を通って
+出ています。冒頭の `[probe]` はモニタを開く前に流れ終わっています
+```
+
 ```text
 [probe] svc #99 -> -1  (-1 なら ENOSYS 相当が返っている)
 [A] pid=1

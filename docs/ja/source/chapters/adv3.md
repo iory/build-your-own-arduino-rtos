@@ -60,6 +60,14 @@ Arduino UNO R4 WiFi の実機で実際に取得した出力です（macOS / Wind
 
 ヒープの状態を段階ごとにダンプしています。
 
+```{figure} ../_static/adv3_heap.gif
+:name: fig-adv3-heap
+:width: 100%
+
+`S` を送ると、ここまでのダンプが一気に出ます。最後は「空きの合計は
+足りていても連続領域が無ければ取れない」ところと、二重 `free` の検出です
+```
+
 ```text
 === Advanced 3: my_malloc / my_free ===
 
