@@ -86,6 +86,26 @@ use it later to find the port automatically from Python.
 You may also see several `/dev/ttyS*` entries. Those are motherboard serial
 ports and have nothing to do with the board. Look for **`ttyACM`**.
 
+```{admonition} The number is not fixed
+:class: warning
+
+The `0` in `/dev/ttyACM0` only means "the first one plugged in". Unplug and
+replug the board, or attach another USB serial device first, and the same board
+becomes `/dev/ttyACM1`. If flashing suddenly fails with
+`No such file or directory`, check this first.
+
+    uv run pio device list          # look for Hardware ID 2341:1002
+    ls /dev/ttyACM*                 # a quick glance
+
+Right after replugging, the kernel log is the surest answer:
+
+    dmesg | tail -5
+    # [12345.678] cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+
+**The same happens on Windows** (`COM3` becomes `COM5`). Section 7 shows how to
+write code that does not depend on the number.
+```
+
 ## 4. Build and flash
 
 ```bash
@@ -111,6 +131,32 @@ uv run pio device monitor -b 115200
 
 Chapter 1 **starts printing once you send a single `S`**. Type `S` after the
 monitor opens.
+
+```{admonition} Why it waits for `S`
+:class: note
+
+The board starts running the instant it is powered, while you need a few
+seconds to open the monitor after flashing. Chapter 1 prints once from
+`setup()` and stops, so **written naively it would finish printing before your
+monitor is even open, and you would see nothing**. On top of that, the UNO R4
+WiFi **is not reset when you open the serial port** (the USB side is handled by
+the on-board ESP32-S3, independently of the RA4M1 that runs your program), so
+reopening the monitor will not replay it from the start either.
+
+The `S` is how the PC says "I am ready". The sketch spins on
+
+    while (Serial.read() != 'S') { delay(1); }
+
+and starts printing once the `S` arrives, so it does not matter how late you
+open the monitor.
+
+On Linux there is a second reason: **ModemManager** opens the port right after
+flashing, so `while (!Serial)` alone would wrongly conclude that a host is
+attached (see section 6).
+
+`01_boot`, `01_boot_vector_dump`, `adv3_heap` and `adv4_fs` work this way.
+Chapters that keep printing (chapter 2, for example) do not need it.
+```
 
 ```text
 === Boot Sequence Check ===
@@ -247,8 +293,8 @@ which `uv sync` already installed.
 
 ### A minimal example
 
-Flash Chapter 5 (`05_shell`) first. The shell is running, so sending `ps`
-returns the task table.
+Flash {doc}`Chapter 5 (05_shell)<../chapters/ch05>` first. The shell is
+running, so sending `ps` returns the task table.
 
 ```python
 import time
@@ -260,7 +306,7 @@ port = next(p.device for p in serial.tools.list_ports.comports() if p.vid == 0x2
 print("port:", port)
 
 ser = serial.Serial(port, 115200, timeout=0.2)
-time.sleep(1.6)          # opening the port resets the board, so wait
+time.sleep(1.6)          # just after plug-in the port can drop bytes
 ser.reset_input_buffer()
 
 ser.write(b"ps\n")
@@ -277,7 +323,7 @@ uv run python hello_serial.py
 :name: fig-linux-pyserial-en
 :width: 100%
 
-Running `hello_serial.py` and getting a reply from the board's shell
+Running `hello_serial.py`
 ```
 
 ```text
@@ -294,6 +340,56 @@ ID  NAME           STATE      CPU%
 
 >
 ```
+
+### Typing commands interactively
+
+If you would rather type commands than hard-code them, a short console is all
+it takes — just move the reading side onto its own thread.
+
+```python
+"""A minimal serial console for the board's shell. Ctrl-D to quit."""
+import sys
+import time
+import threading
+import serial
+import serial.tools.list_ports
+
+port = next(p.device for p in serial.tools.list_ports.comports() if p.vid == 0x2341)
+print(f"connected: {port}")
+
+ser = serial.Serial(port, 115200, timeout=0.2)
+time.sleep(1.6)                      # just after plug-in the port can drop bytes
+ser.reset_input_buffer()
+
+def reader():                        # stream whatever the board sends
+    while True:
+        data = ser.read(4096)
+        if data:
+            sys.stdout.write(data.decode("utf-8", errors="replace"))
+            sys.stdout.flush()
+
+threading.Thread(target=reader, daemon=True).start()
+
+# `for line in sys.stdin` buffers ahead; use readline for interactive input
+for line in iter(sys.stdin.readline, ""):
+    ser.write(line.encode())
+    ser.flush()
+```
+
+```bash
+uv run python serial_console.py
+```
+
+```{figure} ../_static/linux_console.gif
+:name: fig-linux-console-en
+:width: 100%
+
+`ps` to list the tasks, `kill 1` to stop LED1 (it turns `SUSPEND`), and
+`exec 1` to bring it back — typed on a real Ubuntu 24.04 machine
+```
+
+`kill 1` stops the L LED blinking on the board and `exec 1` restarts it. Check
+that the `STATE` column and the LED in front of you agree.
 
 ### Three things worth remembering
 
