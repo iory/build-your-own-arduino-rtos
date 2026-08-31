@@ -99,8 +99,12 @@ becomes `/dev/ttyACM1`. If flashing suddenly fails with
 
 Right after replugging, the kernel log is the surest answer:
 
-    dmesg | tail -5
-    # [12345.678] cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+    journalctl -k -n 5
+    # ... kernel: cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+
+On Ubuntu 24.04 plain `dmesg` is root-only (`kernel.dmesg_restrict=1`) and
+fails with `read kernel buffer failed: Operation not permitted`.
+`sudo dmesg | tail -5` shows the same thing.
 
 **The same happens on Windows** (`COM3` becomes `COM5`). Section 7 shows how to
 write code that does not depend on the number.

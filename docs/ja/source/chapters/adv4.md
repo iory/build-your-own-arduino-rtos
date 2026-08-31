@@ -87,7 +87,8 @@ Arduino UNO R4 WiFi の実機で実際に取得した出力です（macOS / Wind
 :width: 100%
 
 RESET を 6 回押しながら録ったところ。押すたびに `boot count` が
-9, 10, 11 … と増えていきます。電源が切れても Data Flash に残っている証拠です
+9, 10, 11 … と増えていきます。RAM の変数なら 0 に戻るところなので、
+Data Flash に書けている証拠です
 ```
 
 ```text
