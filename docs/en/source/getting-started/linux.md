@@ -16,6 +16,22 @@ Ubuntu 24.04 LTS (x86_64). Differences on other distributions are in section 9.
 
 ## 1. Set up
 
+### Open a terminal
+
+Every command on this page is typed into a **terminal**. On Ubuntu,
+**Ctrl + Alt + T** opens one; looking up "Terminal" in the app list works too.
+
+```{figure} ../_static/linux_terminal.gif
+:name: fig-linux-terminal-en
+:width: 100%
+
+Opening a terminal and typing the uv install command that follows
+```
+
+Once a line like `user@machine:~$` (the prompt) appears, you are ready. Type a
+command to the right of the `$` and press Enter. A leading `$` in this guide
+just marks "type this here" — do not type the `$` itself.
+
 ### Install uv
 
 [uv](https://docs.astral.sh/uv/) manages the Python environment and packages.
