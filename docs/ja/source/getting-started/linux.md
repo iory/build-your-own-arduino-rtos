@@ -15,6 +15,23 @@ Linux でも Windows / macOS と同じコマンドで全章をビルド・書き
 
 ## 1. 環境をつくる
 
+### 端末（ターミナル）を開く
+
+このページのコマンドは、すべて**端末**に打ち込みます。Ubuntu では
+**Ctrl + Alt + T** で開きます。左下のアプリ一覧から「端末」を探しても同じです。
+
+```{figure} ../_static/linux_terminal.gif
+:name: fig-linux-terminal
+:width: 100%
+
+端末を開いて、次の uv のインストールを打ち込んだところ。入れた直後は
+まだ PATH が通っておらず、`source` してから `uv --version` が通ります
+```
+
+`ユーザ名@マシン名:~$` のような行（プロンプト）が出れば準備完了です。
+`$` の右にコマンドを打って Enter を押すと実行されます。以降、行頭の `$` は
+「ここに打つ」という意味なので、`$` 自体は入力しません。
+
 ### uv を入れる
 
 [uv](https://docs.astral.sh/uv/) は Python の環境とパッケージをまとめて
@@ -24,13 +41,19 @@ Linux でも Windows / macOS と同じコマンドで全章をビルド・書き
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-インストール先は `~/.local/bin` です。シェルを開き直すか、次を実行して
-PATH に反映してください。
+インストール先は `~/.local/bin` です。**入れた直後のシェルはまだ PATH を
+知らない**ので、そのまま `uv` を打つと `command not found` になります。
+シェルを開き直すか、次を実行して PATH に反映してください。
 
 ```bash
 source ~/.bashrc          # zsh なら ~/.zshrc
 uv --version
 ```
+
+`source ~/.local/bin/env` でも PATH だけ通せます（上の GIF はこちらです）。
+
+このとき Ubuntu は `sudo snap install astral-uv` を勧めてきますが、**従わないで
+ください**。uv は入っていて、PATH がまだ通っていないだけです。
 
 `git` が入っていない場合は先に入れてください。
 
