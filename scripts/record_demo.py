@@ -16,7 +16,7 @@ import subprocess
 import sys
 import time
 
-CODE = os.path.expanduser("~/build-your-own-arduino-rtos/code")
+CODE = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "code"))
 UV = os.path.expanduser("~/.local/bin/uv")
 OUT = os.path.expanduser("~/casts")
 
