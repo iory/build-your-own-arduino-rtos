@@ -23,6 +23,12 @@ source rl/scripts/env.sh                 # 機体の MJCF の場所を教える
 編集すればそのまま反映されます。
 
 学習した方策を再生するときは `./rl/scripts/play.sh ArduinoQuad-Walk` です。
+画面の無い環境（サーバや Colab）では、ビューアを開かずに mp4 を書く
+`./rl/scripts/record_video.py` を使ってください。
+
+**GPU が手元に無い場合は Google Colab（無料枠の T4）で通せます。**
+`colab/arduino_quad_colab.ipynb` が、環境構築から Arduino 用ヘッダの
+書き出しまでのノートブックです。
 
 | タスク ID | 用途 |
 |---|---|
@@ -33,6 +39,35 @@ source rl/scripts/env.sh                 # 機体の MJCF の場所を教える
 
 > 依存の導入には GPU と数 GB の空きが要ります。置き場所だけ先に作りたいときは
 > `./rl/scripts/setup.sh --no-install` で、clone と配置だけ行えます。
+
+### 版の固定と、上流に当てているパッチ
+
+`setup.sh` は次の版を固定して入れます（`MJLAB_VERSION` などの環境変数で
+上書きできます）。上流の `setup.py` が指すままでは動きません。
+
+| | | なぜ |
+|---|---|---|
+| mjlab | 1.3.0 | `robot_cfg.py` が使う `viscous_damping`（サーボの逆起電力）と `delay_min/max_lag`（27 ms の指令遅れ）が 1.2.0 に無い。後者は sim2real の要なので、外して 1.2.0 に合わせることはできない |
+| mujoco-warp | 3.7.0.1 | mjlab 1.3.0 が要求する版 |
+| mujoco | 3.7.0 | 上限が指定されていないため、放っておくと最新版が入り mujoco-warp の import が `mjENBL_MULTICCD` で落ちる |
+| warp-lang | 1.14.0 | 1.16 では mujoco-warp のカーネルを解釈できず、学習開始時の生成が `WarpCodegenKeyError: Referencing undefined symbol: xmat` で落ちる |
+| scipy | 1.15 以上 | mjlab 1.3.0 が `terrains` で import しているのに依存として宣言していない（宣言は 1.5.0 から） |
+
+この組み合わせは 2026-08-31 に、環境構築 → タスク登録 → 学習 30 iteration →
+動画 → `.h` 書き出しまで通して確認しました（2048 環境）。
+
+| | 1 iteration | シミュレーション速度 |
+|---|---|---|
+| RTX 4090（Python 3.12） | 0.77 秒 | 63,700 steps/s |
+| Colab 無料枠 T4（Python 3.13） | 1.42 秒 | 34,900 steps/s |
+
+T4 でも書籍と同じ 4,500 iteration が約 1.8 時間です。
+
+さらに `setup.sh` は上流のチェックアウトに**互換パッチを 1 つ**当てます。
+上流の各ロボット定義は mjlab 1.3.0 で消えた `mjlab.utils.os.update_assets`
+を import しており、そのままだと `src/assets/robots` 全体が ImportError に
+なって `ArduinoQuad-*` も登録されないためです。消えたのはメッシュを読み込む
+だけのヘルパなので、無いときだけ `src/assets/_mjlab_compat.py` として足します。
 
 ## 構成
 
