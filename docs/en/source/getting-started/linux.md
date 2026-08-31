@@ -25,7 +25,8 @@ Every command on this page is typed into a **terminal**. On Ubuntu,
 :name: fig-linux-terminal-en
 :width: 100%
 
-Opening a terminal and typing the uv install command that follows
+Opening a terminal and typing the uv install command that follows,
+then checking it with `uv --version`
 ```
 
 Once a line like `user@machine:~$` (the prompt) appears, you are ready. Type a

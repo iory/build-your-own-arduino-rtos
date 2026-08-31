@@ -8,12 +8,15 @@ import time
 
 import pexpect
 
-CMD = "curl -LsSf https://astral.sh/uv/install.sh | sh"
+CMDS = [
+    "curl -LsSf https://astral.sh/uv/install.sh | sh",
+    "uv --version",
+]
 
-c = pexpect.spawn("/bin/bash --rcfile /tmp/demo_bashrc -i", encoding="utf-8", timeout=None,
-                  dimensions=(24, 96), env={"TERM": "xterm-256color",
-                                            "HOME": "/home/user",
-                                            "PATH": "/usr/local/bin:/usr/bin:/bin"})
+c = pexpect.spawn("/bin/bash --rcfile /tmp/demo_bashrc -i", encoding="utf-8",
+                  timeout=None, dimensions=(20, 82),
+                  env={"TERM": "xterm-256color", "HOME": "/home/user",
+                       "PATH": "/home/user/.local/bin:/usr/local/bin:/usr/bin:/bin"})
 c.logfile_read = sys.stdout
 
 
@@ -24,10 +27,13 @@ def pump(sec):
         pass
 
 
-pump(2.5)                    # プロンプトが出るのを待つ
-for ch in CMD:               # 人が打っているくらいの速さで
-    c.send(ch)
-    pump(0.07)
-pump(0.6)
-c.send("\n")
-pump(22)                     # インストールの出力
+pump(2.5)                       # プロンプトが出るのを待つ
+for i, cmd in enumerate(CMDS):
+    for ch in cmd:              # 人が打っているくらいの速さで
+        c.send(ch)
+        pump(0.07)
+    pump(0.6)
+    c.send("\n")
+    pump(12 if i == 0 else 2)   # インストールは時間がかかる
+    pump(2.5)                   # 出力を読む間
+pump(6)                         # 終わったあとの余白
