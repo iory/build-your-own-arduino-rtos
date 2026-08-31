@@ -16,7 +16,7 @@ Pipeline (all of it reproducible from the SolidWorks export):
          expects (``imu_ang_vel``, ``imu_lin_vel``, ``root_angmom``)
        * the home keyframe
 
-Unlike module_jaxon_5dof_leg there is **no mass-reconstruction stage**: the CAD
+Unlike the larger 5 DoF leg project there is **no mass-reconstruction stage**: the CAD
 export carries per-link SolidWorks masses that sum to 1.0378 kg, which is a
 usable number for a 1 kg servo robot, so we keep them.
 

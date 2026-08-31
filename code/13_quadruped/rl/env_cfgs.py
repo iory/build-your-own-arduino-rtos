@@ -446,7 +446,7 @@ def arduino_quad_walk_env_cfg(play: bool = False,
   The plain velocity recipe has a well-known local optimum: keep all four feet
   planted and slide to track the command (feet_air_time ~ 0). Making sliding
   expensive and lifting cheap is what breaks it -- same lesson as
-  module_jaxon_5dof_leg, retuned for a 1 kg machine.
+  a 5 DoF leg on a much larger machine, retuned for a 1 kg one.
   """
   cfg = arduino_quad_flat_env_cfg(play=play, full_collision=full_collision)
 

@@ -16,7 +16,7 @@
     },
     "robustified": true
   },
-  "checkpoint": "/home/iory/src/github.com/iory/module-jaxon-rl-benchmark/.upstream/unitree_rl_mjlab/logs/rsl_rl/arduino_quad_velocity/2026-08-23_00-49-07_v2_rb_s203/model_4498.pt",
+  "checkpoint": "logs/rsl_rl/arduino_quad_velocity/2026-08-23_00-49-07_v2_rb_s203/model_4498.pt",
   "obs_dim": 87,
   "act_dim": 8,
   "hidden_dims": [

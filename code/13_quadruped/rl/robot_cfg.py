@@ -18,7 +18,7 @@ per-joint <position> actuators and a home keyframe for standalone MuJoCo use;
 get_spec() strips those three (mjlab supplies terrain, its own actuators and
 init_state) and leaves the named toe spheres for CollisionCfg to select.
 
-This file is copied into an unitree_rl_mjlab checkout by scripts/setup.sh, so it
+This file is placed into an unitree_rl_mjlab checkout by rl/scripts/setup.sh, so it
 cannot find the MJCF by relative path -- $ARDUINO_QUAD_XML (or
 $ARDUINO_QUAD_ROOT) points at it; scripts/env.sh exports both.
 
@@ -115,9 +115,9 @@ def _resolve_xml() -> Path:
     if not root:
       raise RuntimeError(
         "ARDUINO_QUAD_XML / ARDUINO_QUAD_ROOT is not set: this task cannot find "
-        "the arduino_os_quad_robot MJCF. Run through scripts/train.sh or "
-        "scripts/play.sh, or `source scripts/env.sh` first "
-        "(module-jaxon-rl-benchmark)."
+        "the arduino_os_quad_robot MJCF. Run through rl/scripts/train.sh or "
+        "rl/scripts/play.sh, or `source rl/scripts/env.sh` "
+        "first."
       )
     xml = os.path.join(root, "arduino_os_quad_robot", "mjcf",
                        "arduino_os_quad_robot.xml")

@@ -40,7 +40,7 @@ Usage:
         python arduino_os_quad_robot/scripts/openloop_trot.py
 """
 import numpy as np, mujoco, itertools, sys
-X="/home/iory/src/github.com/iory/module-jaxon-rl-benchmark/arduino_os_quad_robot/mjcf/arduino_os_quad_robot.xml"
+X="${ARDUINO_QUAD_XML:-$(dirname "$0")/../mjcf/arduino_os_quad_robot.xml}"
 LEGS=("FL","RL","RR","FR")
 PHASE={"FL":0.0,"RL":0.5,"RR":0.0,"FR":0.5}      # diagonal trot
 L1,L2=0.088,0.119                                 # sagittal thigh, shank
