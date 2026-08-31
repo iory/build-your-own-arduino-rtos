@@ -25,8 +25,8 @@ Every command on this page is typed into a **terminal**. On Ubuntu,
 :name: fig-linux-terminal-en
 :width: 100%
 
-Opening a terminal and typing the uv install command that follows,
-then checking it with `uv --version`
+Opening a terminal and typing the uv install command that follows. The PATH
+is not set yet, so `uv --version` only works after the `source`
 ```
 
 Once a line like `user@machine:~$` (the prompt) appears, you are ready. Type a
@@ -48,6 +48,11 @@ It installs into `~/.local/bin`. Open a new shell, or reload your PATH:
 source ~/.bashrc          # or ~/.zshrc for zsh
 uv --version
 ```
+
+`source ~/.local/bin/env` sets just the PATH (that is what the GIF above uses).
+
+Ubuntu will suggest `sudo snap install astral-uv` at this point. **Ignore it** —
+uv is already installed; only the PATH is missing.
 
 Install `git` first if you do not have it:
 
