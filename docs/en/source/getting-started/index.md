@@ -6,4 +6,5 @@ materials
 platformio
 windows
 linux
+macos
 ```

@@ -5,9 +5,13 @@
 PATH にはあえて ~/.local/bin を入れていない。入れてしまうと、入れた直後の
 シェルではまだ uv が見つからない、という読者が必ず踏むところが再現できない。
 """
+import os
 import sys
 
 import pexpect
+
+HOME = os.path.expanduser("~")
+RCFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "demo_bashrc")
 
 STEPS = [
     ("curl -LsSf https://astral.sh/uv/install.sh | sh", 11.0),
@@ -16,9 +20,9 @@ STEPS = [
     ("uv --version", 2.5),                 # 今度は通る
 ]
 
-c = pexpect.spawn("/bin/bash --rcfile /tmp/demo_bashrc -i", encoding="utf-8",
+c = pexpect.spawn(f"/bin/bash --rcfile {RCFILE} -i", encoding="utf-8",
                   timeout=None, dimensions=(20, 82),
-                  env={"TERM": "xterm-256color", "HOME": "/home/iory",
+                  env={"TERM": "xterm-256color", "HOME": HOME,
                        "PATH": "/usr/local/bin:/usr/bin:/bin"})
 c.logfile_read = sys.stdout
 
