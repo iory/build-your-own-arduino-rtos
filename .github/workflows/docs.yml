@@ -6,15 +6,18 @@ on:
     # code/ の変更でも再ビルドする。章のページが literalinclude で code/ を
     # 直接読み込んでいるため、ここを無視するとコードを直してもサイトの表示が
     # 古いまま残る（code/ は原稿リポジトリから publish-code で自動同期される）。
+  # PR ではビルドだけ走らせて、壊れた変更が main に入るのを防ぐ
+  # （デプロイは下の deploy ジョブで main のときだけ）。
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# main と PR で別のグループにする。同じ 'pages' に入れてしまうと、
+# PR への push が進行中の main のデプロイを打ち切ってしまう。
 concurrency:
-  group: pages
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -32,7 +35,13 @@ jobs:
           path: _site
   deploy:
     needs: build
+    # PR ではデプロイしない。公開サイトが差し替わるのは main だけ。
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
