@@ -7,4 +7,5 @@ arduino-ide
 platformio
 windows
 linux
+macos
 ```
