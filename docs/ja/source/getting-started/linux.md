@@ -101,8 +101,12 @@ Description: UNO WiFi R4 CMSIS-DAP - TinyUSB CDC
 
 抜き挿しした直後に確認するなら、カーネルのログが確実です。
 
-    dmesg | tail -5
-    # [12345.678] cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+    journalctl -k -n 5
+    # ... kernel: cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+
+Ubuntu 24.04 では `dmesg` は既定で root 専用（`kernel.dmesg_restrict=1`）で、
+そのまま実行すると `read kernel buffer failed: Operation not permitted` に
+なります。`sudo dmesg | tail -5` でも同じことが見られます。
 
 **Windows でも同じことが起きます**（`COM3` が `COM5` になる）。
 番号に依存しない書き方は「7. Python からボードと通信する」にあります。
