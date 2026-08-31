@@ -3,5 +3,10 @@ docs/*/source/_build/
 .venv/
 __pycache__/
 
+# PlatformIO のビルド成果物。ローカルの絶対パスを含む firmware.map などが
+# 入るので、clone した人の環境でも確実に無視されるようここに書く
+# （個人のグローバル gitignore の `.*` 頼みにしない）。
+.pio/
+
 # グローバル gitignore の .* に .github が食われるのを防ぐ
 !.github/
