@@ -99,14 +99,21 @@ Description: UNO WiFi R4 CMSIS-DAP - TinyUSB CDC
     uv run pio device list          # Hardware ID に 2341:1002 と出る行
     ls /dev/ttyACM*                 # 手早く見るだけなら
 
-抜き挿しした直後に確認するなら、カーネルのログが確実です。
+どれが今挿したボードなのか確実に知りたいときは、カーネルのログを
+**流しっぱなしにしておいて、その場で挿す**のがいちばん早いです。
 
-    journalctl -k -n 5
-    # ... kernel: cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+    sudo dmesg --follow          # 止めるときは Ctrl-C
 
-Ubuntu 24.04 では `dmesg` は既定で root 専用（`kernel.dmesg_restrict=1`）で、
-そのまま実行すると `read kernel buffer failed: Operation not permitted` に
-なります。`sudo dmesg | tail -5` でも同じことが見られます。
+この状態でボードを挿すと、その瞬間にこの行が出ます。
+
+    cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+
+`ttyACM0` の部分が、いま挿したボードの名前です。抜くと `USB disconnect` が
+出るので、抜き挿しすれば番号の対応が確実に分かります。
+
+`sudo` を付けるのは、Ubuntu では `dmesg` が root 専用（`kernel.dmesg_restrict=1`）
+だからです。付けずに実行すると
+`read kernel buffer failed: Operation not permitted` になります。
 
 **Windows でも同じことが起きます**（`COM3` が `COM5` になる）。
 番号に依存しない書き方は「7. Python からボードと通信する」にあります。
