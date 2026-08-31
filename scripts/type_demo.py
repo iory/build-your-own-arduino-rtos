@@ -2,21 +2,24 @@
 """端末の中で、本物の bash に 1 文字ずつコマンドを打ち込む。
 
 見えているプロンプトも出力も本物で、打鍵だけを機械が代行している。
+PATH にはあえて ~/.local/bin を入れていない。入れてしまうと、入れた直後の
+シェルではまだ uv が見つからない、という読者が必ず踏むところが再現できない。
 """
 import sys
-import time
 
 import pexpect
 
-CMDS = [
-    "curl -LsSf https://astral.sh/uv/install.sh | sh",
-    "uv --version",
+STEPS = [
+    ("curl -LsSf https://astral.sh/uv/install.sh | sh", 11.0),
+    ("uv --version", 2.0),                 # まだ PATH に無いので command not found
+    ("source ~/.local/bin/env", 1.5),
+    ("uv --version", 2.5),                 # 今度は通る
 ]
 
 c = pexpect.spawn("/bin/bash --rcfile /tmp/demo_bashrc -i", encoding="utf-8",
                   timeout=None, dimensions=(20, 82),
                   env={"TERM": "xterm-256color", "HOME": "/home/iory",
-                       "PATH": "/home/iory/.local/bin:/usr/local/bin:/usr/bin:/bin"})
+                       "PATH": "/usr/local/bin:/usr/bin:/bin"})
 c.logfile_read = sys.stdout
 
 
@@ -28,12 +31,12 @@ def pump(sec):
 
 
 pump(2.5)                       # プロンプトが出るのを待つ
-for i, cmd in enumerate(CMDS):
+for cmd, wait in STEPS:
     for ch in cmd:              # 人が打っているくらいの速さで
         c.send(ch)
         pump(0.07)
-    pump(0.6)
+    pump(0.5)
     c.send("\n")
-    pump(12 if i == 0 else 2)   # インストールは時間がかかる
-    pump(2.5)                   # 出力を読む間
-pump(6)                         # 終わったあとの余白
+    pump(wait)
+    pump(1.5)                   # 出力を読む間
+pump(5)                         # 終わったあとの余白
