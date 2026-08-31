@@ -5,7 +5,7 @@ reports it beating pure parameter DR on hardware). Each control step a
 randomized JOINT-TORQUE perturbation is added, so the policy learns to reject
 actuator dynamics that parameter DR does not cover.
 
-That matters more here than it did for prior_quadruped: an STS3215's internal
+That matters more here than on a large machine: an STS3215's internal
 control loop is a closed firmware black box, its gearbox has backlash and
 stick-slip, and its torque sags with battery voltage and winding temperature.
 None of that is in the MJCF. Two components:
@@ -32,7 +32,7 @@ buys robustness here (fine-tuning at all: 66 % -> 90 % at x4).
 
 A plausible reason: this machine's net joint torque runs at a third of the
 servo's continuous rating, so a torque-space perturbation is small relative to
-what the controller already rejects. On prior_quadruped (60 kg, CubeMars actuators
+what the controller already rejects. On a 60 kg machine (CubeMars actuators
 worked near their limits) ERFI did help.
 
 OFF by default; if you want to try it anyway:

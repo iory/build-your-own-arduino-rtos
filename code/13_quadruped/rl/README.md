@@ -3,12 +3,40 @@
 第13章の四脚を歩かせている方策 (`../walk/arduino_quad_policy.*`) を学習した
 コード。紙面の都合で本には載せられなかったぶんのサポート。
 
+## 動かす
+
+これ自体は単体で動くプログラムではなく、
+[unitree_rl_mjlab](https://github.com/unitreerobotics/unitree_rl_mjlab)
+(mjlab + rsl_rl の PPO 学習基盤) に被せる **overlay** です。
+用意から学習まで、次の 3 つで足ります。
+
+```bash
+./rl/scripts/setup.sh                    # 上流を .upstream/ に clone し、overlay を置く
+source rl/scripts/env.sh                 # 機体の MJCF の場所を教える
+./rl/scripts/train.sh ArduinoQuad-Walk --env.scene.num-envs=4096
+```
+
+`setup.sh` は上流を `.upstream/unitree_rl_mjlab` に clone し、この `rl/` を
+`src/tasks/velocity/config/arduino_quad` として**シンボリックリンク**で
+置きます。上流は `src/tasks/` 配下を自動 import するので、これだけで
+`ArduinoQuad-*` の 4 タスクが登録されます。リンクなので、`rl/` を直接
+編集すればそのまま反映されます。
+
+学習した方策を再生するときは `./rl/scripts/play.sh ArduinoQuad-Walk` です。
+
+| タスク ID | 用途 |
+|---|---|
+| `ArduinoQuad-Flat` | 平地・素の velocity レシピ（立ち上げ確認用） |
+| `ArduinoQuad-Walk` | 平地 + 歩容シェーピング（**本命。トロット歩行はこれ**） |
+| `ArduinoQuad-Robust` | Walk と同じだが初期状態を崩す（実機前の頑健化） |
+| `ArduinoQuad-Recovery` | 転倒姿勢から立ち上がる |
+
+> 依存の導入には GPU と数 GB の空きが要ります。置き場所だけ先に作りたいときは
+> `./rl/scripts/setup.sh --no-install` で、clone と配置だけ行えます。
+
 ## 構成
 
-これは単体で動くプログラムではなく、
-[unitree_rl_mjlab](https://github.com/unitreerobotics/unitree_rl_mjlab)
-(mjlab + rsl_rl の PPO 学習基盤) に被せる **overlay** で、
-ロボット定義・報酬・環境設定・学習設定を差し替える:
+ロボット定義・報酬・環境設定・学習設定を、上流に対して差し替えます:
 
 | ファイル | 中身 |
 |---|---|
