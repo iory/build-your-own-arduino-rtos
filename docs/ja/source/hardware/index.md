@@ -30,6 +30,14 @@ PDF 版もあります。
 書籍に載せられなかった学習まわりのサポート。ブラウザ上の MuJoCo で
 学習済み方策を動かすシミュレーション付き。
 :::
+
+:::{grid-item-card} 🧠 方策を自分で学習する
+:link: train
+:link-type: doc
+
+報酬や速度上限を変えて学習し直す手順。**GPU が無くても Google Colab
+（無料枠の T4）で最後まで通せます。**
+:::
 ::::
 
 ```{toctree}
@@ -38,6 +46,7 @@ PDF 版もあります。
 bom
 assembly
 walk
+train
 ```
 
 ## 組み立ての流れ
