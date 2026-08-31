@@ -97,10 +97,21 @@ becomes `/dev/ttyACM1`. If flashing suddenly fails with
     uv run pio device list          # look for Hardware ID 2341:1002
     ls /dev/ttyACM*                 # a quick glance
 
-Right after replugging, the kernel log is the surest answer:
+When you need to be certain which port is the board you just plugged in,
+the quickest way is to **leave the kernel log running and plug it in**:
 
-    dmesg | tail -5
-    # [12345.678] cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+    sudo dmesg --follow          # Ctrl-C to stop
+
+Plug the board in and this line appears the moment it enumerates:
+
+    cdc_acm 1-1:1.1: ttyACM0: USB ACM device
+
+The `ttyACM0` part is the name of the board you just plugged in. Unplugging
+prints `USB disconnect`, so replugging tells you the mapping for certain.
+
+`sudo` is needed because `dmesg` is root-only on Ubuntu
+(`kernel.dmesg_restrict=1`); without it you get
+`read kernel buffer failed: Operation not permitted`.
 
 **The same happens on Windows** (`COM3` becomes `COM5`). Section 7 shows how to
 write code that does not depend on the number.
