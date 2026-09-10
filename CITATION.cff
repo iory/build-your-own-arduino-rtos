@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: >-
+  このリポジトリの設計データ・サンプルコード・学習済みポリシーを研究や
+  教材に使った場合は、下記の書籍を引用してください。
+title: "つくりながら学ぶ！リアルタイムOS自作入門 サポートリポジトリ"
+abstract: >-
+  Arduino UNO R4 WiFi 上にプリエンプティブなリアルタイム OS を自作し、
+  シリアルバスサーボ 8 個の四脚ロボットを強化学習した歩行ポリシーで
+  歩かせるまでの、設計データ・サンプルコード・組み立て手順一式。
+type: software
+authors:
+  - family-names: Yanokura
+    given-names: Iori
+    affiliation: The University of Tokyo
+url: "https://iory.github.io/build-your-own-arduino-rtos/"
+repository-code: "https://github.com/iory/build-your-own-arduino-rtos"
+license: Apache-2.0
+date-released: 2026-09-18
+keywords:
+  - real-time operating system
+  - quadruped robot
+  - reinforcement learning
+  - Arduino
+  - embedded systems
+preferred-citation:
+  type: book
+  title: "つくりながら学ぶ！リアルタイムOS自作入門"
+  authors:
+    - family-names: Yanokura
+      given-names: Iori
+      affiliation: The University of Tokyo
+  publisher:
+    name: マイナビ出版
+  isbn: "9784839991876"
+  year: 2026
+  month: 9
+  url: "https://book.mynavi.jp/manatee/books/detail/id=152333"
