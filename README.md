@@ -70,3 +70,17 @@ uv run create-assembly-view-pdf output/quadruped_site/plan.yaml -o output/quadru
 #   body.3mf / leg_parts.3mf ← cad/*.3mf（Bambu Studio プロジェクト、設定・配置込み）
 # docs/ja/source/hardware/print_img/ のプレート画像も cad/bambulab-*.png から
 ```
+
+## ライセンス
+
+[Apache License 2.0](LICENSE)（Copyright 2026 Iori Yanokura）。
+
+サンプルコード、四脚ロボットの CAD・STL・3MF・URDF、ファームウェア、
+学習済み歩行ポリシーを含む。**商用利用可**で、キット化しての販売にも
+事前の許諾・連絡・対価を要しない。独占的な取り扱いの取り決めも行わない。
+
+商標はライセンスの対象外。「本書対応」のような事実の記載は自由だが、
+「公式」「東京大学」「著者監修」等の表示は別途相談のこと。
+
+`docs/assembly/` 配下の図と `docs/ja/source/` の文章は書籍の補助資料であり、
+出版社から提供された誌面・図版は含まない。
