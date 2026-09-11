@@ -44,31 +44,6 @@ python3 -m http.server -d _site 8000   # http://localhost:8000/
 main へ push すると GitHub Actions が GitHub Pages へ自動デプロイする
 （リポジトリ設定の Pages で Source: GitHub Actions を選んでおくこと）。
 
-## 組み立てビューアの再生成
-
-`docs/assembly/quadruped/`（three.js ビューア・GLB・PDF）と
-`docs/ja/source/hardware/assembly_img/`（手順 PNG）は
-[create-assembly-view](https://github.com/iory/create-assembly-view) で
-CAD の graph.json から自動生成したもの。モデルを更新したら:
-
-```bash
-cd ~/src/create-assembly-view
-uv run create-assembly-view models/sts3215_quadruped/graph.json -o output/quadruped_site
-PYOPENGL_PLATFORM=egl uv run create-assembly-view-render \
-    models/sts3215_quadruped/graph.json output/quadruped_site/plan.yaml -o output/quadruped_site
-uv run create-assembly-view-viewer \
-    models/sts3215_quadruped/graph.json output/quadruped_site/plan.yaml -o output/quadruped_site
-uv run create-assembly-view-pdf output/quadruped_site/plan.yaml -o output/quadruped_site
-# → index.html/glb/vendor/instructions.pdf を docs/assembly/quadruped/ に、
-#   steps/*.png と units/ を docs/ja/source/hardware/assembly_img/ にコピー
-#
-# docs/assembly/quadruped/stl/ の配布物は create-assembly-view リポジトリの
-# cad/ からコピーしたもの:
-#   body.stl / bracket_outline.stl / leg_link1.stl ← cad/*.STL（SolidWorks 直接出力、mm）
-#   body.3mf / leg_parts.3mf ← cad/*.3mf（Bambu Studio プロジェクト、設定・配置込み）
-# docs/ja/source/hardware/print_img/ のプレート画像も cad/bambulab-*.png から
-```
-
 ## ライセンス
 
 [Apache License 2.0](LICENSE)（Copyright 2026 Iori Yanokura）。
