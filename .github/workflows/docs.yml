@@ -25,6 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BASE_URL: /build-your-own-arduino-rtos/
+      # Cloudflare Web Analytics のサイトトークン。公開ページの HTML に
+      # そのまま出る値なので秘密ではなく、ここに直接書いてよい。
+      # 空のままだとビーコンが入らず、アクセスは一切計測されない。
+      CF_BEACON_TOKEN: "63496313d65d4ea9b205a875aad06f84"
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4

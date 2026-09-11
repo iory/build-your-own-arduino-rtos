@@ -1,5 +1,6 @@
 """Sphinx configuration (ja)."""
 
+import json
 import os
 
 project = "『つくりながら学ぶ！リアルタイムOS自作入門』サポートページ"
@@ -49,3 +50,20 @@ html_theme_options = {
 }
 
 html_title = "RTOS自作入門 サポートページ"
+
+
+# Cloudflare Web Analytics のビーコン。トークンは公開 HTML に出るものなので
+# 秘密ではないが、値の重複を避けるためワークフローの env でだけ持たせている。
+# ローカルビルドでは未設定になり、ビーコンを出さない（自分の閲覧を数えない）。
+_cf_beacon_token = os.environ.get("CF_BEACON_TOKEN", "")
+
+
+def setup(app):
+    """Cloudflare Web Analytics のビーコンを全ページに差し込む。"""
+    if not _cf_beacon_token:
+        return
+    app.add_js_file(
+        "https://static.cloudflareinsights.com/beacon.min.js",
+        type="module",
+        **{"data-cf-beacon": json.dumps({"token": _cf_beacon_token})},
+    )
