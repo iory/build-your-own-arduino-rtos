@@ -13,6 +13,14 @@ UNO R4 には **Minima** と **WiFi** の 2 種類があります。本書で使
 LED マトリクスを搭載した **WiFi 版**です。購入時にご注意ください。
 ```
 
+```{figure} ../_static/uno_r4_wifi_os.jpg
+:name: fig-materials-uno-r4-wifi
+:width: 80%
+
+Arduino UNO R4 WiFi。基板の右下にある 12×8 の LED マトリクスが WiFi 版の目印です
+（写真は LED マトリクスに「OS」と表示したところ）
+```
+
 ### Arduino UNO R4 WiFi の購入先
 
 型番は **ABX00087** です。価格は税込で、2026 年 9 月 14 日時点のものです。

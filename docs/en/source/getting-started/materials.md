@@ -10,6 +10,14 @@
 There are two UNO R4 variants; this book uses the **WiFi** one.
 ```
 
+```{figure} ../_static/uno_r4_wifi_os.jpg
+:name: fig-materials-uno-r4-wifi
+:width: 80%
+
+The Arduino UNO R4 WiFi. The 12×8 LED matrix at the lower right of the board
+marks the WiFi variant (shown here displaying "OS")
+```
+
 ## Where to buy the Arduino UNO R4 WiFi
 
 The part number is **ABX00087**. Prices include tax and are as of 2026-09-14.

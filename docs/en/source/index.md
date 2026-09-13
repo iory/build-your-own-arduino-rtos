@@ -3,6 +3,13 @@
 Support site for the (Japanese) book on building a preemptive
 real-time OS from scratch on the **Arduino UNO R4 WiFi**.
 
+```{figure} _static/uno_r4_wifi_os.jpg
+:name: fig-index-os
+:width: 80%
+
+An Arduino UNO R4 WiFi showing "OS" on its LED matrix
+```
+
 ```{note}
 The book is written in Japanese; this English version of the support
 site currently covers setup and per-chapter build instructions.
