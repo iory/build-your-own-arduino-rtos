@@ -57,3 +57,16 @@ main へ push すると GitHub Actions が GitHub Pages へ自動デプロイす
 
 `docs/assembly/` 配下の図と `docs/ja/source/` の文章は書籍の補助資料であり、
 出版社から提供された誌面・図版は含まない。
+
+例外として、次の図は Arduino の公式資料から引用しており、Apache-2.0 ではなく
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) に従う
+（出典は各ページの図の説明に記載）。
+
+| ファイル（`docs/{ja,en}/source/_static/`） | 出典 | 改変 |
+|---|---|---|
+| `uno_r4_wifi_pinout.png` | [ABX00087 Full Pinout](https://docs.arduino.cc/resources/pinouts/ABX00087-full-pinout.pdf) 1 ページ目 | 凡例を除いて切り抜き |
+| `uno_r4_wifi_block_diagram.png` | [ABX00087 Datasheet](https://docs.arduino.cc/resources/datasheets/ABX00087-datasheet.pdf) 3 Block Diagram | 縮小のみ |
+| `uno_r4_wifi_led_matrix_schematic.png` | [ABX00087 Schematics](https://docs.arduino.cc/resources/schematics/ABX00087-schematics.pdf) 2 ページ目 | PNG 化のみ |
+
+ライセンスの根拠: 各 PDF 内の CC BY-SA 4.0 表記、および
+[arduino/docs-content の LICENSE](https://github.com/arduino/docs-content/blob/main/LICENSE.md)。
