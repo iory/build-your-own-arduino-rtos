@@ -4,7 +4,7 @@ malloc / free を自分で書き、断片化と戦います。
 
 ## サンプルコード
 
-- ディレクトリ: `code/adv3_heap`
+- ディレクトリ: `docs/os-on-arduino/code/adv3_heap`
 - ビルドと書き込み:
 
 ```bash
@@ -12,7 +12,7 @@ pio run -d adv3_heap -t upload
 pio device monitor -b 115200
 ```
 
-コードを見る: [code/adv3_heap](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/adv3_heap)
+コードを見る: [docs/os-on-arduino/code/adv3_heap](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/adv3_heap)
 
 
 ## ソースコード
@@ -22,7 +22,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/main.cpp` — 75 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv3_heap/src/main.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv3_heap/src/main.cpp)
 
 ```{literalinclude} ../../../../code/adv3_heap/src/main.cpp
 :language: cpp
@@ -33,7 +33,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/os_heap.h` — 22 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv3_heap/include/os_heap.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv3_heap/include/os_heap.h)
 
 ```{literalinclude} ../../../../code/adv3_heap/include/os_heap.h
 :language: cpp
@@ -44,7 +44,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/os_heap.cpp` — 128 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv3_heap/src/os_heap.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv3_heap/src/os_heap.cpp)
 
 ```{literalinclude} ../../../../code/adv3_heap/src/os_heap.cpp
 :language: cpp

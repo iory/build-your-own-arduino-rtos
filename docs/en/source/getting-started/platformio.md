@@ -10,7 +10,7 @@ pio device monitor -b 115200
 
 ## Check your setup
 
-From `code/`, flash the environment-check sketch:
+From `docs/os-on-arduino/code/`, flash the environment-check sketch:
 
 ```bash
 pio run -d 00_intro -t upload

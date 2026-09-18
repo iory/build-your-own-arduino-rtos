@@ -1,0 +1,70 @@
+name: mirror-book-url
+
+# 書籍（初版第1刷）の p.33 には
+#   git clone https://github.com/iory/learning-os-from-arduino.git
+#   cd learning-os-from-arduino/docs/os-on-arduino/code
+# と載っている。この手順がそのまま通るように、code/ を
+# iory/learning-os-from-arduino の docs/os-on-arduino/code/ へ一方向ミラーする。
+# ミラー側で直接変更しても、次の同期で上書きされる。
+#
+# 認証: learning-os-from-arduino 側に書き込み deploy key を登録し、
+# その秘密鍵をこのリポジトリの Secret BOOK_URL_MIRROR_DEPLOY_KEY に入れる。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "code/**"
+      - ".github/mirror/**"
+      - ".github/workflows/mirror-book-url.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+env:
+  MIRROR_REPO: iory/learning-os-from-arduino
+  MIRROR_CODE_DIR: docs/os-on-arduino/code
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: source
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.BOOK_URL_MIRROR_DEPLOY_KEY }}
+
+      - name: Clone mirror
+        run: |
+          # 空のリポジトリ（初回）は clone するとブランチが無いので、main を作る
+          git clone "git@github.com:${MIRROR_REPO}.git" target
+          git -C target checkout -B main
+
+      - name: Copy code/ to the book's path
+        run: |
+          mkdir -p "target/${MIRROR_CODE_DIR}"
+          rsync -a --delete --exclude .git source/code/ "target/${MIRROR_CODE_DIR}/"
+          cp source/.github/mirror/README.md target/README.md
+          cp source/code/LICENSE target/LICENSE
+
+      - name: Commit and push
+        working-directory: target
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "変更なし"
+            exit 0
+          fi
+          git commit -m "Mirror code/ from ${GITHUB_REPOSITORY}@${GITHUB_SHA::7}" \
+                     -m "https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
+          git push origin main

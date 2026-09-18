@@ -4,7 +4,7 @@
 
 ## サンプルコード
 
-- ディレクトリ: `code/adv1_sync`
+- ディレクトリ: `docs/os-on-arduino/code/adv1_sync`
 - ビルドと書き込み:
 
 ```bash
@@ -12,7 +12,7 @@ pio run -d adv1_sync -t upload
 pio device monitor -b 115200
 ```
 
-コードを見る: [code/adv1_sync](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/adv1_sync)
+コードを見る: [docs/os-on-arduino/code/adv1_sync](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/adv1_sync)
 
 
 ## ソースコード
@@ -22,7 +22,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/main.cpp` — 140 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv1_sync/src/main.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv1_sync/src/main.cpp)
 
 ```{literalinclude} ../../../../code/adv1_sync/src/main.cpp
 :language: cpp
@@ -33,7 +33,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/os_atomic.h` — 28 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv1_sync/include/os_atomic.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv1_sync/include/os_atomic.h)
 
 ```{literalinclude} ../../../../code/adv1_sync/include/os_atomic.h
 :language: cpp
@@ -44,7 +44,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/os_fault.h` — 46 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv1_sync/include/os_fault.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv1_sync/include/os_fault.h)
 
 ```{literalinclude} ../../../../code/adv1_sync/include/os_fault.h
 :language: cpp
@@ -55,7 +55,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/os_kernel.h` — 76 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv1_sync/include/os_kernel.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv1_sync/include/os_kernel.h)
 
 ```{literalinclude} ../../../../code/adv1_sync/include/os_kernel.h
 :language: cpp
@@ -66,7 +66,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/os_sync.h` — 53 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv1_sync/include/os_sync.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv1_sync/include/os_sync.h)
 
 ```{literalinclude} ../../../../code/adv1_sync/include/os_sync.h
 :language: cpp
@@ -77,7 +77,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/os_fault.cpp` — 170 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv1_sync/src/os_fault.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv1_sync/src/os_fault.cpp)
 
 ```{literalinclude} ../../../../code/adv1_sync/src/os_fault.cpp
 :language: cpp
@@ -88,7 +88,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/os_kernel.cpp` — 231 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv1_sync/src/os_kernel.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv1_sync/src/os_kernel.cpp)
 
 ```{literalinclude} ../../../../code/adv1_sync/src/os_kernel.cpp
 :language: cpp
@@ -99,7 +99,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/os_sync.cpp` — 150 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv1_sync/src/os_sync.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv1_sync/src/os_sync.cpp)
 
 ```{literalinclude} ../../../../code/adv1_sync/src/os_sync.cpp
 :language: cpp

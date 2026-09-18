@@ -57,10 +57,10 @@ RL 方策を比べられます。sin/cos 側は、遊脚を sin で山なりに�
 の PPO（rsl_rl）で行い、ロボット定義・報酬・環境設定を差し替える overlay として
 書いてあります:
 
-- コードを見る: [code/13_quadruped/rl](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped/rl)
+- コードを見る: [docs/os-on-arduino/code/13_quadruped/rl](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/rl)
 - ロボット記述一式（**URDF**・MJCF・メッシュ・RViz 設定、SolidWorks
   エクスポートから MJCF を再現するスクリプト付き）:
-  [code/13_quadruped/arduino_os_quad_robot](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped/arduino_os_quad_robot)
+  [docs/os-on-arduino/code/13_quadruped/arduino_os_quad_robot](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/arduino_os_quad_robot)
 
 sim2real のために、摩擦（0.4〜1.1）・付加質量（電装ぶん 0〜250 g）・
 ゼロ点誤差（±1.7°）・関節角（±8.6°）などをランダム化して学習したあと、
@@ -75,7 +75,7 @@ sim2real のために、摩擦（0.4〜1.1）・付加質量（電装ぶん 0〜
 
 学習済み方策・実行コード・校正ウィザードの一式:
 
-- コードを見る: [code/13_quadruped/walk](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped/walk)
+- コードを見る: [docs/os-on-arduino/code/13_quadruped/walk](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/walk)
   — まず `HANDOFF.md` を読んでください
 
 2 つの経路があります。**推奨は PC 直結**（Arduino を焼かずに済み、途中の値が
@@ -83,7 +83,7 @@ sim2real のために、摩擦（0.4〜1.1）・付加質量（電装ぶん 0〜
 
 ```bash
 # PC ─USB─ サーボドライバボード ─半二重TTL─ サーボ8個
-cd code/13_quadruped/host
+cd docs/os-on-arduino/code/13_quadruped/host
 uv sync                              # pyserial と numpy が入る
 
 uv run python quad_host.py scan      # バスに何個いるか、ボーレートは合っているか

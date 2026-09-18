@@ -25,7 +25,7 @@ pio device monitor -b 115200              # シリアルモニタ
 ## 動作確認
 
 サンプルコード一式の入手方法は [章ごとのサポート](../chapters/index.md)
-を参照してください。入手したら、`code/` で環境確認用のスケッチを書き込みます。
+を参照してください。入手したら、`docs/os-on-arduino/code/` で環境確認用のスケッチを書き込みます。
 
 ```bash
 pio run -d 00_intro -t upload

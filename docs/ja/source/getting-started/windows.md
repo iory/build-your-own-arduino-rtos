@@ -65,8 +65,8 @@ uv 0.9.26
 ### サンプルコードを取ってくる
 
 ```powershell
-git clone https://github.com/iory/build-your-own-arduino-rtos.git
-cd build-your-own-arduino-rtos\code
+git clone https://github.com/iory/learning-os-from-arduino.git
+cd learning-os-from-arduino\docs\os-on-arduino\code
 uv sync
 ```
 
@@ -388,11 +388,11 @@ Type 'help' for commands.
 
 第13章の四脚ロボットは、マイコンに焼く前に PC から直接サーボを叩いて
 立ち上げるのが早道です。そのツールが
-[`code/13_quadruped/host/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped/host)
+[`docs/os-on-arduino/code/13_quadruped/host/`](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/host)
 にあります。Windows でもそのまま動きます。
 
 ```powershell
-cd code\13_quadruped\host
+cd docs\os-on-arduino\code\13_quadruped\host
 uv run python quad_host.py --port COM3 scan        # バスに何個いるか
 uv run python quad_host.py --port COM3 calibrate   # sign と zero を測る -> calib.json
 uv run python quad_host.py --port COM3 stand       # home 姿勢を保持
@@ -419,7 +419,7 @@ Arduino をブリッジとして使う場合（`--bus bridge`）は Arduino の 
 実行できます。
 
 ```powershell
-cd code
+cd docs/os-on-arduino/code
 uv run python scripts\verify_chapters.py --port COM3
 ```
 

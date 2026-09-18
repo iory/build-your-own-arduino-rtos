@@ -1,17 +1,17 @@
 # Chapter Support
 
-All sample code lives in this repository's
-[`code/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code)
-directory:
+All sample code can be fetched exactly as the book describes. It lives in
+[`docs/os-on-arduino/code/`](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code)
+of [`learning-os-from-arduino`](https://github.com/iory/learning-os-from-arduino):
 
 ```bash
-git clone https://github.com/iory/build-your-own-arduino-rtos.git
-cd build-your-own-arduino-rtos/code
+git clone https://github.com/iory/learning-os-from-arduino.git
+cd learning-os-from-arduino/docs/os-on-arduino/code
 ```
 
 The sample code is
-[MIT-licensed](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/LICENSE)
-— feel free to use it in your own projects.
+licensed under the [Apache License 2.0](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/LICENSE)
+— feel free to use it in your own projects, including commercially.
 
 ## Main chapters
 

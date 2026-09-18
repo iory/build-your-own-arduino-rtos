@@ -66,8 +66,8 @@ uv 0.9.26
 ### Get the sample code
 
 ```powershell
-git clone https://github.com/iory/build-your-own-arduino-rtos.git
-cd build-your-own-arduino-rtos\code
+git clone https://github.com/iory/learning-os-from-arduino.git
+cd learning-os-from-arduino\docs\os-on-arduino\code
 uv sync
 ```
 
@@ -391,11 +391,11 @@ Type 'help' for commands.
 
 The fastest way to bring the Chapter 13 quadruped up is to drive the servos
 from the PC before flashing anything. Those tools live in
-[`code/13_quadruped/host/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped/host)
+[`docs/os-on-arduino/code/13_quadruped/host/`](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/host)
 and run on Windows as they are.
 
 ```powershell
-cd code\13_quadruped\host
+cd docs\os-on-arduino\code\13_quadruped\host
 uv run python quad_host.py --port COM3 scan        # how many servos answer
 uv run python quad_host.py --port COM3 calibrate   # measure sign and zero -> calib.json
 uv run python quad_host.py --port COM3 stand       # hold the home stance
@@ -426,7 +426,7 @@ A bundled script builds, uploads and checks the serial output of every chapter
 in one run.
 
 ```powershell
-cd code
+cd docs/os-on-arduino/code
 uv run python scripts\verify_chapters.py --port COM3
 ```
 

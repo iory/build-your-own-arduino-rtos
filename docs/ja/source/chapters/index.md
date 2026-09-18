@@ -5,19 +5,20 @@
 
 ## サンプルコードの入手
 
-サンプルコード一式はこのリポジトリの
-[`code/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code)
-にあります:
+サンプルコード一式は
+[`learning-os-from-arduino`](https://github.com/iory/learning-os-from-arduino) の
+[`docs/os-on-arduino/code/`](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code)
+にあります。書籍に載っている手順のまま入手できます:
 
 ```bash
-git clone https://github.com/iory/build-your-own-arduino-rtos.git
-cd build-your-own-arduino-rtos/code
+git clone https://github.com/iory/learning-os-from-arduino.git
+cd learning-os-from-arduino/docs/os-on-arduino/code
 ```
 
 全章のプロジェクトは PlatformIO で、Arduino UNO R4 WiFi 実機で
 動作確認済みです。サンプルコードは
-[MIT ライセンス](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/LICENSE)
-で、自分のプロジェクトに自由に組み込めます。
+[Apache License 2.0](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/LICENSE)
+で、自分のプロジェクトに自由に組み込めます（商用利用も可）。
 
 ## 本編
 

@@ -4,7 +4,7 @@
 
 ## サンプルコード
 
-- ディレクトリ: `code/adv2_syscall`
+- ディレクトリ: `docs/os-on-arduino/code/adv2_syscall`
 - ビルドと書き込み:
 
 ```bash
@@ -12,7 +12,7 @@ pio run -d adv2_syscall -t upload
 pio device monitor -b 115200
 ```
 
-コードを見る: [code/adv2_syscall](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/adv2_syscall)
+コードを見る: [docs/os-on-arduino/code/adv2_syscall](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/adv2_syscall)
 
 
 ## ソースコード
@@ -22,7 +22,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/main.cpp` — 94 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv2_syscall/src/main.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv2_syscall/src/main.cpp)
 
 ```{literalinclude} ../../../../code/adv2_syscall/src/main.cpp
 :language: cpp
@@ -33,7 +33,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/os_kernel.h` — 74 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv2_syscall/include/os_kernel.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv2_syscall/include/os_kernel.h)
 
 ```{literalinclude} ../../../../code/adv2_syscall/include/os_kernel.h
 :language: cpp
@@ -44,7 +44,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/os_syscall.h` — 33 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv2_syscall/include/os_syscall.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv2_syscall/include/os_syscall.h)
 
 ```{literalinclude} ../../../../code/adv2_syscall/include/os_syscall.h
 :language: cpp
@@ -55,7 +55,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/os_syscall_user.h` — 38 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv2_syscall/include/os_syscall_user.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv2_syscall/include/os_syscall_user.h)
 
 ```{literalinclude} ../../../../code/adv2_syscall/include/os_syscall_user.h
 :language: cpp
@@ -66,7 +66,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/os_kernel.cpp` — 231 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv2_syscall/src/os_kernel.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv2_syscall/src/os_kernel.cpp)
 
 ```{literalinclude} ../../../../code/adv2_syscall/src/os_kernel.cpp
 :language: cpp
@@ -77,7 +77,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/os_svc.cpp` — 95 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv2_syscall/src/os_svc.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv2_syscall/src/os_svc.cpp)
 
 ```{literalinclude} ../../../../code/adv2_syscall/src/os_svc.cpp
 :language: cpp
