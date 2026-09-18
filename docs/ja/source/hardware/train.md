@@ -12,7 +12,7 @@
 
 学習は [unitree_rl_mjlab](https://github.com/unitreerobotics/unitree_rl_mjlab)
 （[mjlab](https://github.com/mujocolab/mjlab) + rsl_rl の PPO 学習基盤）の上で
-行います。`code/13_quadruped/rl/` はその上流に**被せる overlay** で、
+行います。`docs/os-on-arduino/code/13_quadruped/rl/` はその上流に**被せる overlay** で、
 それ自体は単体で動くプログラムではありません。
 
 | ファイル | 中身 |
@@ -119,7 +119,7 @@ Colab の無料枠はセッションが数時間で切れます。学習ログ�
 ## 手元の GPU で学習する
 
 ```bash
-cd code/13_quadruped
+cd docs/os-on-arduino/code/13_quadruped
 ./rl/scripts/setup.sh                    # 上流を clone して overlay を置き、依存を入れる
 source rl/scripts/env.sh                 # 機体の MJCF の場所を教える
 ./rl/scripts/train.sh ArduinoQuad-Walk --env.scene.num-envs=4096

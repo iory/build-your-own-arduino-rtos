@@ -63,8 +63,8 @@ sudo apt install -y git   # Ubuntu / Debian
 ### Get the sample code
 
 ```bash
-git clone https://github.com/iory/build-your-own-arduino-rtos.git
-cd build-your-own-arduino-rtos/code
+git clone https://github.com/iory/learning-os-from-arduino.git
+cd learning-os-from-arduino/docs/os-on-arduino/code
 uv sync
 ```
 
@@ -443,7 +443,7 @@ Bringing up and calibrating the Chapter 13 robot is much faster from the PC —
 every value is on screen and you do not reflash after each change.
 
 ```bash
-cd code/13_quadruped/host
+cd docs/os-on-arduino/code/13_quadruped/host
 uv run python quad_host.py scan        # how many servos are on the bus
 uv run python quad_host.py calibrate   # measure zero and sign -> calib.json
 uv run python quad_host.py stand       # hold the home pose

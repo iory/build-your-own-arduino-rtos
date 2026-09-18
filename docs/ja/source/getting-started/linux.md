@@ -64,8 +64,8 @@ sudo apt install -y git   # Ubuntu / Debian
 ### サンプルコードを取ってくる
 
 ```bash
-git clone https://github.com/iory/build-your-own-arduino-rtos.git
-cd build-your-own-arduino-rtos/code
+git clone https://github.com/iory/learning-os-from-arduino.git
+cd learning-os-from-arduino/docs/os-on-arduino/code
 uv sync
 ```
 
@@ -452,7 +452,7 @@ Arduino IDE を閉じてから実行してください。
 （値が全部画面に出て、直すたびに焼き直さなくて済みます）。
 
 ```bash
-cd code/13_quadruped/host
+cd docs/os-on-arduino/code/13_quadruped/host
 uv run python quad_host.py scan        # バスに何個サーボがいるか
 uv run python quad_host.py calibrate   # zero と sign を測る -> calib.json
 uv run python quad_host.py stand       # home 姿勢を保持

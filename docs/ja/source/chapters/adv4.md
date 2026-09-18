@@ -4,7 +4,7 @@ Flash 上に LittleFS を載せ、ファイルという抽象を手に入れま�
 
 ## サンプルコード
 
-- ディレクトリ: `code/adv4_fs`
+- ディレクトリ: `docs/os-on-arduino/code/adv4_fs`
 - ビルドと書き込み:
 
 ```bash
@@ -12,7 +12,7 @@ pio run -d adv4_fs -t upload
 pio device monitor -b 115200
 ```
 
-コードを見る: [code/adv4_fs](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/adv4_fs)
+コードを見る: [docs/os-on-arduino/code/adv4_fs](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/adv4_fs)
 
 
 ## ソースコード
@@ -22,7 +22,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/main.cpp` — 97 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv4_fs/src/main.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv4_fs/src/main.cpp)
 
 ```{literalinclude} ../../../../code/adv4_fs/src/main.cpp
 :language: cpp
@@ -33,7 +33,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/fs.h` — 18 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv4_fs/include/fs.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv4_fs/include/fs.h)
 
 ```{literalinclude} ../../../../code/adv4_fs/include/fs.h
 :language: cpp
@@ -44,7 +44,7 @@ pio device monitor -b 115200
 :::{dropdown} `include/fs_flash_hal.h` — 19 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv4_fs/include/fs_flash_hal.h)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv4_fs/include/fs_flash_hal.h)
 
 ```{literalinclude} ../../../../code/adv4_fs/include/fs_flash_hal.h
 :language: cpp
@@ -55,7 +55,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/fs.cpp` — 70 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv4_fs/src/fs.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv4_fs/src/fs.cpp)
 
 ```{literalinclude} ../../../../code/adv4_fs/src/fs.cpp
 :language: cpp
@@ -66,7 +66,7 @@ pio device monitor -b 115200
 :::{dropdown} `src/fs_flash_hal.cpp` — 53 行
 :icon: code
 
-[GitHub で開く](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/adv4_fs/src/fs_flash_hal.cpp)
+[GitHub で開く](https://github.com/iory/learning-os-from-arduino/blob/main/docs/os-on-arduino/code/adv4_fs/src/fs_flash_hal.cpp)
 
 ```{literalinclude} ../../../../code/adv4_fs/src/fs_flash_hal.cpp
 :language: cpp

@@ -58,8 +58,8 @@ uv --version
 ### Get the sample code
 
 ```bash
-git clone https://github.com/iory/build-your-own-arduino-rtos.git
-cd build-your-own-arduino-rtos/code
+git clone https://github.com/iory/learning-os-from-arduino.git
+cd learning-os-from-arduino/docs/os-on-arduino/code
 uv sync
 ```
 
