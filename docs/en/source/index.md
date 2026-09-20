@@ -25,6 +25,12 @@ Full translations are in progress.
 What you need and how to set up Arduino IDE / PlatformIO.
 :::
 
+:::{grid-item-card} 💻 Running Without the Board
+:link: getting-started/simulator
+:link-type: doc
+Run the same firmware on your PC when you do not have the board.
+:::
+
 :::{grid-item-card} 📖 Chapter Support
 :link: chapters/index
 :link-type: doc
