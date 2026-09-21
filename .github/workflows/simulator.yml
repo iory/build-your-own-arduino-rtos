@@ -1,0 +1,144 @@
+name: simulator
+
+# 付録「実機がなくても試せる」を、読者の環境ごとに付録の手順どおり試す。
+#
+# - QEMU は付録と同じ手順で ~/qemu-unor4 に入れ、--qemu を付けずに使う
+#   （board.py / verify_chapters.py が自分で見つけられることも確かめる）
+# - code/ の全章をエミュレータで走らせ、本文の「期待される出力」と照らす
+# - 07 章の LED マトリクスを GIF に録って、各 OS での見た目を artifacts に残す
+#
+# code/ は原稿リポジトリからのミラーなので、ここで直さず原稿側を直すこと。
+# 公開リポジトリなので GitHub-hosted の標準ランナーは無料。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/**'
+      - '.github/workflows/simulator.yml'
+  pull_request:
+    paths:
+      - 'code/**'
+      - '.github/workflows/simulator.yml'
+  schedule:
+    - cron: '0 3 * * 1'        # 毎週月曜: ランナーや PlatformIO 側の変化で壊れていないか
+  workflow_dispatch:
+
+env:
+  # 付録で案内している QEMU のリリース。上げるときは付録も一緒に直す
+  QEMU_UNOR4_VERSION: v11.1.1-unor4.4
+
+jobs:
+  simulate:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux-x86_64,   os: ubuntu-24.04,     asset: linux-x86_64 }
+          - { name: linux-arm64,    os: ubuntu-24.04-arm, asset: linux-arm64 }
+          - { name: macos-arm64,    os: macos-15,         asset: macos-arm64 }
+          # Intel Mac は GitHub の最後の Intel ランナー（2027 年秋まで）
+          # https://github.blog/changelog/2025-09-19-github-actions-macos-13-runner-image-is-closing-down/
+          - { name: macos-x86_64,   os: macos-15-intel,   asset: macos-x86_64 }
+          - { name: windows-x86_64, os: windows-2025,     asset: windows-x86_64 }
+          - { name: windows-arm64,  os: windows-11-arm,   asset: windows-arm64 }
+    defaults:
+      run:
+        shell: bash
+        working-directory: code
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: code/uv.lock
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-${{ matrix.name }}-${{ hashFiles('code/*/platformio.ini') }}
+          restore-keys: pio-${{ matrix.name }}-
+
+      # ---- 付録「QEMU のインストール」と同じ手順 ----
+      - name: Install QEMU (macOS / Linux, as in the appendix)
+        if: runner.os != 'Windows'
+        working-directory: ${{ github.workspace }}
+        run: |
+          base="https://github.com/iory/qemu-arduino-uno-r4/releases/download/$QEMU_UNOR4_VERSION"
+          name="qemu-arduino-uno-r4-$QEMU_UNOR4_VERSION-${{ matrix.asset }}.tar.gz"
+          mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
+          curl -fsSL -O "$base/SHA256SUMS" -O "$base/$name"
+          shasum -a 256 -c --ignore-missing SHA256SUMS
+          tar xzf "$name" --strip-components=1
+          ~/qemu-unor4/bin/qemu-system-arm --version
+
+      - name: Install QEMU (Windows, as in the appendix)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        run: |
+          $ProgressPreference = 'SilentlyContinue'
+          $name = "qemu-arduino-uno-r4-$env:QEMU_UNOR4_VERSION-${{ matrix.asset }}"
+          $base = "https://github.com/iory/qemu-arduino-uno-r4/releases/download/$env:QEMU_UNOR4_VERSION"
+          Invoke-WebRequest "$base/$name.zip" -OutFile "$name.zip"
+          Invoke-WebRequest "$base/SHA256SUMS" -OutFile SHA256SUMS
+          $want = (Select-String "  $name.zip" SHA256SUMS).Line.Split(' ')[0]
+          $got = (Get-FileHash "$name.zip" -Algorithm SHA256).Hash.ToLower()
+          if ($want -ne $got) { throw "sha256 mismatch: $got" }
+          Expand-Archive "$name.zip" -DestinationPath "$HOME\qemu-unor4"
+          & "$HOME\qemu-unor4\$name\bin\qemu-system-arm.exe" --version
+
+      - name: Install PlatformIO
+        run: uv sync --frozen
+
+      # --qemu を付けない: ~/qemu-unor4 から見つけられることも確かめる。
+      # ランナーは実機より遅いことがあるので、捕捉時間を 2 倍に伸ばす。
+      - name: Verify all chapters in the emulator
+        run: uv run python scripts/verify_chapters.py --sim --capture-scale 2 --json sim-result.json
+
+      - name: Record the LED matrix
+        if: always()
+        run: |
+          uv run --no-project --with pillow python sim/record.py \
+            --chapter 07_led_matrix --out "sim-gif/07_led_matrix-${{ matrix.name }}.gif" \
+            --seconds 8 --fps 8
+        continue-on-error: true
+
+      - name: Summary
+        if: always()
+        run: |
+          [ -f sim-result.json ] || exit 0
+          {
+            echo "### ${{ matrix.name }}（QEMU $QEMU_UNOR4_VERSION）"
+            echo
+            echo "| chapter | result | checks |"
+            echo "|---|---|---|"
+            uv run --no-project python -c "$SUMMARY_PY" sim-result.json
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          SUMMARY_PY: |
+            import json, sys
+            for r in json.load(open(sys.argv[1], encoding="utf-8")):
+                cs = r["checks"]
+                skip = sum(1 for c in cs if c.get("skipped"))
+                ok = sum(1 for c in cs if c["ok"] and not c.get("skipped"))
+                detail = f"{ok}/{len(cs) - skip}" + (f" (+{skip} skip)" if skip else "")
+                print(f"| {r['chapter']} | {r['status']} | {detail} |")
+        continue-on-error: true
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-${{ matrix.name }}
+          path: |
+            code/sim-result.json
+            code/scripts/results/sim-qemu/*.log
+            code/sim-gif/*.gif
+          if-no-files-found: warn
