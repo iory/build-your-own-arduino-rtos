@@ -12,4 +12,5 @@ dev = [
     "sphinx-copybutton>=0.5.2",
     "sphinx-design>=0.7.0",
     "sphinx-togglebutton>=0.4.5",
+    "sphinxext-opengraph>=0.13.0",
 ]

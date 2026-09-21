@@ -13,6 +13,7 @@ extensions = [
     "sphinx_design",
     "sphinx_copybutton",
     "sphinx_togglebutton",
+    "sphinxext.opengraph",
 ]
 
 myst_enable_extensions = ["colon_fence", "dollarmath"]
@@ -50,6 +51,18 @@ html_theme_options = {
 }
 
 html_title = "RTOS自作入門 サポートページ"
+
+# ファビコンは scripts/make_brand_images.py が第0章のスケッチの "OS" から作る。
+# PNG 版と apple-touch-icon は _templates/layout.html で読み込む。
+html_favicon = "_static/favicon.svg"
+
+# SNS で共有されたときのプレビュー（OGP）。ogp_image は ogp_site_url からの相対。
+SITE_URL = "https://iory.github.io/build-your-own-arduino-rtos/"
+ogp_site_url = SITE_URL + ""
+ogp_image = "_static/og_image.png"
+ogp_image_alt = "『つくりながら学ぶ！リアルタイムOS自作入門』の表紙と、LED マトリクスに表示した OS の文字"
+ogp_social_cards = {"enable": False}
+ogp_custom_meta_tags = ['<meta name="twitter:card" content="summary_large_image">']
 
 
 # Cloudflare Web Analytics のビーコン。トークンは公開 HTML に出るものなので

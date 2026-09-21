@@ -1,3 +1,7 @@
+---
+og:description: "Support site for the Japanese book on building a preemptive real-time OS from scratch on the Arduino UNO R4 WiFi: setup, per-chapter sample code, quadruped assembly, and errata."
+---
+
 # Build Your Own Arduino RTOS — Book Support
 
 Support site for the (Japanese) book on building a preemptive
