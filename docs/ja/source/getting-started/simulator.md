@@ -5,9 +5,9 @@ Arduino UNO R4 WiFi が手元に無くても、**実機と同じファームウ�
 基板写真に重ねて表示され、シェルもそのまま使えます。
 
 ```
-pio run -e sim   →   firmware.elf   →   Renode (RA4M1)   →   ブラウザ
-  （いつもの        （実機に書くものと      （実機と同じ        （基板の上で
-    ビルド）          同じ ELF）            Cortex-M4）         LED が光る）
+pio run -e sim   →   firmware.elf   →   QEMU (RA4M1)   →   ブラウザ
+  （いつもの        （実機に書くものと     （実機と同じ        （基板の上で
+    ビルド）          同じ ELF）           Cortex-M4）         LED が光る）
 ```
 
 サンプルコードは 1 行も変えません。実機向けのビルドとの違いは、Arduino コア
@@ -15,51 +15,80 @@ pio run -e sim   →   firmware.elf   →   Renode (RA4M1)   →   ブラウザ
 
 :::{note}
 本書のカーネルが使うのは SysTick・PendSV・NVIC・MPU といった Cortex-M の
-標準機能です。エミュレータ上でもこれらは実機と同じように動きます。
+標準機能です。エミュレータ上でもこれらは実機と同じように動き、第6章の
+フォールト（ゼロ除算・不正アドレス）も本文どおりに起きます。
 :::
 
 ## 必要なもの
 
 | | 入手先 |
 | --- | --- |
-| **Renode** 1.17 以降 | <https://github.com/renode/renode/releases> |
+| **QEMU**（UNO R4 対応版） | <https://github.com/iory/qemu-arduino-uno-r4/releases> |
 | **Python** 3.10 以降 | 標準ライブラリのみ使用（`pip install` は不要） |
 | **PlatformIO** | {doc}`platformio` と同じもの |
 
-### Renode のインストール
+本家の QEMU には UNO R4 のマイコン（Renesas RA4M1）が入っていないので、
+それを足したものを本書用に配布しています。Homebrew や apt で入る
+`qemu-system-arm` では動きません。
+
+### QEMU のインストール
+
+リリースページから OS に合ったファイルを取ってきて、ホームの `qemu-unor4`
+フォルダに展開するだけです。この場所に置けば、仮想ボードが自動で見つけます。
 
 ::::{tab-set}
 :::{tab-item} macOS
-```bash
-brew trust renode/tap
-brew install renode/tap/renode
-```
-最近の Homebrew は、公式以外の tap を既定では信用しません。`brew trust` を
-先に実行しないと、ボトルを全部ダウンロードした後に
-`Refusing to load formula renode/tap/renode-nightly from untrusted tap` で
-止まります。
+Apple Silicon（macOS 14 以降）と Intel Mac（macOS 15 以降）に対応しています。
 
-Homebrew を使わない場合は、リリースページの `renode-*.osx-arm64-portable.dmg`
-（Apple Silicon）を開いて `Renode.app` を Applications へ入れます。その場合は
-コマンドラインからは
-`/Applications/Renode.app/Contents/MacOS/renode` で呼び出します。
+```bash
+mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
+arch=$(uname -m)   # arm64 か x86_64
+curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/qemu-arduino-uno-r4-v11.1.1-unor4.4-macos-$arch.tar.gz"
+tar xzf qemu-arduino-uno-r4-*-macos-*.tar.gz --strip-components=1
+~/qemu-unor4/bin/qemu-system-arm --version
+```
+
+必要なライブラリは同梱しているので、Homebrew は要りません。
+
+ブラウザでダウンロードした場合は、macOS が「開発元を検証できない」として
+起動を止めます。展開したフォルダで一度だけ次を実行してください。
+
+```bash
+xattr -dr com.apple.quarantine ~/qemu-unor4
+```
+
+macOS 15 に上げられない古い Intel Mac では、後述の Renode を使ってください。
 :::
 :::{tab-item} Windows
-リリースページの `renode-*.setup.exe` を実行します。インストーラで PATH に
-追加しておくと、以降 `renode` と打つだけで動きます。管理者権限を使いたく
-ない場合は `renode-*.windows-portable.zip` を展開して、中の `Renode.exe` を
-`--renode` で直接指定しても構いません。
+x64 版と ARM64 版（Snapdragon X など）があります。**Windows on ARM では
+必ず ARM64 版を使ってください。** x64 版はエミュレーション経由では動きません。
 
-Renode が配布しているのは x64 版だけですが、**Windows on ARM
-（Snapdragon X など）でも x64 エミュレーション経由で動く**ことを確認しています。
+PowerShell で:
+
+```powershell
+$arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'x86_64' }
+$name = "qemu-arduino-uno-r4-v11.1.1-unor4.4-windows-$arch"
+Invoke-WebRequest "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/$name.zip" -OutFile "$name.zip"
+Expand-Archive "$name.zip" -DestinationPath "$HOME\qemu-unor4"
+& "$HOME\qemu-unor4\$name\bin\qemu-system-arm.exe" --version
+```
+
+必要な DLL は `bin` に同梱しています。
 :::
 :::{tab-item} Linux
-`renode_*_amd64.deb` / `renode-*.x86_64.rpm` をパッケージマネージャで入れるか、
-`renode-*.linux-portable.tar.gz` を展開して PATH に足します。
+x86_64 版と arm64 版があります（glibc 2.35 以降、Ubuntu 22.04 相当以降）。
 
-portable 版は .NET を内蔵しているので、mono や dotnet を別途入れる必要は
-ありません。GUI は使わないので、`DISPLAY` の無い環境（SSH 越しなど）でも
-そのまま動きます。
+```bash
+mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
+arch=$(uname -m); [ "$arch" = aarch64 ] && arch=arm64
+curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/qemu-arduino-uno-r4-v11.1.1-unor4.4-linux-$arch.tar.gz"
+tar xzf qemu-arduino-uno-r4-*-linux-*.tar.gz --strip-components=1
+~/qemu-unor4/bin/qemu-system-arm --version
+```
+
+使うライブラリは glib だけで、ほとんどのディストリビューションに最初から
+入っています。無い場合は `sudo apt install libglib2.0-0` です。画面は使わない
+ので、`DISPLAY` の無い環境（SSH 越しなど）でもそのまま動きます。
 :::
 ::::
 
@@ -71,15 +100,14 @@ pio run -e sim                       # シミュレータ用にビルド
 python3 ../sim/board.py --chapter .  # 仮想ボードを起動
 ```
 
-`http://localhost:8080` を開くと基板が表示されます。終了は Ctrl-C です。
+ブラウザで `http://127.0.0.1:8080` を開くと基板が表示されます。終了は Ctrl-C です。
+（`localhost` でも開けますが、Windows では IPv6 を先に試すぶん表示が数秒遅れます）
+
 Windows では `python3` ではなく `python` と打ってください。
 
-Renode が PATH に無いときは場所を渡してください。
-
-```bash
-python3 ../sim/board.py --chapter . \
-    --renode /Applications/Renode.app/Contents/MacOS/renode
-```
+QEMU を `qemu-unor4` 以外の場所に置いた場合は、`--qemu` でその
+`qemu-system-arm`（Windows は `qemu-system-arm.exe`）を指定するか、
+環境変数 `QEMU` に場所を入れておいてください。
 
 ## 画面の見かた
 
@@ -107,27 +135,24 @@ python3 ../sim/board.py --chapter . \
 気づいたときはこの節を思い出してください。**
 
 - **`Serial` が USB ではなく UART になります**
-  Renode の RA4M1 モデルには USB が実装されていないため、`-D NO_USB` で
-  `Serial` をハードウェア UART に切り替えています。UNO R4 WiFi の `Serial` が
+  エミュレータには USB が実装されていないため、`-D NO_USB` で `Serial` を
+  ハードウェア UART（SCI9）に切り替えています。UNO R4 WiFi の `Serial` が
   USB CDC であること自体は本書で扱う話題なので、そこは実機で確かめてください。
-- **SCI チャネルの番号がずれます**
-  Renode のプラットフォーム定義は UNO R4 **Minima** のものなので、ピンと
-  SCI の対応が実機と異なります。出力は `sci9` に出ます（実機の D0/D1 は SCI2）。
 - **ESP32 / Wi-Fi はありません**
   UNO R4 WiFi のもう 1 つのチップは載っていません。
-- **割り込みのジッタは本物ではありません**
-  タスク切り替えの周期や CPU 使用率の傾向は追えますが、リアルタイム性の
-  最終確認は実機で行ってください。
-- **第6章のフォールトは起きません**
-  Renode は `CCR.DIV_0_TRP` を実装していないためゼロ除算で UsageFault に
-  ならず、未マップ領域への書き込みでも BusFault を上げません。どちらも
-  タスクはそのまま終了するので、「壊れたタスクだけが死んで他は動き続ける」
-  という第6章の主張は観察できますが、`FAULT DETECTED` の表示と原因の特定は
-  実機でしか見られません。
+- **時間の進み方は近似です**
+  命令 1 つを 16 ns（≒ 48 MHz）として時間を進めています。タスク切り替えの
+  周期や CPU 使用率の傾向は追えますが、命令ごとのサイクル数や割り込みの
+  ジッタは本物ではありません。リアルタイム性の最終確認は実機で行ってください。
+- **本書で使わない周辺回路はありません**
+  タイマ（AGT）・シリアル（SCI）・GPIO・割り込みコントローラ以外
+  （ADC、I²C、SPI、PWM 用のタイマなど）は入っていません。
 
 :::{note}
-動作確認は **macOS (Apple Silicon)**・**Windows 11 (ARM64)**・
-**Ubuntu 24.04 (x86_64)** で行っています。うまくいかない場合は
+動作確認は **macOS 26 (Apple Silicon)**・**Windows 11 (ARM64)**・
+**Ubuntu 24.04 (x86_64)** で行っています。加えて GitHub Actions で、macOS
+（Apple Silicon / Intel）・Windows（x64 / ARM64）・Ubuntu（x86_64 / arm64）の
+6 環境で、この付録の手順どおりに全章を毎週確かめています。うまくいかない場合は
 [Issues](https://github.com/iory/build-your-own-arduino-rtos/issues)
 で教えてください。
 :::
@@ -139,20 +164,29 @@ python3 ../sim/board.py --chapter . \
 `pio run -e sim` を実行しましたか。実機向けの `pio run` だけでは、
 エミュレータ用のビルド（`.pio/build/sim/firmware.elf`）ができません。
 
-**「Renode の Monitor につながらない」と出る**
+**「arduino-uno-r4 マシン入りの qemu-system-arm が見つかりません」と出る**
 
-`renode` が PATH にあるか確認してください。`--renode` で実行ファイルを
-直接指定することもできます。
+探した場所と、それぞれがダメだった理由が一緒に表示されます。QEMU を
+ホームの `qemu-unor4` に展開したか、`--qemu` が展開した `qemu-system-arm` を
+指しているか確認してください。Homebrew や apt で入れた本家の QEMU では
+動きません。
+macOS で「開発元を検証できない」と出た場合は、上の `xattr` を実行してください。
 
 **シリアルに何も出てこない**
 
 章によっては入力待ちで止まっています（第1章は `S`、第5章以降はシェルの
-プロンプト）。それでも出てこない場合は、`--uart sci2` のように出力先の
-チャネルを変えて試してください。
+プロンプト）。
 
 **ポートが使用中**
 
 `--http-port` / `--monitor-port` / `--uart-port` で番号を変えられます。
+
+**PC が重い・ファンが回り続ける**
+
+`board.py` を `kill -9` などで強制終了すると、QEMU だけが残って動き続ける
+ことがあります（Ctrl-C や端末を閉じた場合は自動で止まります）。
+macOS / Linux は `pkill -f qemu-system-arm`、Windows はタスクマネージャーで
+`qemu-system-arm.exe` を終了してください。
 
 ## 章の確認を自動で走らせる
 
@@ -165,13 +199,43 @@ uv run python scripts/verify_chapters.py --sim
 uv run python scripts/verify_chapters.py --sim --only 05_shell
 ```
 
-エミュレータでは再現しない項目（第6章のフォールトなど）は `SKIP` と
-理由が表示されます。
-
 `code/sim/record.py` を使うと、基板の光り方をそのまま GIF に録れます。
+
+## Renode を使う場合
+
+QEMU の代わりに、オープンソースのエミュレータ [Renode](https://renode.io/)
+（1.17 以降）でも同じ画面が動きます。macOS 15 に上げられない Intel Mac では
+こちらを使ってください。
+Renode は RA4M1 を最初から持っているので、公式のリリースをそのまま使えます。
+
+- macOS: `brew trust renode/tap && brew install renode/tap/renode`
+  （`brew trust` を先に実行しないと `untrusted tap` で止まります）
+- Windows: `renode-*.setup.exe`（Windows on ARM でも x64 エミュレーションで動きます）
+- Linux: `renode-*.linux-portable.tar.gz` を展開（.NET 同梱）
+
+いずれも <https://github.com/renode/renode/releases> から入手できます。
+起動するときは `--emulator renode` を付けます。
+
+```bash
+python3 ../sim/board.py --chapter . --emulator renode
+python3 ../sim/board.py --chapter . --emulator renode --renode /path/to/renode  # PATH に無いとき
+```
+
+検証スクリプトも `--emulator renode` で Renode を使います。
+
+QEMU との違いは、**第6章のフォールトが起きない**ことです。
+Renode は `CCR.DIV_0_TRP` を実装していないためゼロ除算で UsageFault に
+ならず、未マップ領域への書き込みでも BusFault を上げません。「壊れたタスク
+だけが死んで他は動き続ける」ことは観察できますが、`FAULT DETECTED` の表示と
+原因の特定は見られません（検証スクリプトでは `SKIP` になります）。
+
+Renode が残って動き続けたときは `pkill -f Renode`（Windows は `Renode.exe` を終了）
+で止めてください。
 
 ## 仕組みを知りたい
 
 `code/sim/README.md` に、どのアドレスから何を読んでいるか、ブラウザへ
 どう流しているかを書いています。仮想ボード本体（`board.py` と
-`board.html`）は 600 行ほどです。
+`board.html`）は 600 行ほどです。QEMU 側の実装（RA4M1 の割り込み
+コントローラ・SCI・AGT・GPIO）は
+<https://github.com/iory/qemu-arduino-uno-r4> にあります。
