@@ -9,6 +9,18 @@ WiFi でプリエンプティブなリアルタイム OS を一から自作す�
 - 内容: 開発環境のセットアップ、章ごとのサンプルコード案内、
   四脚ロボットの組み立て、FAQ・正誤表
 
+## 書籍
+
+<a href="https://book.mynavi.jp/ec/products/detail/id=152331"><img src="docs/ja/source/_static/book_cover.jpg" alt="『つくりながら学ぶ！リアルタイムOS自作入門』の表紙" width="180" align="right"></a>
+
+- 著者: 矢野倉伊織 ／ 出版社: マイナビ出版 ／ 発売日: 2026年9月18日
+- ISBN: 978-4-8399-9187-6 ／ 書籍（紙）・電子版（PDF）
+- 購入:
+  [マイナビブックス](https://book.mynavi.jp/ec/products/detail/id=152331)
+  ・[Amazon](https://www.amazon.co.jp/dp/4839991871)
+  ・[楽天ブックス](https://books.rakuten.co.jp/rb/18716697/)
+  ・[honto（電子書籍）](https://honto.jp/isbn/9784839991876)
+
 ## 構成
 
 XLeRobot のドキュメント（Sphinx + pydata-sphinx-theme + MyST +
@@ -70,3 +82,9 @@ main へ push すると GitHub Actions が GitHub Pages へ自動デプロイす
 
 ライセンスの根拠: 各 PDF 内の CC BY-SA 4.0 表記、および
 [arduino/docs-content の LICENSE](https://github.com/arduino/docs-content/blob/main/LICENSE.md)。
+
+書籍の表紙画像 `docs/{ja,en}/source/_static/book_cover.jpg` と README から
+参照しているその画像は © マイナビ出版で、Apache-2.0・CC BY-SA 4.0 の
+どちらの対象でもない（出典:
+[マイナビブックスの書籍ページ](https://book.mynavi.jp/ec/products/detail/id=152331)
+の書影、無改変）。

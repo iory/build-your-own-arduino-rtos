@@ -47,11 +47,47 @@ LED マトリクスに「OS」と表示した Arduino UNO R4 WiFi
 
 ## 書籍について
 
+::::{grid} 1 1 2 2
+:gutter: 3
+
+:::{grid-item}
+:columns: 12 12 4 4
+```{image} _static/book_cover.jpg
+:alt: 『つくりながら学ぶ！リアルタイムOS自作入門』の表紙
+:width: 240px
+:align: center
+:target: https://book.mynavi.jp/ec/products/detail/id=152331
+```
+:::
+
+:::{grid-item}
+:columns: 12 12 8 8
 - 対象ボード: **Arduino UNO R4 WiFi**（Renesas RA4M1 / Arm Cortex-M4）
 - 本編 13 章＋応用編 4 章。ブートシーケンスから始めて、
   コンテキストスイッチ・プリエンプティブスケジューラ・メモリ保護・
   シェル・インタプリタを積み上げ、最後は自作 OS で四脚ロボットを歩かせます
-- 書誌情報・購入リンクは出版後にここに掲載します
+
+**購入する**
+
+{bdg-link-primary}`マイナビブックス（紙・PDF）<https://book.mynavi.jp/ec/products/detail/id=152331>`
+{bdg-link-primary}`Amazon<https://www.amazon.co.jp/dp/4839991871>`
+{bdg-link-primary}`楽天ブックス<https://books.rakuten.co.jp/rb/18716697/>`
+{bdg-link-primary}`honto（電子書籍）<https://honto.jp/isbn/9784839991876>`
+
+全国の書店でも ISBN（978-4-8399-9187-6）で注文できます。
+:::
+::::
+
+### 書誌情報
+
+| | |
+|---|---|
+| 書名 | つくりながら学ぶ！リアルタイムOS自作入門（Compass Books シリーズ） |
+| 著者 | 矢野倉伊織 |
+| 出版社 | マイナビ出版 |
+| 発売日 | 2026年9月18日 |
+| ISBN | 978-4-8399-9187-6 |
+| 形態 | 書籍（紙）／電子版（PDF） |
 
 ```{toctree}
 :hidden:

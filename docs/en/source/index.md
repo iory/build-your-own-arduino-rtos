@@ -50,6 +50,34 @@ Troubleshooting and corrections.
 :::
 ::::
 
+## About the Book
+
+::::{grid} 1 1 2 2
+:gutter: 3
+
+:::{grid-item}
+:columns: 12 12 4 4
+```{image} _static/book_cover.jpg
+:alt: Cover of the book (Japanese edition)
+:width: 240px
+:align: center
+:target: https://book.mynavi.jp/ec/products/detail/id=152331
+```
+:::
+
+:::{grid-item}
+:columns: 12 12 8 8
+*つくりながら学ぶ！リアルタイムOS自作入門* (Japanese edition),
+by Iori Yanokura, published by Mynavi Publishing on September 18, 2026.
+ISBN 978-4-8399-9187-6. Available in print and as a PDF.
+
+{bdg-link-primary}`Mynavi Books (print / PDF)<https://book.mynavi.jp/ec/products/detail/id=152331>`
+{bdg-link-primary}`Amazon.co.jp<https://www.amazon.co.jp/dp/4839991871>`
+{bdg-link-primary}`Rakuten Books<https://books.rakuten.co.jp/rb/18716697/>`
+{bdg-link-primary}`honto (ebook)<https://honto.jp/isbn/9784839991876>`
+:::
+::::
+
 ```{toctree}
 :hidden:
 getting-started/index
