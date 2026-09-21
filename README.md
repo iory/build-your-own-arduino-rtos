@@ -32,6 +32,7 @@ docs/en/source/   # English（/en/ に配信）
 docs/assembly/    # CAD から自動生成した組み立てビューア（静的バンドル、/assembly/ に配信）
 code/             # 書籍のサンプルコード（原稿リポジトリから自動同期。直接編集しない）
 scripts/build.sh  # 両言語を _site/ にビルドし docs/assembly をコピー
+scripts/make_brand_images.py  # ファビコンと OGP 画像を _static/ に生成（生成物はコミットする）
 ```
 
 `code/` は書籍の原稿側から一方向にミラーされる。誤植・バグ修正は原稿側で
@@ -83,8 +84,9 @@ main へ push すると GitHub Actions が GitHub Pages へ自動デプロイす
 ライセンスの根拠: 各 PDF 内の CC BY-SA 4.0 表記、および
 [arduino/docs-content の LICENSE](https://github.com/arduino/docs-content/blob/main/LICENSE.md)。
 
-書籍の表紙画像 `docs/{ja,en}/source/_static/book_cover.jpg` と README から
-参照しているその画像は © マイナビ出版で、Apache-2.0・CC BY-SA 4.0 の
-どちらの対象でもない（出典:
-[マイナビブックスの書籍ページ](https://book.mynavi.jp/ec/products/detail/id=152331)
-の書影、無改変）。
+書籍の表紙画像 `docs/{ja,en}/source/_static/book_cover.jpg`（README からも
+参照）は © マイナビ出版で、Apache-2.0・CC BY-SA 4.0 のどちらの対象でもない
+（出典: [マイナビブックスの書籍ページ](https://book.mynavi.jp/ec/products/detail/id=152331)
+の書影、無改変）。これを縮小して貼り込んだ OGP 画像 `og_image.png` の表紙部分も
+同様。ファビコン（`favicon.svg` など）は第0章のスケッチの表示から生成したもので、
+Apache-2.0 に従う。
