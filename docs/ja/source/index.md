@@ -8,11 +8,10 @@ Arduino UNO R4 WiFi の上で、プリエンプティブなリアルタイム OS
 一から自作する書籍のサポートページです。開発環境の準備、章ごとの
 サンプルコードと動作確認、四脚ロボットの組み立て、正誤表をまとめています。
 
-```{figure} _static/uno_r4_wifi_os.jpg
-:name: fig-index-os
-:width: 80%
-
-LED マトリクスに「OS」と表示した Arduino UNO R4 WiFi
+```{raw} html
+<video src="_static/promo.mp4" poster="_static/og_image.png" controls muted playsinline loop preload="metadata"
+       style="width:100%; border-radius:8px;"
+       aria-label="書籍の紹介動画: 自作 OS の起動から四脚ロボットの歩行まで"></video>
 ```
 
 ::::{grid} 1 2 2 2
