@@ -34,6 +34,7 @@ Upstream QEMU does not include the UNO R4's microcontroller (Renesas RA4M1),
 so a build that adds it is published for this book. The `qemu-system-arm`
 from Homebrew or apt will not work.
 
+(install-qemu)=
 ### Installing QEMU
 
 Download the file for your OS from the releases page and unpack it into a
@@ -111,6 +112,14 @@ Open `http://127.0.0.1:8080` in your browser to see the board. Press Ctrl-C to
 stop. (`localhost` works too, but on Windows it tries IPv6 first and takes a
 few seconds longer.)
 
+```{figure} ../_static/sim_browser.jpg
+:name: fig-sim-browser
+:width: 80%
+
+The Chapter 7 sample after typing `ps` into the serial monitor. The board is
+at the top, the serial monitor below it.
+```
+
 On Windows, type `python` instead of `python3`.
 
 If you put QEMU somewhere other than `qemu-unor4`, pass its `qemu-system-arm`
@@ -127,6 +136,22 @@ environment variable to that path.
 
 As on the real board, Chapter 1 waits for an `S` at start-up. Type `S` into the
 input box.
+
+```{figure} ../_static/sim_d13.gif
+:name: fig-sim-d13
+:width: 80%
+
+The Chapter 2 sample blinking the built-in LED "L" (D13), zoomed in around it.
+```
+
+```{figure} ../_static/sim_matrix_kill.gif
+:name: fig-sim-matrix
+:width: 80%
+
+The Chapter 7 sample. The top half of the LED matrix is a CPU load graph, the
+bottom half shows what each task is doing. Stopping the busy task (Heavy)
+with `kill 3` from the serial monitor makes the CPU load graph drain away.
+```
 
 ## Chapter coverage
 

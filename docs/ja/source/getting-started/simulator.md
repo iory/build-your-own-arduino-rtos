@@ -31,6 +31,7 @@ pio run -e sim   →   firmware.elf   →   QEMU (RA4M1)   →   ブラウザ
 それを足したものを本書用に配布しています。Homebrew や apt で入る
 `qemu-system-arm` では動きません。
 
+(install-qemu)=
 ### QEMU のインストール
 
 リリースページから OS に合ったファイルを取ってきて、ホームの `qemu-unor4`
@@ -106,6 +107,14 @@ python3 ../sim/board.py --chapter .  # 仮想ボードを起動
 ブラウザで `http://127.0.0.1:8080` を開くと基板が表示されます。終了は Ctrl-C です。
 （`localhost` でも開けますが、Windows では IPv6 を先に試すぶん表示が数秒遅れます）
 
+```{figure} ../_static/sim_browser.jpg
+:name: fig-sim-browser
+:width: 80%
+
+第7章のサンプルを動かし、シリアルモニタに `ps` と打ったところ。
+上が基板、下がシリアルモニタです。
+```
+
 Windows では `python3` ではなく `python` と打ってください。
 
 QEMU を `qemu-unor4` 以外の場所に置いた場合は、`--qemu` でその
@@ -122,6 +131,22 @@ QEMU を `qemu-unor4` 以外の場所に置いた場合は、`--qemu` でその
 
 第1章は実機と同じく起動時に `S` の入力を待ちます。入力欄に `S` と打って
 ください。
+
+```{figure} ../_static/sim_d13.gif
+:name: fig-sim-d13
+:width: 80%
+
+第2章のサンプルで、内蔵 LED「L」（D13）が点滅する様子（D13 のまわりを拡大）。
+```
+
+```{figure} ../_static/sim_matrix_kill.gif
+:name: fig-sim-matrix
+:width: 80%
+
+第7章のサンプル。LED マトリクスの上半分が CPU 負荷のグラフ、下半分がタスクごとの
+実行状態です。シリアルから `kill 3` で重い計算のタスク（Heavy）を止めると、
+CPU 負荷のグラフが消えていきます。
+```
 
 ## 章ごとの対応
 
