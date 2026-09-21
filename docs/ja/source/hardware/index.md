@@ -3,6 +3,13 @@
 第13章では、自作 OS でサーボを制御して四脚ロボットを歩かせます。
 ここではそのハードウェア準備をまとめます。
 
+```{figure} ../_static/quadruped_walk.gif
+:name: fig-quadruped-walk
+:width: 80%
+
+自作 OS で 8 個のサーボを制御して歩く四脚ロボット（1.5 倍速）
+```
+
 ::::{grid} 1 1 2 2
 :gutter: 3
 

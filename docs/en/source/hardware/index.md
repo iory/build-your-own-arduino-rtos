@@ -2,6 +2,13 @@
 
 Chapter 13 drives an 8-servo quadruped from your own OS.
 
+```{figure} ../_static/quadruped_walk.gif
+:name: fig-quadruped-walk
+:width: 80%
+
+The quadruped walking on your own OS, driving 8 servos (1.5x speed)
+```
+
 | Item | Qty | Notes |
 |---|---|---|
 | FEETECH STS3215 serial bus servo (12V) | 8 | [Akizuki Denshi 130969](https://akizukidenshi.com/catalog/g/g130969/) |

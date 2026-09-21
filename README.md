@@ -9,6 +9,8 @@ WiFi でプリエンプティブなリアルタイム OS を一から自作す�
 - 内容: 開発環境のセットアップ、章ごとのサンプルコード案内、
   四脚ロボットの組み立て、FAQ・正誤表
 
+![自作 OS の起動から四脚ロボットの歩行まで](docs/ja/source/_static/promo.gif)
+
 ## 書籍
 
 <a href="https://book.mynavi.jp/ec/products/detail/id=152331"><img src="docs/ja/source/_static/book_cover.jpg" alt="『つくりながら学ぶ！リアルタイムOS自作入門』の表紙" width="180" align="right"></a>
@@ -33,6 +35,7 @@ docs/assembly/    # CAD から自動生成した組み立てビューア（静�
 code/             # 書籍のサンプルコード（原稿リポジトリから自動同期。直接編集しない）
 scripts/build.sh  # 両言語を _site/ にビルドし docs/assembly をコピー
 scripts/make_brand_images.py  # ファビコンと OGP 画像を _static/ に生成（生成物はコミットする）
+scripts/make_promo_video.py   # 紹介動画 promo.mp4（ja/en）と README 用 promo.gif を生成（同上）
 ```
 
 `code/` は書籍の原稿側から一方向にミラーされる。誤植・バグ修正は原稿側で
@@ -88,5 +91,7 @@ main へ push すると GitHub Actions が GitHub Pages へ自動デプロイす
 参照）は © マイナビ出版で、Apache-2.0・CC BY-SA 4.0 のどちらの対象でもない
 （出典: [マイナビブックスの書籍ページ](https://book.mynavi.jp/ec/products/detail/id=152331)
 の書影、無改変）。これを縮小して貼り込んだ OGP 画像 `og_image.png` の表紙部分も
-同様。ファビコン（`favicon.svg` など）は第0章のスケッチの表示から生成したもので、
+同様。紹介動画 `promo.mp4` と `promo.gif` も、冒頭の OGP 画像と末尾の
+エンドカードに表紙を含むので、その部分は同様（実写・図・端末録画の部分は
+Apache-2.0）。ファビコン（`favicon.svg` など）は第0章のスケッチの表示から生成したもので、
 Apache-2.0 に従う。
