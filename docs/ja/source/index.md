@@ -20,6 +20,12 @@ LED マトリクスに「OS」と表示した Arduino UNO R4 WiFi
 準備するものと開発環境（Arduino IDE / PlatformIO）のセットアップ。
 :::
 
+:::{grid-item-card} 💻 実機がなくても試せる
+:link: getting-started/simulator
+:link-type: doc
+基板が手元になくても、実機と同じファームウェアを PC 上で動かせます。
+:::
+
 :::{grid-item-card} 📖 章ごとのサポート
 :link: chapters/index
 :link-type: doc
