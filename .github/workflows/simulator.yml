@@ -37,8 +37,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Linux arm64 は無い: 本書のビルドに使う PlatformIO の
+          # toolchain-gccarmnoneeabi 1.70201.0 に linux_aarch64 版が無く、章をビルドできない
+          # https://api.registry.platformio.org/v3/packages/platformio/tool/toolchain-gccarmnoneeabi
           - { name: linux-x86_64,   os: ubuntu-24.04,     asset: linux-x86_64 }
-          - { name: linux-arm64,    os: ubuntu-24.04-arm, asset: linux-arm64 }
           - { name: macos-arm64,    os: macos-15,         asset: macos-arm64 }
           # Intel Mac は GitHub の最後の Intel ランナー（2027 年秋まで）
           # https://github.blog/changelog/2025-09-19-github-actions-macos-13-runner-image-is-closing-down/

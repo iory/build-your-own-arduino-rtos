@@ -81,7 +81,9 @@ The DLLs it needs are bundled in `bin`.
 :::
 :::{tab-item} Linux
 There are x86_64 and arm64 builds (glibc 2.35 or later, i.e. Ubuntu 22.04 or
-newer).
+newer). However, the PlatformIO compiler this book builds with is not
+available for Linux arm64, so **the chapters can only be built on x86_64**
+(the same goes for the 64-bit Raspberry Pi OS).
 
 ```bash
 mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
@@ -158,8 +160,8 @@ contradict the text, so keep this section in mind when something looks off.**
 :::{note}
 Tested on **macOS 26 (Apple silicon)**, **Windows 11 (ARM64)** and
 **Ubuntu 24.04 (x86_64)**. In addition, GitHub Actions follows this appendix
-every week on six environments — macOS (Apple silicon / Intel), Windows
-(x64 / ARM64) and Ubuntu (x86_64 / arm64) — and runs every chapter. If it does not work for you, please open an
+every week on five environments — macOS (Apple silicon / Intel), Windows
+(x64 / ARM64) and Ubuntu (x86_64) — and runs every chapter. If it does not work for you, please open an
 [issue](https://github.com/iory/build-your-own-arduino-rtos/issues).
 :::
 

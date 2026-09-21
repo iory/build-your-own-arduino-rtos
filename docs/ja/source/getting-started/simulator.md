@@ -77,6 +77,9 @@ Expand-Archive "$name.zip" -DestinationPath "$HOME\qemu-unor4"
 :::
 :::{tab-item} Linux
 x86_64 版と arm64 版があります（glibc 2.35 以降、Ubuntu 22.04 相当以降）。
+ただし本書のビルドに使う PlatformIO のコンパイラが Linux arm64 向けには
+配布されていないため、**章をビルドできるのは x86_64 だけ**です
+（Raspberry Pi の 64 ビット OS なども同じです）。
 
 ```bash
 mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
@@ -151,8 +154,8 @@ QEMU を `qemu-unor4` 以外の場所に置いた場合は、`--qemu` でその
 :::{note}
 動作確認は **macOS 26 (Apple Silicon)**・**Windows 11 (ARM64)**・
 **Ubuntu 24.04 (x86_64)** で行っています。加えて GitHub Actions で、macOS
-（Apple Silicon / Intel）・Windows（x64 / ARM64）・Ubuntu（x86_64 / arm64）の
-6 環境で、この付録の手順どおりに全章を毎週確かめています。うまくいかない場合は
+（Apple Silicon / Intel）・Windows（x64 / ARM64）・Ubuntu（x86_64）の
+5 環境で、この付録の手順どおりに全章を毎週確かめています。うまくいかない場合は
 [Issues](https://github.com/iory/build-your-own-arduino-rtos/issues)
 で教えてください。
 :::
