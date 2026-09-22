@@ -126,6 +126,12 @@ export class QuadPolicy {
   }
 }
 
+// サーボへの指令遅延 [物理ステップ]。学習時 (rl/robot_cfg.py の
+// delay_min_lag / delay_max_lag) と同じく、目標角は物理ステップ (5 ms) ごとに
+// 遅延線へ入り、4〜7 ステップ (20〜35 ms) 前の値がサーボに届く。遅れは
+// ステップごとに引き直す。実機で測ったサーボの不感時間 + バス + 推論が 27 ms。
+export const DELAY_MIN = 4, DELAY_MAX = 7;
+
 // MuJoCo の model/data に方策を接続する。qpos/qvel のインデックスは
 // 関節名から引く (方策の出力順とアクチュエータ順は XML で一致している)。
 export function makeController(mujoco, model, data, policy) {
@@ -136,19 +142,41 @@ export function makeController(mujoco, model, data, policy) {
     vadr.push(Number(j.dofadr[0] !== undefined ? j.dofadr[0] : j.dofadr));
     j.delete?.();
   }
+  const nj = policy.nj;
   const nSub = Math.max(1, Math.round(policy.dt / model.opt.timestep));
-  const q = new Float32Array(policy.nj), qd = new Float32Array(policy.nj);
+  const q = new Float32Array(nj), qd = new Float32Array(nj);
+  const L = DELAY_MAX + 1;
+  const hist = Array.from({length: L}, () => new Float64Array(nj));
+  let head = 0, pushes = 0;
+
+  // 目標角を 1 制御周期 (nSub 物理ステップ) ぶん遅延線に通しながら進める。
+  // リセット直後の最初の値は遅延線全体に埋める (mjlab の DelayBuffer と同じ)。
+  function stepTargets(targets) {
+    for (let s = 0; s < nSub; s++) {
+      head = (head + 1) % L;
+      hist[head].set(targets);
+      if (pushes === 0) for (const h of hist) h.set(targets);
+      pushes = Math.min(pushes + 1, L);
+      const lag = Math.min(
+          DELAY_MIN + Math.floor(Math.random() * (DELAY_MAX - DELAY_MIN + 1)),
+          pushes - 1);
+      const d = hist[(head - lag + L) % L];
+      for (let i = 0; i < nj; i++) data.ctrl[i] = d[i];
+      mujoco.mj_step(model, data);
+    }
+  }
+
   return {
     nSub,
-    // 1 制御周期ぶん進める: 観測 -> 方策 -> ctrl 書き込み -> 物理 nSub 回
+    stepTargets,
+    reset() { pushes = 0; },
+    // 1 制御周期ぶん進める: 観測 -> 方策 -> 遅延線 -> 物理 nSub 回
     controlStep(cmd) {
-      for (let i = 0; i < policy.nj; i++) {
+      for (let i = 0; i < nj; i++) {
         q[i] = data.qpos[qadr[i]];
         qd[i] = data.qvel[vadr[i]];
       }
-      const targets = policy.step(q, qd, cmd);
-      for (let i = 0; i < policy.nj; i++) data.ctrl[i] = targets[i];
-      for (let s = 0; s < nSub; s++) mujoco.mj_step(model, data);
+      stepTargets(policy.step(q, qd, cmd));
     },
   };
 }

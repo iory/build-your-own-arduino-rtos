@@ -9,6 +9,11 @@ A simulation that runs the trained policy in **MuJoCo (WebAssembly)**. The same
 neural network you flash onto the robot runs a 50 Hz control loop inside the
 browser. Use the sliders to change the forward and turning commands.
 
+The physics is **the same as in training**. Only the four foot spheres touch the
+ground, the servos are position-controlled (kp 25, kd 0.5) with a viscous damper for
+the back-EMF and gearbox friction, and every command reaches the servo 20–35 ms late
+(a band around the 27 ms measured on the real robot).
+
 ```{raw} html
 <p>
   <a class="sd-btn sd-btn-primary" href="../../assembly/quadruped/walk/index.html"
@@ -28,10 +33,13 @@ The simulation's UI labels are in Japanese.
 The control switch compares **the sin/cos gait of section 13.5 in the book** (state
 machine + trot) with the RL policy. The sin/cos gait lifts the swing leg along a sine
 arc and converts it to joint angles with two-link IK (section 13.3); it is the book's
-sample code `src/gait.cpp` + `src/leg_ik.cpp` ported to the browser as is. It walks
-well enough on flat ground, but this robot is asymmetric front to back, so its speed
-nearly doubles depending on the direction (0.156 m/s vs 0.089 m/s). Tuning the
-coefficients by hand can only suit one direction — that is the motivation for RL.
+sample code `src/gait.cpp` + `src/leg_ik.cpp` ported to the browser as is. This
+robot is asymmetric front to back, though, so the gait changes completely with the
+direction: with the same 0.02 m stride (slider ±0.05) it barely moves forward
+(0.006 m/s) but goes backward at 0.10 m/s. Forward, the slider at 0.12 (0.048 m
+stride) gives 0.06 m/s, and at 0.15 it tips over sideways about one run in eight.
+Tuning the coefficients by hand can only suit one direction — that is the motivation
+for RL.
 
 ## Inside the policy
 
@@ -49,11 +57,12 @@ on the Arduino UNO R4.
 With no abduction joints it cannot move sideways (vy); it turns by taking longer
 steps on one side.
 
-Performance in simulation: 0.165 m/s (0.66 body lengths/s) for a forward command of
-0.12 m/s, and 0.20 m/s for the maximum command of 0.15 m/s, so it walks about 40%
-faster than commanded. The diagonal trot is about 3.1 Hz (gait period 0.32 s). Both
-were measured by walking the same model as the simulation above for 20 s and
-averaging the last 10 s. The low speed is a property of the robot, set by the servos'
+Performance in simulation: 0.115 m/s (0.46 body lengths/s) for a forward command of
+0.12 m/s, and 0.157 m/s for the maximum command of 0.15 m/s, so it tracks the command
+closely. Turning reaches 0.15 rad/s for a 0.3 rad/s command, half of it. The diagonal
+trot is about 3.1 Hz (gait period 0.32 s). All of these were measured with the same
+model and controller as the simulation above, five 20 s runs each, averaging the last
+10 s. The low speed is a property of the robot, set by the servos'
 no-load speed, not a failure of training.
 
 ## Training code
@@ -174,5 +183,5 @@ answer; **both should stay at 0**. If they grow, suspect the wiring or the power
 most.
 
 **Can it go faster?** — With 45 rpm servos and 0.19 m legs, 0.05–0.2 m/s is what the
-hardware can do (0.20 m/s at the maximum command in simulation). The limit is the
+hardware can do (0.16 m/s at the maximum command in simulation). The limit is the
 no-load speed, not torque, so going faster means changing the servos or the leg length.

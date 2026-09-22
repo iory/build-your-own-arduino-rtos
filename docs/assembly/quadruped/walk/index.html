@@ -186,6 +186,7 @@ async function main() {
     mujoco.mj_forward(model, data);
     policy.reset();
     gait.reset();
+    ctl.reset();
     for (let i = 0; i < policy.nj; i++) data.ctrl[i] = policy.defaultQ[i];
     walking = false;
     $('walkBtn').textContent = '歩く';
@@ -200,9 +201,7 @@ async function main() {
       ctl.controlStep([vx, 0, +$('wz').value]);
     } else {
       gait.stepX = vx * 0.4;
-      const q = gait.step(policy.dt);
-      for (let i = 0; i < policy.nj; i++) data.ctrl[i] = q[i];
-      for (let s = 0; s < ctl.nSub; s++) mujoco.mj_step(model, data);
+      ctl.stepTargets(gait.step(policy.dt));
     }
   }
 
