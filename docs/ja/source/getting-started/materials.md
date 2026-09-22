@@ -13,6 +13,17 @@ UNO R4 には **Minima** と **WiFi** の 2 種類があります。本書で使
 LED マトリクスを搭載した **WiFi 版**です。購入時にご注意ください。
 ```
 
+```{figure} ../_static/uno_r4_minima_vs_wifi.png
+:name: fig-materials-minima-vs-wifi
+:width: 90%
+
+左が Minima、右が WiFi 版。WiFi 版には 12×8 の LED マトリクス（右下）と、Wi-Fi 用の
+ESP32-S3 モジュール（左の大きな四角）があります。
+出典: Arduino, docs.arduino.cc の製品画像
+（[UNO R4 Minima](https://github.com/arduino/docs-content/blob/dab66ecbd6ad52cd742da6c19c5b6330a7f2caae/content/hardware/uno/boards/uno-r4-minima/image.svg) / [UNO R4 WiFi](https://github.com/arduino/docs-content/blob/dab66ecbd6ad52cd742da6c19c5b6330a7f2caae/content/hardware/uno/boards/uno-r4-wifi/image.svg)）を並べて名前を付けたもの。
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+```
+
 ```{figure} ../_static/uno_r4_wifi_os.jpg
 :name: fig-materials-uno-r4-wifi
 :width: 80%

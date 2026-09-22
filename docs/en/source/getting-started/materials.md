@@ -10,6 +10,17 @@
 There are two UNO R4 variants; this book uses the **WiFi** one.
 ```
 
+```{figure} ../_static/uno_r4_minima_vs_wifi.png
+:name: fig-materials-minima-vs-wifi
+:width: 90%
+
+Left: Minima. Right: WiFi. Only the WiFi board has the 12×8 LED matrix (bottom right)
+and the ESP32-S3 Wi-Fi module (the large square on the left).
+Source: Arduino, product images on docs.arduino.cc
+([UNO R4 Minima](https://github.com/arduino/docs-content/blob/dab66ecbd6ad52cd742da6c19c5b6330a7f2caae/content/hardware/uno/boards/uno-r4-minima/image.svg) / [UNO R4 WiFi](https://github.com/arduino/docs-content/blob/dab66ecbd6ad52cd742da6c19c5b6330a7f2caae/content/hardware/uno/boards/uno-r4-wifi/image.svg)), placed side by side and labelled.
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+```
+
 ```{figure} ../_static/uno_r4_wifi_os.jpg
 :name: fig-materials-uno-r4-wifi
 :width: 80%
