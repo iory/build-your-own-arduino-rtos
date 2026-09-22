@@ -134,6 +134,7 @@ uv run --script scripts/md_lint.py fix   README.md docs/ja/source docs/en/source
 | `uno_r4_wifi_pinout.png` | [ABX00087 Full Pinout](https://docs.arduino.cc/resources/pinouts/ABX00087-full-pinout.pdf) 1 ページ目 | 凡例を除いて切り抜き |
 | `uno_r4_wifi_block_diagram.png` | [ABX00087 Datasheet](https://docs.arduino.cc/resources/datasheets/ABX00087-datasheet.pdf) 3 Block Diagram | 縮小のみ |
 | `uno_r4_wifi_led_matrix_schematic.png` | [ABX00087 Schematics](https://docs.arduino.cc/resources/schematics/ABX00087-schematics.pdf) 2 ページ目 | PNG 化のみ |
+| `uno_r4_minima_vs_wifi.png` | docs.arduino.cc の製品画像 [UNO R4 Minima](https://github.com/arduino/docs-content/blob/dab66ecbd6ad52cd742da6c19c5b6330a7f2caae/content/hardware/uno/boards/uno-r4-minima/image.svg) / [UNO R4 WiFi](https://github.com/arduino/docs-content/blob/dab66ecbd6ad52cd742da6c19c5b6330a7f2caae/content/hardware/uno/boards/uno-r4-wifi/image.svg)（[arduino/docs-content](https://github.com/arduino/docs-content)） | 2 枚を並べ、製品名を付けて PNG 化 |
 
 ライセンスの根拠: 各 PDF 内の CC BY-SA 4.0 表記、および
 [arduino/docs-content の LICENSE](https://github.com/arduino/docs-content/blob/main/LICENSE.md)。
