@@ -74,6 +74,15 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :::
 
 
+## On the board
+
+```{figure} ../_static/adv4_bootcount.gif
+:name: fig-adv4-bootcount
+:width: 100%
+
+Recorded while pressing RESET six times. `boot count` goes 9, 10, 11 … with each press. A RAM variable would go back to 0, so this shows it is stored in Data Flash.
+```
+
 ## Pitfalls
 
 (Collected from reader questions — ask via

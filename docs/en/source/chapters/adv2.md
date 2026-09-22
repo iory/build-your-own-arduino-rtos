@@ -86,6 +86,15 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :::
 
 
+## On the board
+
+```{figure} ../_static/adv2_svc.gif
+:name: fig-adv2-svc
+:width: 100%
+
+`[A]` and `[B]` keep alternating, each character going out through `svc`. The `[probe]` lines at the start scrolled by before the monitor opened.
+```
+
 ## Pitfalls
 
 (Collected from reader questions — ask via
