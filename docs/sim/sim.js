@@ -21,25 +21,31 @@ const ATTACH_TIMEOUT_MS = 30000;
 const CONSOLE_KEEP = 30000;          // シリアル画面に残す文字数
 const CONSOLE_TRIM_AT = 40000;
 
-// 章の一覧。dir は code/ の下のディレクトリ名、ELF は chapters/<dir>.elf に置く
+// 章の一覧。dir は code/ の下のディレクトリ名、ELF は chapters/<dir>.elf に置く。
+// note は、ブラウザ版では本文どおりに見えない章に出す注意（全章を
+// verify_chapters.py の期待値で確かめた結果による）
 const CHAPTERS = [
   { dir: '00_intro', title: '準備: 開発環境の確認' },
   { dir: '01_boot', title: '第1章: ブートシーケンス' },
   { dir: '02_baremetal', title: '第2章: ベアメタルからの出発' },
   { dir: '03_context_switch', title: '第3章: コンテキストスイッチの実装' },
-  { dir: '04_scheduler', title: '第4章: プリエンプティブスケジューラ' },
+  { dir: '04_scheduler', title: '第4章: プリエンプティブスケジューラ',
+    note: 'ブラウザ版の QEMU は命令をインタプリタで実行するため、実機の約 1/10 の速さしか出ません。この章の Heavy タスク（重い計算）はブラウザではほとんど進まず、'
+          + '「Heavy task completed」が出ません。プリエンプションの様子は PC のシミュレータか実機で確かめてください。' },
   { dir: '05_shell', title: '第5章: 対話型シェル' },
   { dir: '06_memory_protection', title: '第6章: メモリ保護' },
   { dir: '07_led_matrix', title: '第7章: LEDマトリクス可視化' },
   { dir: '08_interpreter', title: '第8章: 簡易インタプリタ' },
-  { dir: '09_integration', title: '第9章: 統合とロボット制御' },
+  { dir: '09_integration', title: '第9章: 統合とロボット制御',
+    note: 'ブラウザ版の QEMU は命令をインタプリタで実行するため、実機の約 1/10 の速さしか出ません。この章の ps が出す CPU% は、合計が 100% を少し超えることがあります。'
+          + 'CPU 使用率の数字は PC のシミュレータか実機で確かめてください。' },
   { dir: '10_freertos', title: '第10章: FreeRTOSで同じことをやってみる' },
   { dir: '11_tiny_python', title: '第11章: TinyPython' },
   { dir: 'adv1_sync', title: '応用編 第1章: ロックと同期' },
   { dir: 'adv2_syscall', title: '応用編 第2章: ユーザー／カーネルモードと SVC' },
   { dir: 'adv3_heap', title: '応用編 第3章: ヒープ自作' },
 ];
-const DEFAULT_CHAPTER = '04_scheduler';
+const DEFAULT_CHAPTER = '07_led_matrix';
 
 const $ = (id) => document.getElementById(id);
 
@@ -209,6 +215,11 @@ async function main() {
     return;
   }
   document.title = `仮想 UNO R4 WiFi — ${chapter.title}`;
+  if (chapter.note) {
+    const note = $('chapter-note');
+    note.textContent = chapter.note;
+    note.hidden = false;
+  }
 
   if (!self.crossOriginIsolated) {
     // coi-serviceworker が有効になるまでの最初の 1 回は、ここに来てから自動で読み込み直す

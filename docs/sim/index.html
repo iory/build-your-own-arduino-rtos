@@ -14,7 +14,7 @@
   :root {
     --bg: #0e1218; --panel: #1b2230; --edge: #2c3648;
     --text: #e6edf3; --muted: #8b98ab; --accent: #1a7f8e;
-    --ok: #3fb950; --error: #f85149;
+    --ok: #3fb950; --error: #f85149; --warn: #d29922;
   }
   * { box-sizing: border-box; }
   body {
@@ -86,6 +86,7 @@
     border: 1px solid var(--edge); color: var(--muted);
   }
   .notice.error { color: var(--error); border-color: var(--error); }
+  .notice.warn { color: var(--warn); border-color: var(--warn); }
 
   .panel { background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; }
   .panel h2 {
@@ -122,6 +123,7 @@
   </header>
 
   <div class="notice error" id="error" hidden></div>
+  <div class="notice warn" id="chapter-note" hidden></div>
 
   <div class="board" id="board">
     <img src="board_off.jpg" alt="Arduino UNO R4 WiFi">
