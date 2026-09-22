@@ -13,6 +13,18 @@ pio run -e sim   →   firmware.elf   →   QEMU (RA4M1)   →   ブラウザ
 サンプルコードは 1 行も変えません。実機向けのビルドとの違いは、Arduino コア
 公式のフラグ `-D NO_USB` を足すことだけです（理由は後述）。
 
+:::{tip}
+**インストールなしで、まずブラウザで試せます。** 各章のファームウェアを
+ブラウザの中の QEMU（WebAssembly 版）で動かすページを用意しました。
+PC に何も入れずに、LED の点滅やシェルを触れます。
+
+<a class="sd-btn sd-btn-primary" href="../sim/index.html">ブラウザで動かす</a>
+
+ブラウザ版の QEMU は命令をインタプリタで実行するため、タイマや点滅は実時間
+どおりですが、重い計算は実機より遅くなります。本文の出力と細かく比べるときは、
+以下の手順で PC に入れたものか実機を使ってください。
+:::
+
 :::{note}
 本書のカーネルが使うのは SysTick・PendSV・NVIC・MPU といった Cortex-M の
 標準機能です。エミュレータ上でもこれらは実機と同じように動き、第6章の
@@ -44,7 +56,7 @@ Apple Silicon（macOS 14 以降）と Intel Mac（macOS 15 以降）に対応し
 ```bash
 mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
 arch=$(uname -m)   # arm64 か x86_64
-curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/qemu-arduino-uno-r4-v11.1.1-unor4.4-macos-$arch.tar.gz"
+curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.5/qemu-arduino-uno-r4-v11.1.1-unor4.5-macos-$arch.tar.gz"
 tar xzf qemu-arduino-uno-r4-*-macos-*.tar.gz --strip-components=1
 ~/qemu-unor4/bin/qemu-system-arm --version
 ```
@@ -68,8 +80,8 @@ PowerShell で:
 
 ```powershell
 $arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'x86_64' }
-$name = "qemu-arduino-uno-r4-v11.1.1-unor4.4-windows-$arch"
-Invoke-WebRequest "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/$name.zip" -OutFile "$name.zip"
+$name = "qemu-arduino-uno-r4-v11.1.1-unor4.5-windows-$arch"
+Invoke-WebRequest "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.5/$name.zip" -OutFile "$name.zip"
 Expand-Archive "$name.zip" -DestinationPath "$HOME\qemu-unor4"
 & "$HOME\qemu-unor4\$name\bin\qemu-system-arm.exe" --version
 ```
@@ -85,7 +97,7 @@ x86_64 版と arm64 版があります（glibc 2.35 以降、Ubuntu 22.04 相当
 ```bash
 mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
 arch=$(uname -m); [ "$arch" = aarch64 ] && arch=arm64
-curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/qemu-arduino-uno-r4-v11.1.1-unor4.4-linux-$arch.tar.gz"
+curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.5/qemu-arduino-uno-r4-v11.1.1-unor4.5-linux-$arch.tar.gz"
 tar xzf qemu-arduino-uno-r4-*-linux-*.tar.gz --strip-components=1
 ~/qemu-unor4/bin/qemu-system-arm --version
 ```

@@ -15,6 +15,19 @@ Not a single line of the sample code changes. The only difference from the
 build for real hardware is one extra flag, `-D NO_USB`, which comes from the
 Arduino core itself (see below).
 
+:::{tip}
+**Try it in your browser first, with nothing to install.** A page runs each
+chapter's firmware on QEMU compiled to WebAssembly, right in the browser, so
+you can watch the LEDs and use the shell without setting anything up.
+
+<a class="sd-btn sd-btn-primary" href="../../sim/index.html">Run it in the browser</a>
+
+The browser build of QEMU interprets instructions, so timers and blinking run
+in real time but heavy computation is slower than on the board. When you want
+to compare output with the text closely, use the PC install below or the
+board. (The page itself is in Japanese.)
+:::
+
 :::{note}
 The kernel in this book only uses standard Cortex-M facilities — SysTick,
 PendSV, NVIC, MPU. Those behave in the emulator as they do on silicon, and the
@@ -48,7 +61,7 @@ For Apple silicon (macOS 14 or later) and Intel Macs (macOS 15 or later).
 ```bash
 mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
 arch=$(uname -m)   # arm64 or x86_64
-curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/qemu-arduino-uno-r4-v11.1.1-unor4.4-macos-$arch.tar.gz"
+curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.5/qemu-arduino-uno-r4-v11.1.1-unor4.5-macos-$arch.tar.gz"
 tar xzf qemu-arduino-uno-r4-*-macos-*.tar.gz --strip-components=1
 ~/qemu-unor4/bin/qemu-system-arm --version
 ```
@@ -72,8 +85,8 @@ In PowerShell:
 
 ```powershell
 $arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'x86_64' }
-$name = "qemu-arduino-uno-r4-v11.1.1-unor4.4-windows-$arch"
-Invoke-WebRequest "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/$name.zip" -OutFile "$name.zip"
+$name = "qemu-arduino-uno-r4-v11.1.1-unor4.5-windows-$arch"
+Invoke-WebRequest "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.5/$name.zip" -OutFile "$name.zip"
 Expand-Archive "$name.zip" -DestinationPath "$HOME\qemu-unor4"
 & "$HOME\qemu-unor4\$name\bin\qemu-system-arm.exe" --version
 ```
@@ -89,7 +102,7 @@ available for Linux arm64, so **the chapters can only be built on x86_64**
 ```bash
 mkdir -p ~/qemu-unor4 && cd ~/qemu-unor4
 arch=$(uname -m); [ "$arch" = aarch64 ] && arch=arm64
-curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.4/qemu-arduino-uno-r4-v11.1.1-unor4.4-linux-$arch.tar.gz"
+curl -fLO "https://github.com/iory/qemu-arduino-uno-r4/releases/download/v11.1.1-unor4.5/qemu-arduino-uno-r4-v11.1.1-unor4.5-linux-$arch.tar.gz"
 tar xzf qemu-arduino-uno-r4-*-linux-*.tar.gz --strip-components=1
 ~/qemu-unor4/bin/qemu-system-arm --version
 ```
