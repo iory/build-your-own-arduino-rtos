@@ -101,7 +101,7 @@ only see the port name.
 A `Hardware ID` of `2341:1002` identifies the Arduino UNO R4 WiFi.
 ```
 
-```{admonition} You get both `cu.` and `tty.`
+~~~{admonition} You get both `cu.` and `tty.`
 :class: warning
 
 macOS creates two device nodes for the same board:
@@ -116,7 +116,7 @@ only reports the `cu.` names.
 The trailing characters are the board's serial number, so **yours will differ**.
 Being a serial number, it does not change when you replug the board (unlike
 `ttyACM0` / `ttyACM1` on Linux).
-```
+~~~
 
 ## 3. Build and flash
 
@@ -154,7 +154,7 @@ uv run pio device monitor -b 115200
 Chapter 1 **starts printing once you send a single `S`**. Type `S` after the
 monitor opens.
 
-```{admonition} Why it waits for `S`
+~~~{admonition} Why it waits for `S`
 :class: note
 
 The board starts running the instant it is powered, while you need a few seconds
@@ -171,7 +171,7 @@ The `S` is how the PC says "I am ready":
 
 `01_boot`, `01_boot_vector_dump`, `adv3_heap` and `adv4_fs` work this way.
 Chapters that keep printing (chapter 2, for example) do not need it.
-```
+~~~
 
 ```text
 === Boot Sequence Check ===

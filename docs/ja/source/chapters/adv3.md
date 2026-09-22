@@ -28,6 +28,7 @@ pio device monitor -b 115200
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `include/os_heap.h` — 22 行
@@ -39,6 +40,7 @@ pio device monitor -b 115200
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `src/os_heap.cpp` — 128 行
@@ -50,6 +52,7 @@ pio device monitor -b 115200
 :language: cpp
 :linenos:
 ```
+
 :::
 
 

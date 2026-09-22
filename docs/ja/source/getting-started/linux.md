@@ -168,7 +168,7 @@ uv run pio device monitor -b 115200
 第1章は **`S` を 1 文字送ると出力が始まります**。モニタが開いたら `S` を
 打ってください。
 
-```{admonition} なぜ `S` を待たせているのか
+~~~{admonition} なぜ `S` を待たせているのか
 :class: note
 
 ボードは電源が入った瞬間から全速力で走り出します。一方こちらは、書き込みが
@@ -193,7 +193,7 @@ Linux ではもう一つ理由があります。**ModemManager** が書き込み
 
 書籍では `01_boot` / `01_boot_vector_dump` / 応用編の `adv3_heap` と
 `adv4_fs` がこの形です。ずっと印字し続ける章（第2章など）には要りません。
-```
+~~~
 
 ```text
 === Boot Sequence Check ===

@@ -60,12 +60,14 @@ Troubleshooting and corrections.
 
 :::{grid-item}
 :columns: 12 12 4 4
+
 ```{image} _static/book_cover.jpg
 :alt: Cover of the book (Japanese edition)
 :width: 240px
 :align: center
 :target: https://book.mynavi.jp/ec/products/detail/id=152331
 ```
+
 :::
 
 :::{grid-item}

@@ -173,25 +173,31 @@ STL は下からダウンロードできます（単位はミリメートル。
 :gutter: 2
 
 :::{grid-item}
+
 ```{button-link} ../assembly/quadruped/stl/body.stl
 :color: primary
 :expand:
 body.stl（×1）
 ```
+
 :::
 :::{grid-item}
+
 ```{button-link} ../assembly/quadruped/stl/bracket_outline.stl
 :color: primary
 :expand:
 bracket_outline.stl（×4）
 ```
+
 :::
 :::{grid-item}
+
 ```{button-link} ../assembly/quadruped/stl/leg_link1.stl
 :color: primary
 :expand:
 leg_link1.stl（×4）
 ```
+
 :::
 ::::
 
@@ -206,19 +212,23 @@ Textured PEI プレート）。PLA で刷る場合はフィラメントを変え
 :gutter: 2
 
 :::{grid-item}
+
 ```{button-link} ../assembly/quadruped/stl/body.3mf
 :color: secondary
 :expand:
 body.3mf（胴体プレート）
 ```
+
 ![body plate](print_img/bambulab-body-parts.png)
 :::
 :::{grid-item}
+
 ```{button-link} ../assembly/quadruped/stl/leg_parts.3mf
 :color: secondary
 :expand:
 leg_parts.3mf（脚 8 部品プレート）
 ```
+
 ![leg plate](print_img/bambulab-leg-parts.png)
 :::
 ::::

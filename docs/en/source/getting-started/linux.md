@@ -165,7 +165,7 @@ uv run pio device monitor -b 115200
 Chapter 1 **starts printing once you send a single `S`**. Type `S` after the
 monitor opens.
 
-```{admonition} Why it waits for `S`
+~~~{admonition} Why it waits for `S`
 :class: note
 
 The board starts running the instant it is powered, while you need a few
@@ -189,7 +189,7 @@ attached (see section 6).
 
 `01_boot`, `01_boot_vector_dump`, `adv3_heap` and `adv4_fs` work this way.
 Chapters that keep printing (chapter 2, for example) do not need it.
-```
+~~~
 
 ```text
 === Boot Sequence Check ===

@@ -174,7 +174,7 @@ after uploading, or press RESET once. In the Chapter 5 shell, typing `reboot`
 does the same thing.
 ```
 
-```{admonition} Why chapter 1 waits for an `S`
+~~~{admonition} Why chapter 1 waits for an `S`
 :class: note
 
 Chapter 1's sketch **prints nothing until you send a single `S`** from the
@@ -191,7 +191,7 @@ The `S` is how the PC says "I am ready":
 
 `01_boot`, `01_boot_vector_dump`, `adv3_heap` and `adv4_fs` work this way.
 Chapters that keep printing (chapter 2, for example) do not need it.
-```
+~~~
 
 ## 5. Where Windows trips you up
 
