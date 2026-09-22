@@ -46,6 +46,18 @@ const CHAPTERS = [
   { dir: 'adv3_heap', title: '応用編 第3章: ヒープ自作' },
 ];
 const DEFAULT_CHAPTER = '07_led_matrix';
+// 章の代わりに、読者が自分でビルドした ELF を選んで動かす
+const CUSTOM = { dir: 'custom', title: '自分でビルドした ELF を動かす…' };
+
+// ELF のヘッダ（ELF32, little endian, 実行形式, ARM）
+const ELF_MAGIC = 0x7f454c46;
+const ELFCLASS32 = 1;
+const ELFDATA2LSB = 1;
+const ET_EXEC = 2;
+const EM_ARM = 40;
+// Serial が USB CDC のビルド（UNO R4 Minima 向けなど）にだけある、USB の起動関数。
+// UNO R4 WiFi 向けのビルドは Arduino の boards.txt が -DNO_USB を付けるので含まない
+const USB_START_SYMBOL = '_Z10__USBStartv';
 
 const $ = (id) => document.getElementById(id);
 
@@ -123,7 +135,53 @@ async function placeLeds() {
 
 function selectedChapter() {
   const want = new URLSearchParams(location.search).get('ch') || DEFAULT_CHAPTER;
+  if (want === CUSTOM.dir) return CUSTOM;
   return CHAPTERS.find((c) => c.dir === want) || null;
+}
+
+// 動かせない ELF なら理由を、動かせるなら null を返す
+function elfProblem(buf) {
+  if (buf.length < 0x34) return 'ELF ファイルではありません（短すぎます）。';
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  if (dv.getUint32(0) !== ELF_MAGIC) return 'ELF ファイルではありません。firmware.elf を選んでください（.bin や .hex は使えません）。';
+  if (buf[4] !== ELFCLASS32 || buf[5] !== ELFDATA2LSB) return '32 ビット・リトルエンディアンの ELF ではありません。';
+  if (dv.getUint16(0x10, true) !== ET_EXEC) return '実行形式の ELF ではありません（.o やライブラリは動かせません）。';
+  if (dv.getUint16(0x12, true) !== EM_ARM) return 'ARM 向けの ELF ではありません。UNO R4 向けにビルドしたものを選んでください。';
+  return null;
+}
+
+function showNote(text) {
+  const note = $('chapter-note');
+  note.textContent = text;
+  note.hidden = false;
+}
+
+// ファイルが選ばれる（またはドロップされる）まで待つ
+function chooseElf() {
+  $('upload').hidden = false;
+  const drop = $('drop');
+  return new Promise((resolve) => {
+    const take = async (file) => {
+      if (!file) return;
+      const buf = new Uint8Array(await file.arrayBuffer());
+      const problem = elfProblem(buf);
+      if (problem) {
+        $('upload-error').textContent = `${file.name}: ${problem}`;
+        $('upload-error').hidden = false;
+        return;
+      }
+      $('upload').hidden = true;
+      resolve({ name: file.name, elf: buf });
+    };
+    $('file').addEventListener('change', (e) => take(e.target.files[0]));
+    drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+    drop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      drop.classList.remove('over');
+      take(e.dataTransfer.files[0]);
+    });
+  });
 }
 
 function fillChapterMenu(current) {
@@ -135,6 +193,11 @@ function fillChapterMenu(current) {
     opt.selected = current && c.dir === current.dir;
     sel.appendChild(opt);
   }
+  const custom = document.createElement('option');
+  custom.value = CUSTOM.dir;
+  custom.textContent = CUSTOM.title;
+  custom.selected = current === CUSTOM;
+  sel.appendChild(custom);
   // QEMU は止め直せないので、章を変えるときはページごと読み込み直す
   sel.addEventListener('change', () => {
     const url = new URL(location.href);
@@ -215,11 +278,7 @@ async function main() {
     return;
   }
   document.title = `仮想 UNO R4 WiFi — ${chapter.title}`;
-  if (chapter.note) {
-    const note = $('chapter-note');
-    note.textContent = chapter.note;
-    note.hidden = false;
-  }
+  if (chapter.note) showNote(chapter.note);
 
   if (!self.crossOriginIsolated) {
     // coi-serviceworker が有効になるまでの最初の 1 回は、ここに来てから自動で読み込み直す
@@ -232,13 +291,32 @@ async function main() {
   }
 
   const leds = await placeLeds();
-  setStatus('ファームウェアを読み込み中…');
-  const elfRes = await fetch(`chapters/${chapter.dir}.elf`);
-  if (!elfRes.ok) {
-    showError(`chapters/${chapter.dir}.elf を読み込めませんでした（HTTP ${elfRes.status}）。`);
-    return;
+  let elf;
+  if (chapter === CUSTOM) {
+    setStatus('ELF を選んでください');
+    const chosen = await chooseElf();
+    elf = chosen.elf;
+    document.title = `仮想 UNO R4 WiFi — ${chosen.name}`;
+    const notes = [];
+    if (findSymbol(elf, USB_START_SYMBOL) !== null) {
+      notes.push('この ELF は Serial を USB で出すビルド（UNO R4 Minima 向けなど）です。'
+                 + 'エミュレータには USB が無いので、シリアルの出力は出ません。'
+                 + 'UNO R4 WiFi 向け（board = uno_r4_wifi）にビルドしてください。');
+    }
+    if (findSymbol(elf, FRAMEBUFFER_SYMBOL) === null) {
+      notes.push('この ELF は Arduino_LED_Matrix を使っていないので、LED マトリクスは光りません'
+                 + '（L (D13) とシリアルは動きます）。');
+    }
+    if (notes.length) showNote(notes.join(' '));
+  } else {
+    setStatus('ファームウェアを読み込み中…');
+    const elfRes = await fetch(`chapters/${chapter.dir}.elf`);
+    if (!elfRes.ok) {
+      showError(`chapters/${chapter.dir}.elf を読み込めませんでした（HTTP ${elfRes.status}）。`);
+      return;
+    }
+    elf = new Uint8Array(await elfRes.arrayBuffer());
   }
-  const elf = new Uint8Array(await elfRes.arrayBuffer());
   const fbAddr = findSymbol(elf, FRAMEBUFFER_SYMBOL);
 
   setStatus('QEMU を読み込み中…（初回は約 15 MB）');

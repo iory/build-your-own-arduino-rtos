@@ -87,6 +87,15 @@
   }
   .notice.error { color: var(--error); border-color: var(--error); }
   .notice.warn { color: var(--warn); border-color: var(--warn); }
+  .drop {
+    display: grid; gap: 6px; margin: 14px; padding: 22px 16px; text-align: center;
+    border: 2px dashed var(--edge); border-radius: 10px; cursor: pointer;
+    font-size: 14px; line-height: 1.6;
+  }
+  .drop span { color: var(--muted); font-size: 12.5px; }
+  .drop.over { border-color: var(--accent); background: rgba(26,127,142,.12); }
+  .drop input { display: none; }
+  #upload .notice { margin: 0 14px 14px; }
 
   .panel { background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; }
   .panel h2 {
@@ -124,6 +133,18 @@
 
   <div class="notice error" id="error" hidden></div>
   <div class="notice warn" id="chapter-note" hidden></div>
+
+  <div class="panel" id="upload" hidden>
+    <h2>自分でビルドした ELF</h2>
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept=".elf">
+      <div><b>firmware.elf をここにドロップ</b>するか、クリックして選んでください。</div>
+      <span>UNO R4 WiFi 向けにふつうにビルドしたもの（PlatformIO なら
+      <code>.pio/build/&lt;env&gt;/firmware.elf</code>）がそのまま動きます。
+      ファイルはこのブラウザの中だけで使われ、どこにも送られません。</span>
+    </label>
+    <div class="notice error" id="upload-error" hidden></div>
+  </div>
 
   <div class="board" id="board">
     <img src="board_off.jpg" alt="Arduino UNO R4 WiFi">

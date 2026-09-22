@@ -16,7 +16,9 @@ pio run -e sim   →   firmware.elf   →   QEMU (RA4M1)   →   ブラウザ
 :::{tip}
 **インストールなしで、まずブラウザで試せます。** 各章のファームウェアを
 ブラウザの中の QEMU（WebAssembly 版）で動かすページを用意しました。
-PC に何も入れずに、LED の点滅やシェルを触れます。
+PC に何も入れずに、LED の点滅やシェルを触れます。章の一覧の最後の
+「自分でビルドした ELF を動かす…」を選ぶと、自分で書き換えてビルドした
+`firmware.elf` も動かせます（UNO R4 WiFi 向けのふつうのビルドがそのまま動きます）。
 
 <a class="sd-btn sd-btn-primary" href="../sim/index.html">ブラウザで動かす</a>
 
