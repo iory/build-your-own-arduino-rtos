@@ -111,8 +111,8 @@ neighbouring points is within the noise.
 
 ```{note}
 This is **a different policy trained with the default settings**, not a reproduction of
-[the distributed policy](walk.md) (home height 0.11 m, gait period 0.32 s, 3498
-iterations, 0.115 m/s at a 0.12 m/s command). The exported header records the home
+[the distributed policy](walk.md) (home height 0.11 m, gait period 0.32 s, 3999
+iterations, 0.120 m/s at a 0.12 m/s command). The exported header records the home
 angles used in training, so it stays consistent with the real robot as it is.
 ```
 

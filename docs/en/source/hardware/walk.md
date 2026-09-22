@@ -57,12 +57,12 @@ on the Arduino UNO R4.
 With no abduction joints it cannot move sideways (vy); it turns by taking longer
 steps on one side.
 
-Performance in simulation: 0.115 m/s (0.46 body lengths/s) for a forward command of
-0.12 m/s, and 0.157 m/s for the maximum command of 0.15 m/s, so it tracks the command
-closely. Turning reaches 0.15 rad/s for a 0.3 rad/s command, half of it. The diagonal
-trot is about 3.1 Hz (gait period 0.32 s). All of these were measured with the same
-model and controller as the simulation above, five 20 s runs each, averaging the last
-10 s. The low speed is a property of the robot, set by the servos'
+Performance in simulation: 0.120 m/s (0.48 body lengths/s) for a forward command of
+0.12 m/s, and 0.148 m/s for the maximum command of 0.15 m/s, so it tracks the command
+closely. Turning reaches 0.213 rad/s for a 0.3 rad/s command. The diagonal trot runs at
+3.13 Hz (gait period 0.32 s), the same at every speed. All of these were measured with
+the same model and controller as the simulation above, five 20 s runs each, averaging
+the last 10 s. The low speed is a property of the robot, set by the servos'
 no-load speed, not a failure of training.
 
 ## Training code
