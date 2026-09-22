@@ -17,11 +17,49 @@ The quadruped walking on your own OS, driving 8 servos (1.5x speed)
 | 3D-printed body & legs | 1 set | STL downloads below |
 | Arduino UNO R4 WiFi | 1 | |
 
-The full bill of materials with purchase links, power-supply sizing, and
-3D-printing settings is currently **Japanese only**:
+::::{grid} 1 1 2 2
+:gutter: 3
 
-```{raw} html
-<p><a href="../../hardware/bom.html">部品表（BOM） — on the Japanese site ↗</a></p>
+:::{grid-item-card} 🛒 Bill of materials and where to buy
+:link: bom
+:link-type: doc
+
+8 STS3215 servos + driver board + power supply, **about ¥35,100**. Links to the
+shop pages, choosing a battery, and 3D-printing settings.
+:::
+
+:::{grid-item-card} 🔧 Assembly (3D viewer)
+:link: assembly
+:link-type: doc
+
+Step through the assembly as a 3D animation in the browser. A PDF version is
+available too.
+:::
+
+:::{grid-item-card} 🚶 Learning to walk (reinforcement learning)
+:link: walk
+:link-type: doc
+
+The training side that did not fit in the book, with a MuJoCo simulation of the
+trained policy in the browser.
+:::
+
+:::{grid-item-card} 🧠 Training the policy yourself
+:link: train
+:link-type: doc
+
+Retrain with different rewards or speed limits. **Works end to end on Google Colab
+(the free T4) even without a GPU.**
+:::
+::::
+
+```{toctree}
+:hidden:
+
+bom
+assembly
+walk
+train
 ```
 
 ## STL downloads

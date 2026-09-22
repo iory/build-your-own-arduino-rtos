@@ -17,6 +17,7 @@ licensed under the [Apache License 2.0](https://github.com/iory/learning-os-from
 
 ```{toctree}
 :maxdepth: 1
+verify
 ch01
 ch02
 ch03

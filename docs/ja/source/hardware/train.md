@@ -165,7 +165,8 @@ python "$ARDUINO_QUAD_ROOT/rl/scripts/record_video.py" \
 ```
 
 `--bundle` を渡すと、チェックポイントの代わりに**エクスポート済みの方策**
-（`walk/` の `.npz` + `.json`）を、実機と同じ numpy 実装で再生します。
+（`13_quadruped/` の `.npz` + `.json`。`--bundle "$ARDUINO_QUAD_ROOT"` のように
+`13_quadruped` のディレクトリを渡す）を、実機と同じ numpy 実装で再生します。
 
 ## 実機に持っていく
 
@@ -182,8 +183,8 @@ python "$ARDUINO_QUAD_ROOT/host/export_quad_policy.py" \
 
 | ファイル | 使うところ |
 |---|---|
-| `arduino_quad_policy.h` | Arduino スケッチ（`walk/arduino/arduino_quad/`） |
-| `arduino_quad_policy.npz` | PC 直結版（`walk/host/quad_host.py`） |
+| `arduino_quad_policy.h` | ファームウェア（`13_quadruped/include/` に置き換える） |
+| `arduino_quad_policy.npz` | PC 直結版（`13_quadruped/host/quad_host.py`） |
 | `arduino_quad_policy.json` | 同じ情報の機械可読版 |
 
 重みだけでなく、**観測の並び・履歴の順序・正規化の統計・home 角・action の
@@ -191,7 +192,7 @@ python "$ARDUINO_QUAD_ROOT/host/export_quad_policy.py" \
 書き写すと、エラーも出ないまま「震えるだけのロボット」になるためです。
 書き出したあとで numpy 実装と PyTorch の出力を突き合わせて検証します。
 
-実機で動かす手順は {doc}`walk` と `walk/HANDOFF.md` を読んでください。
+実機で動かす手順は {doc}`walk` の「実機で歩かせる」を読んでください。
 **最初は必ず機体を吊るしてから**動かすこと。
 
 ## つまずきやすいポイント
