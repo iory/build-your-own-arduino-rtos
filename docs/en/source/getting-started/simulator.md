@@ -18,7 +18,9 @@ Arduino core itself (see below).
 :::{tip}
 **Try it in your browser first, with nothing to install.** A page runs each
 chapter's firmware on QEMU compiled to WebAssembly, right in the browser, so
-you can watch the LEDs and use the shell without setting anything up.
+you can watch the LEDs and use the shell without setting anything up. The last
+entry in its chapter menu lets you run your own `firmware.elf` as well; an
+ordinary UNO R4 WiFi build runs as it is.
 
 <a class="sd-btn sd-btn-primary" href="../../sim/index.html">Run it in the browser</a>
 
