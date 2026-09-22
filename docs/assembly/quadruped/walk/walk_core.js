@@ -25,6 +25,8 @@ export class QuadPolicy {
     this.obsDim = this.meta.obs_dim;
     this.dt = this.meta.control_dt;
     this.gaitPeriod = this.meta.gait_period_s;
+    // |cmd| below this -> phase 0. Exports without the field were trained with 0.1.
+    this.phaseThreshold = this.meta.phase_command_threshold ?? 0.1;
     this.jointNames = this.meta.action_joint_order;
     this.layout = {};
     for (const e of this.meta.obs_layout) this.layout[e.term] = e;
@@ -65,7 +67,7 @@ export class QuadPolicy {
 
   phase(t, cmd) {
     const norm = Math.hypot(cmd[0], cmd[1], cmd[2]);
-    if (norm < 0.1) return [0, 0];
+    if (norm < this.phaseThreshold) return [0, 0];
     const ph = ((t % this.gaitPeriod) + this.gaitPeriod) % this.gaitPeriod
         / this.gaitPeriod;
     return [Math.sin(ph * 2 * Math.PI), Math.cos(ph * 2 * Math.PI)];
