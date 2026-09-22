@@ -6,6 +6,27 @@
 ネジは **M3×6 が 40 本、M2×6 が 16 本** — どちらも **STS3215 に付属している
 ネジだけで足ります**（8 個買えば十分な本数が付いてきます）。別途購入は不要です。
 
+::::{grid} 2
+:gutter: 2
+
+:::{grid-item}
+```{figure} ../_static/quadruped_parts.jpg
+:target: ../_static/quadruped_parts.jpg
+:alt: 用意する部品。3D プリントの 9 部品（胴体 ×1・脚ブラケット ×4・脚リンク ×4）、STS3215 ×8、付属のネジ
+
+用意する部品。3D プリントの 9 部品（胴体 ×1・脚ブラケット ×4・脚リンク ×4）、STS3215 ×8、付属のネジ
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_screws.jpg
+:target: ../_static/quadruped_screws.jpg
+:alt: STS3215 に付属するネジ（3 種類）
+
+STS3215 に付属するネジ（3 種類）
+```
+:::
+::::
+
 ## インタラクティブ 3D ビューア
 
 ブラウザ上で 1 ステップずつアニメーションを再生できます。マウスで視点を回し、
@@ -65,6 +86,13 @@
 2. **STS3215_case** をホーンへ — 同軸 φ4.8mm（×2）、面合わせ ×2
 
    ![STS3215 step 2](assembly_img/units/STS3215/step_02.png)
+
+```{figure} ../_static/quadruped_horn_screw.jpg
+:target: ../_static/quadruped_horn_screw.jpg
+:width: 50%
+
+ネジを回すときは、ドライバーの先端をネジ穴と平行に当てる。先端が斜めになっていると力が伝わらず、ネジ頭をなめやすい
+```
 :::
 
 :::{dropdown} body_servo（胴体にサーボ 4 個を固定） **×1**
@@ -106,9 +134,16 @@
 9. 🔩 **M3x6 ×2** を締める
 
    ![body_servo step 9](assembly_img/units/body_servo/step_09.png)
+
+```{figure} ../_static/quadruped_body_servo.jpg
+:target: ../_static/quadruped_body_servo.jpg
+:width: 50%
+
+4 個のサーボを固定した胴体（実物）
+```
 :::
 
-:::{dropdown} leg_left（左脚） **×2**
+::::::{dropdown} leg_left（左脚） **×2**
 
 使う部品: STS3215 ×1、bracket_outline ×1、leg_link1 ×1、M3x6 ×4、M2x6 ×4
 
@@ -131,7 +166,78 @@
 5. 🔩 **M2x6 ×4** を締める（サーボ ↔ リンク）
 
    ![leg_left step 5](assembly_img/units/leg_left/step_05.png)
+
+**実物の写真**（左右の脚で手順は同じ）:
+
+:::::{grid} 2 3 3 3
+:gutter: 2
+
+:::{grid-item}
+```{figure} ../_static/quadruped_bracket_seat_1.jpg
+:target: ../_static/quadruped_bracket_seat_1.jpg
+:alt: 脚ブラケットのホーン取り付け部
+
+脚ブラケットのホーン取り付け部
+```
 :::
+:::{grid-item}
+```{figure} ../_static/quadruped_bracket_seat_2.jpg
+:target: ../_static/quadruped_bracket_seat_2.jpg
+:alt: 同じ部分を別の角度から
+
+同じ部分を別の角度から
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_bracket_1.jpg
+:target: ../_static/quadruped_bracket_1.jpg
+:alt: 手順 2: ブラケットをサーボのホーン側へ
+
+手順 2: ブラケットをサーボのホーン側へ
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_bracket_2.jpg
+:target: ../_static/quadruped_bracket_2.jpg
+:alt: 手順 3: ネジを締める途中
+
+手順 3: ネジを締める途中
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_bracket_3.jpg
+:target: ../_static/quadruped_bracket_3.jpg
+:alt: 手順 3: M3x6 ×4 を締め終えたところ
+
+手順 3: M3x6 ×4 を締め終えたところ
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_leg_link_1.jpg
+:target: ../_static/quadruped_leg_link_1.jpg
+:alt: 手順 4: 脚リンクをサーボのケース側へ
+
+手順 4: 脚リンクをサーボのケース側へ
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_leg_link_2.jpg
+:target: ../_static/quadruped_leg_link_2.jpg
+:alt: 手順 4: 差し込んだところ
+
+手順 4: 差し込んだところ
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_legs_x4.jpg
+:target: ../_static/quadruped_legs_x4.jpg
+:alt: ブラケットを付けたサーボ 4 本（左右 2 本ずつ）
+
+ブラケットを付けたサーボ 4 本（左右 2 本ずつ）
+```
+:::
+:::::
+::::::
 
 :::{dropdown} leg_right（右脚） **×2**
 
