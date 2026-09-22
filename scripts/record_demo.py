@@ -49,6 +49,8 @@ DEMOS = [
          note="ゼロ除算で fault が起きても、ほかのタスクが動き続ける"),
     Demo("adv1", "adv1_sync", 16,
          note="5 人の食事回数が揃って伸びる = 誰も餓死していない"),
+    Demo("ch10", "10_freertos", 12,
+         note="FreeRTOS 風の API で作ったタスクが 1 秒ごとに数える"),
     Demo("ch11", "11_tiny_python", 30,
          keys=[(2.0, "print(1 + 2)\n"),
                (2.0, "def fact(n):\n"),
@@ -106,8 +108,10 @@ def record(demo):
 DRIVER = '''
 import os, sys, time, pexpect
 os.chdir({code})
+# 親が uv run の中だと VIRTUAL_ENV が残り、pio を起動する uv run が警告を出して録画に写る
+env = {{k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}}
 c = pexpect.spawn({uv} + " run pio device monitor -b 115200", encoding="utf-8",
-                  timeout=None, dimensions=(18, 68))
+                  timeout=None, dimensions=(18, 68), env=env)
 c.logfile_read = sys.stdout
 
 def pump(sec):
