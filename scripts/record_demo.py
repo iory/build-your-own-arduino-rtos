@@ -23,7 +23,7 @@ OUT = os.path.expanduser("~/casts")
 
 class Demo:
     def __init__(self, key, chapter, seconds, keys=(), handshake="", ready="",
-                 pre=1.5, note=""):
+                 pre=1.5, note="", env=""):
         self.key = key
         self.chapter = chapter
         self.seconds = seconds
@@ -32,6 +32,7 @@ class Demo:
         self.ready = ready        # これが出たらハンドシェイクをやめる
         self.pre = pre            # モニタを開いてから動かし始めるまでの間
         self.note = note
+        self.env = env            # platformio.ini に env が複数ある章は、書き込む env を 1 つ選ぶ
 
 
 # (待つ秒数, 送る文字列)
@@ -49,6 +50,10 @@ DEMOS = [
          note="ゼロ除算で fault が起きても、ほかのタスクが動き続ける"),
     Demo("adv1", "adv1_sync", 16,
          note="5 人の食事回数が揃って伸びる = 誰も餓死していない"),
+    Demo("ch10", "10_freertos", 12,
+         note="FreeRTOS 風の API で作ったタスクが 1 秒ごとに数える"),
+    Demo("ch10real", "10_freertos_real", 12, env="integrated",
+         note="本物の FreeRTOS。2 秒ごとに Tick・空きヒープ・A0 の値を出す"),
     Demo("ch11", "11_tiny_python", 30,
          keys=[(2.0, "print(1 + 2)\n"),
                (2.0, "def fact(n):\n"),
@@ -74,8 +79,10 @@ BY_KEY = {d.key: d for d in DEMOS}
 
 def flash(demo):
     print(f"=== flashing {demo.chapter} ===", flush=True)
-    r = subprocess.run([UV, "run", "pio", "run", "-d", demo.chapter, "-t", "upload"],
-                       cwd=CODE)
+    cmd = [UV, "run", "pio", "run", "-d", demo.chapter, "-t", "upload"]
+    if demo.env:
+        cmd += ["-e", demo.env]
+    r = subprocess.run(cmd, cwd=CODE)
     if r.returncode != 0:
         sys.exit(f"flash failed: {demo.chapter}")
     time.sleep(3)      # 書き込み後、ポートが落ち着くまで
@@ -106,8 +113,10 @@ def record(demo):
 DRIVER = '''
 import os, sys, time, pexpect
 os.chdir({code})
+# 親が uv run の中だと VIRTUAL_ENV が残り、pio を起動する uv run が警告を出して録画に写る
+env = {{k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}}
 c = pexpect.spawn({uv} + " run pio device monitor -b 115200", encoding="utf-8",
-                  timeout=None, dimensions=(18, 68))
+                  timeout=None, dimensions=(18, 68), env=env)
 c.logfile_read = sys.stdout
 
 def pump(sec):
