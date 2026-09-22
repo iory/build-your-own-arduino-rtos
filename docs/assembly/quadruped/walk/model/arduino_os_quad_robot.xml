@@ -1,9 +1,14 @@
 <mujoco model="arduino_os_quad_robot">
   <compiler angle="radian" autolimits="true" meshdir="assets" />
-  <option gravity="0 0 -9.81" />
+  <!-- Physics as in training (rl/robot_cfg.py + rl/env_cfgs.py, checked by
+       rl/cpu/parity_check.py): implicitfast at 5 ms, 10 / 20 solver iterations,
+       only the four toe spheres collide. The 4-7 physics-step command delay is
+       applied by walk_core.js. -->
+  <option timestep="0.005" integrator="implicitfast" iterations="10" ls_iterations="20"
+          ccd_iterations="50" gravity="0 0 -9.81" />
   <default>
-    <joint armature="0.002" damping="0.623701505" />
-    <geom contype="2" conaffinity="1" />
+    <joint armature="0.002" damping="0.623701505" frictionloss="0.01" />
+    <geom contype="0" conaffinity="0" />
   </default>
   <asset>
     <mesh name="body_1_0" file="body_1_0.stl" />
@@ -67,7 +72,7 @@
               <inertial pos="-0.0362490796 -0.0020000001 0.0319570087" mass="0.0194513" diaginertia="9.73041081e-07 2.44786489e-05 2.50953e-05" quat="-0.386832893 0.386832864 0.59191245 0.591912408" />
               <geom pos="0 0 0" quat="1 0 0 0" group="2" contype="0" conaffinity="0" type="mesh" mesh="Assem130__bracket_outline_1_8" rgba="1 1 1 1" name="FL_foot_visual0" />
               <geom pos="0 0 0" quat="1 0 0 0" group="3" type="mesh" mesh="Assem130__bracket_outline_1_9" rgba="1 1 1 1" name="FL_foot_collision0" />
-              <geom name="FL_toe" type="sphere" size="0.008" pos="-0.0833911 0.002 0.0697487" contype="2" conaffinity="1" rgba="0.1 0.1 0.1 1" />
+              <geom name="FL_toe" type="sphere" size="0.008" pos="-0.0833911 0.002 0.0697487" contype="0" conaffinity="1" condim="3" priority="1" friction="0.7 0.005 0.0001" solimp="0.9 0.95 0.023" rgba="0.1 0.1 0.1 1" />
               <site name="FL" pos="-0.0899 0.002 0.0744" size="0.005" group="4" rgba="1 0 0 1" />
             </body>
           </body>
@@ -91,7 +96,7 @@
               <inertial pos="-0.0362490796 -0.0020000001 0.0319570087" mass="0.0194513" diaginertia="9.73041081e-07 2.44786489e-05 2.50953e-05" quat="-0.386832893 0.386832864 0.59191245 0.591912408" />
               <geom pos="0 0 0" quat="1 0 0 0" group="2" contype="0" conaffinity="0" type="mesh" mesh="Assem130__bracket_outline_1_16" rgba="1 1 1 1" name="RL_foot_visual0" />
               <geom pos="0 0 0" quat="1 0 0 0" group="3" type="mesh" mesh="Assem130__bracket_outline_1_17" rgba="1 1 1 1" name="RL_foot_collision0" />
-              <geom name="RL_toe" type="sphere" size="0.008" pos="-0.0833911 0.002 0.0697487" contype="2" conaffinity="1" rgba="0.1 0.1 0.1 1" />
+              <geom name="RL_toe" type="sphere" size="0.008" pos="-0.0833911 0.002 0.0697487" contype="0" conaffinity="1" condim="3" priority="1" friction="0.7 0.005 0.0001" solimp="0.9 0.95 0.023" rgba="0.1 0.1 0.1 1" />
               <site name="RL" pos="-0.0899 0.002 0.0744" size="0.005" group="4" rgba="1 0 0 1" />
             </body>
           </body>
@@ -115,7 +120,7 @@
               <inertial pos="-0.0362490796 0.0019999999 0.0319570087" mass="0.0194513" diaginertia="9.73041081e-07 2.44786489e-05 2.50953e-05" quat="-0.386832893 0.386832864 0.59191245 0.591912408" />
               <geom pos="0 0 0" quat="1 0 0 0" group="2" contype="0" conaffinity="0" type="mesh" mesh="Assem130__bracket_outline_1_2_24" rgba="1 1 1 1" name="RR_foot_visual0" />
               <geom pos="0 0 0" quat="1 0 0 0" group="3" type="mesh" mesh="Assem130__bracket_outline_1_2_25" rgba="1 1 1 1" name="RR_foot_collision0" />
-              <geom name="RR_toe" type="sphere" size="0.008" pos="-0.0833911 0.002 0.0697487" contype="2" conaffinity="1" rgba="0.1 0.1 0.1 1" />
+              <geom name="RR_toe" type="sphere" size="0.008" pos="-0.0833911 0.002 0.0697487" contype="0" conaffinity="1" condim="3" priority="1" friction="0.7 0.005 0.0001" solimp="0.9 0.95 0.023" rgba="0.1 0.1 0.1 1" />
               <site name="RR" pos="-0.0899 0.002 0.0744" size="0.005" group="4" rgba="1 0 0 1" />
             </body>
           </body>
@@ -139,7 +144,7 @@
               <inertial pos="-0.0362490796 0.0019999999 0.0319570087" mass="0.0194513" diaginertia="9.73041081e-07 2.44786489e-05 2.50953e-05" quat="-0.386832893 0.386832864 0.59191245 0.591912408" />
               <geom pos="0 0 0" quat="1 0 0 0" group="2" contype="0" conaffinity="0" type="mesh" mesh="Assem130__bracket_outline_1_2_32" rgba="1 1 1 1" name="FR_foot_visual0" />
               <geom pos="0 0 0" quat="1 0 0 0" group="3" type="mesh" mesh="Assem130__bracket_outline_1_2_33" rgba="1 1 1 1" name="FR_foot_collision0" />
-              <geom name="FR_toe" type="sphere" size="0.008" pos="-0.0833911 0.002 0.0697487" contype="2" conaffinity="1" rgba="0.1 0.1 0.1 1" />
+              <geom name="FR_toe" type="sphere" size="0.008" pos="-0.0833911 0.002 0.0697487" contype="0" conaffinity="1" condim="3" priority="1" friction="0.7 0.005 0.0001" solimp="0.9 0.95 0.023" rgba="0.1 0.1 0.1 1" />
               <site name="FR" pos="-0.0899 0.002 0.0744" size="0.005" group="4" rgba="1 0 0 1" />
             </body>
           </body>
@@ -149,17 +154,17 @@
     </body>
   </worldbody>
   <actuator>
-    <position name="FL_hip_joint_act" joint="FL_hip_joint" kp="20" ctrlrange="-2 2" forcerange="-2.942 2.942" />
-    <position name="FL_knee_joint_act" joint="FL_knee_joint" kp="20" ctrlrange="-2 2" forcerange="-2.942 2.942" />
-    <position name="RL_hip_joint_act" joint="RL_hip_joint" kp="20" ctrlrange="-2 2" forcerange="-2.942 2.942" />
-    <position name="RL_knee_joint_act" joint="RL_knee_joint" kp="20" ctrlrange="-2 2" forcerange="-2.942 2.942" />
-    <position name="RR_hip_joint_act" joint="RR_hip_joint" kp="20" ctrlrange="-2 2" forcerange="-2.942 2.942" />
-    <position name="RR_knee_joint_act" joint="RR_knee_joint" kp="20" ctrlrange="-2 2" forcerange="-2.942 2.942" />
-    <position name="FR_hip_joint_act" joint="FR_hip_joint" kp="20" ctrlrange="-2 2" forcerange="-2.942 2.942" />
-    <position name="FR_knee_joint_act" joint="FR_knee_joint" kp="20" ctrlrange="-2 2" forcerange="-2.942 2.942" />
+    <position name="FL_hip_joint_act" joint="FL_hip_joint" kp="25" kv="0.5" ctrllimited="false" forcerange="-2.942 2.942" />
+    <position name="FL_knee_joint_act" joint="FL_knee_joint" kp="25" kv="0.5" ctrllimited="false" forcerange="-2.942 2.942" />
+    <position name="RL_hip_joint_act" joint="RL_hip_joint" kp="25" kv="0.5" ctrllimited="false" forcerange="-2.942 2.942" />
+    <position name="RL_knee_joint_act" joint="RL_knee_joint" kp="25" kv="0.5" ctrllimited="false" forcerange="-2.942 2.942" />
+    <position name="RR_hip_joint_act" joint="RR_hip_joint" kp="25" kv="0.5" ctrllimited="false" forcerange="-2.942 2.942" />
+    <position name="RR_knee_joint_act" joint="RR_knee_joint" kp="25" kv="0.5" ctrllimited="false" forcerange="-2.942 2.942" />
+    <position name="FR_hip_joint_act" joint="FR_hip_joint" kp="25" kv="0.5" ctrllimited="false" forcerange="-2.942 2.942" />
+    <position name="FR_knee_joint_act" joint="FR_knee_joint" kp="25" kv="0.5" ctrllimited="false" forcerange="-2.942 2.942" />
   </actuator>
   <keyframe>
-    <key name="home" qpos="0 0 0.14 1 0 0 0 0.7748 -1.3474 0.7748 -1.3474 0.7748 -1.3474 0.7748 -1.3474" />
+    <key name="home" qpos="0 0 0.11 1 0 0 0 1.0307 -1.7629 1.0307 -1.7629 1.0307 -1.7629 1.0307 -1.7629" />
   </keyframe>
   <sensor>
     <gyro name="imu_ang_vel" site="imu_in_body" />
