@@ -55,12 +55,14 @@ Arduino UNO R4 WiFi の上で、プリエンプティブなリアルタイム OS
 
 :::{grid-item}
 :columns: 12 12 4 4
+
 ```{image} _static/book_cover.jpg
 :alt: 『つくりながら学ぶ！リアルタイムOS自作入門』の表紙
 :width: 240px
 :align: center
 :target: https://book.mynavi.jp/ec/products/detail/id=152331
 ```
+
 :::
 
 :::{grid-item}

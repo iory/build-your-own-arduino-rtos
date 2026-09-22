@@ -22,6 +22,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `include/os_atomic.h` — 28 lines
@@ -33,6 +34,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `include/os_fault.h` — 46 lines
@@ -44,6 +46,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `include/os_kernel.h` — 76 lines
@@ -55,6 +58,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `include/os_sync.h` — 53 lines
@@ -66,6 +70,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `src/os_fault.cpp` — 170 lines
@@ -77,6 +82,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `src/os_kernel.cpp` — 231 lines
@@ -88,6 +94,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `src/os_sync.cpp` — 150 lines
@@ -99,6 +106,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 

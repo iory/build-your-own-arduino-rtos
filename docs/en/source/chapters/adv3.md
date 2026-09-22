@@ -22,6 +22,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `include/os_heap.h` — 22 lines
@@ -33,6 +34,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `src/os_heap.cpp` — 128 lines
@@ -44,6 +46,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 

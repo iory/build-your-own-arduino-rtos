@@ -1,0 +1,34 @@
+name: md-lint
+
+# Markdown の「エラーにならずに静かに壊れる」書き方を検出する（scripts/md_lint.py）。
+# 例: ```{admonition} の見出しにバッククォートを書くとフェンスにならず、
+# その後ろのページ全体がコードブロックに飲み込まれる。Sphinx のビルドは
+# 警告なしで通るので、docs ワークフローでは見つからない。
+#
+# code/ は原稿リポジトリから同期されるので対象外（ここで直しても上書きされる）。
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'scripts/md_lint.py'
+      - '.github/workflows/md-lint.yml'
+  pull_request:
+    paths:
+      - '**.md'
+      - 'scripts/md_lint.py'
+      - '.github/workflows/md-lint.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      # 見つかった箇所は PR の差分に注釈として出る。直し方:
+      #   uv run --script scripts/md_lint.py fix README.md docs/ja/source docs/en/source
+      - run: uv run --script scripts/md_lint.py check --format=github README.md docs/ja/source docs/en/source

@@ -1,6 +1,6 @@
 # build-your-own-arduino-rtos
 
-書籍**『つくりながら学ぶ！リアルタイムOS自作入門』**（Arduino UNO R4
+書籍『**つくりながら学ぶ！リアルタイムOS自作入門**』（Arduino UNO R4
 WiFi でプリエンプティブなリアルタイム OS を一から自作する本）の
 サポートページです。
 
@@ -69,6 +69,7 @@ scripts/build_sim.sh  # 各章を pio run -e sim でビルドし、QEMU の wasm
 scripts/record_sim_upload.sh  # 付録の「自分でビルドした ELF を動かす」GIF 2 枚を録る（生成物はコミットする）
 scripts/make_brand_images.py  # ファビコンと OGP 画像を _static/ に生成（生成物はコミットする）
 scripts/make_promo_video.py   # 紹介動画 promo.mp4（ja/en）と README 用 promo.gif を生成（同上）
+scripts/md_lint.py            # Markdown の静かな崩れを検出・修正（CI の md-lint が実行）
 ```
 
 `code/` は書籍の原稿側から一方向にミラーされる。誤植・バグ修正は原稿側で
@@ -92,6 +93,23 @@ python3 -m http.server -d _site 8000   # http://localhost:8000/
 
 main へ push すると GitHub Actions が GitHub Pages へ自動デプロイする
 （リポジトリ設定の Pages で Source: GitHub Actions を選んでおくこと）。
+
+## Markdown の検査
+
+Sphinx は警告なしでビルドできても、Markdown が静かに崩れていることがある
+（例: ```` ```{admonition} ```` の見出しにバッククォートを書くとフェンスに
+ならず、その後ろのページ全体がコードブロックに飲み込まれる）。
+`scripts/md_lint.py` がこれを検出し、意味を変えずに直せるものは直す。
+PR では `md-lint` ワークフローが README と `docs/` を検査する。
+
+```bash
+uv run --script scripts/md_lint.py check README.md docs/ja/source docs/en/source
+uv run --script scripts/md_lint.py fix   README.md docs/ja/source docs/en/source
+```
+
+`code/` は原稿リポジトリから同期されるので対象外。
+`scripts/md_lint_hook.sh` は Claude Code の PostToolUse フック用で、書いた
+`.md` をその場で直し、フェンスが壊れていれば止める。
 
 ## ライセンス
 

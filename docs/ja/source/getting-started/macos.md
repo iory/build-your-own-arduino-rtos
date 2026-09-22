@@ -101,7 +101,7 @@ Description: UNO WiFi R4 CMSIS-DAP
 `Hardware ID` が `2341:1002` になっていれば、それが Arduino UNO R4 WiFi です。
 ```
 
-```{admonition} `cu.` と `tty.` の 2 つが現れます
+~~~{admonition} `cu.` と `tty.` の 2 つが現れます
 :class: warning
 
 同じボードに対して、macOS は次の 2 つを作ります。
@@ -116,7 +116,7 @@ Description: UNO WiFi R4 CMSIS-DAP
 末尾の英数字はボードごとに違うシリアル番号なので、**手元では別の文字列**に
 なります。番号ではなくシリアルなので、抜き挿ししても変わりません
 （Linux の `ttyACM0` / `ttyACM1` のように入れ替わることはありません）。
-```
+~~~
 
 ## 3. ビルドして書き込む
 
@@ -154,7 +154,7 @@ uv run pio device monitor -b 115200
 第1章は **`S` を 1 文字送ると出力が始まります**。モニタが開いたら `S` を
 打ってください。
 
-```{admonition} なぜ `S` を待たせているのか
+~~~{admonition} なぜ `S` を待たせているのか
 :class: note
 
 ボードは電源が入った瞬間から全速力で走り出しますが、こちらは書き込みが
@@ -171,7 +171,7 @@ uv run pio device monitor -b 115200
 
 書籍では `01_boot` / `01_boot_vector_dump` / 応用編の `adv3_heap` と
 `adv4_fs` がこの形です。ずっと印字し続ける章（第2章など）には要りません。
-```
+~~~
 
 ```text
 === Boot Sequence Check ===

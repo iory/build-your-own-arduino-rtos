@@ -22,6 +22,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `include/fs.h` — 18 lines
@@ -33,6 +34,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `include/fs_flash_hal.h` — 19 lines
@@ -44,6 +46,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `src/fs.cpp` — 70 lines
@@ -55,6 +58,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 :::{dropdown} `src/fs_flash_hal.cpp` — 53 lines
@@ -66,6 +70,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :language: cpp
 :linenos:
 ```
+
 :::
 
 
