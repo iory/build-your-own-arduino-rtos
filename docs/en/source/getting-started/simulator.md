@@ -18,9 +18,8 @@ Arduino core itself (see below).
 :::{tip}
 **Try it in your browser first, with nothing to install.** A page runs each
 chapter's firmware on QEMU compiled to WebAssembly, right in the browser, so
-you can watch the LEDs and use the shell without setting anything up. The last
-entry in its chapter menu lets you run your own `firmware.elf` as well; an
-ordinary UNO R4 WiFi build runs as it is.
+you can watch the LEDs and use the shell without setting anything up. It can
+run a `firmware.elf` you built yourself, too ({ref}`browser-sim-elf`).
 
 <a class="sd-btn sd-btn-primary" href="../../sim/index.html">Run it in the browser</a>
 
@@ -36,6 +35,76 @@ PendSV, NVIC, MPU. Those behave in the emulator as they do on silicon, and the
 faults in Chapter 6 (divide by zero, bad address) happen just as the text
 describes.
 :::
+
+(browser-sim)=
+## Running it in the browser
+
+<a class="sd-btn sd-btn-primary" href="../../sim/index.html">Run it in the browser</a>
+
+The page starts each chapter's firmware (built with `pio run -e sim`) on QEMU
+inside the browser. Pick a chapter from the menu at the top. In chapters with a
+shell, type commands into the box at the bottom. (The page itself is in
+Japanese.)
+
+(browser-sim-elf)=
+### Running a firmware.elf you built yourself
+
+After changing a sample, hand the `firmware.elf` from the build to the browser
+version and watch it run, without flashing anything. Here we change the message
+printed by `00_intro`.
+
+1. In `00_intro/src/main.cpp`, change `Environment OK!` to anything you like
+   (the GIF below uses `sed` to replace it with `Hello from my build!`).
+2. Build it. No upload (`-t upload`) is needed.
+
+   ```bash
+   pio run -d 00_intro
+   ```
+
+   The ELF ends up in `00_intro/.pio/build/uno_r4_wifi/firmware.elf`.
+
+   ```{figure} ../_static/sim_upload_build.gif
+   :width: 100%
+
+   Changing the message, building, and finding `firmware.elf`
+   ```
+
+3. Open the <a href="../../sim/index.html">browser version</a> and choose the last entry in
+   the chapter menu, **「自分でビルドした ELF を動かす…」** ("run an ELF you built").
+4. Drop `firmware.elf` onto the box that appears (or click the box and pick the
+   file).
+5. If the serial monitor shows your new message and the LED matrix shows "OS",
+   it worked.
+
+   ```{figure} ../_static/sim_upload_run.gif
+   :width: 80%
+
+   Dropping the freshly built `firmware.elf` prints the changed message
+   ```
+
+:::{note}
+- **An ordinary UNO R4 WiFi build runs as it is.** Arduino's `boards.txt`
+  defines `-DNO_USB` for the UNO R4 WiFi, so `Serial` is a UART already
+  (`pio run` and `pio run -e sim` produce the very same ELF).
+- The file is used only inside your browser and is not sent anywhere.
+- Only `.elf` files work (not `.bin` or `.hex`). A build whose `Serial` goes
+  over USB, such as one for the UNO R4 Minima, shows no serial output because
+  the emulator has no USB; the page tells you so.
+- Switching chapters reloads the page. To run your ELF again, choose the entry
+  again.
+:::
+
+### Limits of the browser version
+
+- **It runs at about a tenth of the board's speed.** Timers and blinking keep
+  real time, but heavy computation is slow. Chapter 4's Heavy task barely
+  progresses, and the CPU% column of `ps` in Chapter 9 can add up to a little
+  over 100% (the page warns about both).
+- **Characters typed before boot finishes are lost.** Wait for the prompt
+  (such as `>`) before typing.
+
+When you want to compare output with the text closely, use the PC install
+below or the board.
 
 ## What you need
 

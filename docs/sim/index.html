@@ -96,6 +96,8 @@
   .drop.over { border-color: var(--accent); background: rgba(26,127,142,.12); }
   .drop input { display: none; }
   #upload .notice { margin: 0 14px 14px; }
+  .howto { margin: 0 14px 14px; font-size: 12.5px; color: var(--muted); }
+  .howto a { color: var(--text); }
 
   .panel { background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; }
   .panel h2 {
@@ -143,6 +145,8 @@
       <code>.pio/build/&lt;env&gt;/firmware.elf</code>）がそのまま動きます。
       ファイルはこのブラウザの中だけで使われ、どこにも送られません。</span>
     </label>
+    <p class="howto">ビルドからの手順は
+      <a href="../getting-started/simulator.html#browser-sim-elf">付録「自分でビルドした ELF を動かす」</a>にあります。</p>
     <div class="notice error" id="upload-error" hidden></div>
   </div>
 
