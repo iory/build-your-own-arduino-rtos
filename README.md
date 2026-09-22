@@ -23,6 +23,34 @@ WiFi でプリエンプティブなリアルタイム OS を一から自作す�
   ・[楽天ブックス](https://books.rakuten.co.jp/rb/18716697/)
   ・[honto（電子書籍）](https://honto.jp/isbn/9784839991876)
 
+## 実機がなくても試せる
+
+Arduino UNO R4 WiFi が手元に無くても、実機に書き込むのと同じファームウェアを
+エミュレータ（QEMU に UNO R4 を足した
+[qemu-arduino-uno-r4](https://github.com/iory/qemu-arduino-uno-r4)）で動かして
+本書を読み進められます。LED マトリクスと内蔵 LED は基板写真の上で光り、シェルも
+そのまま使えます。
+
+- **ブラウザで（インストール不要）** —
+  [ブラウザ版](https://iory.github.io/build-your-own-arduino-rtos/sim/)を開くだけで各章が動きます。自分で書き換えてビルドした
+  `firmware.elf` をドロップして動かすこともできます
+  （[手順](https://iory.github.io/build-your-own-arduino-rtos/getting-started/simulator.html#browser-sim-elf)）。
+  速さは実機の約 1/10 なので、重い計算を見せる章（第4章・第9章）は PC 版か実機で。
+- **PC で（QEMU）** — `pio run -e sim` でビルドして仮想ボードを起動します。
+  実機に近い速さで動き、全章の出力を CI で本文の期待値と照らしています
+  （[付録「実機がなくても試せる」](https://iory.github.io/build-your-own-arduino-rtos/getting-started/simulator.html)）。
+
+<table>
+  <tr>
+    <td width="50%" align="center"><img src="docs/ja/source/_static/sim_upload_run.gif" alt="ブラウザ版に自分でビルドした firmware.elf をドロップすると、書き換えたメッセージが出る" width="100%"></td>
+    <td width="50%" align="center"><img src="docs/ja/source/_static/sim_ch07_kill.gif" alt="PC の仮想ボードで第7章を動かし、kill で重いタスクを止めると CPU 負荷のグラフが下がる" width="100%"></td>
+  </tr>
+  <tr>
+    <td align="center">ブラウザ版: 自分でビルドした ELF をドロップして動かす</td>
+    <td align="center">PC 版（QEMU）: 第7章で <code>kill</code> すると CPU 負荷のグラフが下がる</td>
+  </tr>
+</table>
+
 ## 構成
 
 XLeRobot のドキュメント（Sphinx + pydata-sphinx-theme + MyST +
@@ -32,8 +60,11 @@ sphinx-design）を参考に、言語ごとに独立したツリーを持つ:
 docs/ja/source/   # 日本語（サイトのルートに配信）
 docs/en/source/   # English（/en/ に配信）
 docs/assembly/    # CAD から自動生成した組み立てビューア（静的バンドル、/assembly/ に配信）
+docs/sim/         # ブラウザで動く仮想ボード（QEMU の WebAssembly 版、/sim/ に配信）
 code/             # 書籍のサンプルコード（原稿リポジトリから自動同期。直接編集しない）
 scripts/build.sh  # 両言語を _site/ にビルドし docs/assembly をコピー
+scripts/build_sim.sh  # 各章を pio run -e sim でビルドし、QEMU の wasm と一緒に _site/sim/ に置く
+scripts/record_sim_upload.sh  # 付録の「自分でビルドした ELF を動かす」GIF 2 枚を録る（生成物はコミットする）
 scripts/make_brand_images.py  # ファビコンと OGP 画像を _static/ に生成（生成物はコミットする）
 scripts/make_promo_video.py   # 紹介動画 promo.mp4（ja/en）と README 用 promo.gif を生成（同上）
 ```
