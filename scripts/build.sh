@@ -7,6 +7,8 @@ uv run sphinx-build -b html docs/ja/source _site
 uv run sphinx-build -b html docs/en/source _site/en
 # CAD から自動生成した組み立てビューア（静的バンドル）を配置
 cp -r docs/assembly _site/assembly
+# ブラウザで動く仮想ボード（各章を pio run -e sim でビルドする）
+./scripts/build_sim.sh _site/sim
 
 # Sphinx が触らないビューアのページにも Cloudflare Web Analytics の
 # ビーコンを入れる。docs/assembly/ は CAD から再生成されるので、原本では

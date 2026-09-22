@@ -26,7 +26,7 @@ on:
 
 env:
   # 付録で案内している QEMU のリリース。上げるときは付録も一緒に直す
-  QEMU_UNOR4_VERSION: v11.1.1-unor4.4
+  QEMU_UNOR4_VERSION: v11.1.1-unor4.5
 
 jobs:
   simulate:
