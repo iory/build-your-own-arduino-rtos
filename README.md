@@ -23,6 +23,8 @@ WiFi でプリエンプティブなリアルタイム OS を一から自作す�
   ・[楽天ブックス](https://books.rakuten.co.jp/rb/18716697/)
   ・[honto（電子書籍）](https://honto.jp/isbn/9784839991876)
 
+<br clear="right">
+
 ## 実機がなくても試せる
 
 Arduino UNO R4 WiFi が手元に無くても、実機に書き込むのと同じファームウェアを
@@ -42,8 +44,8 @@ Arduino UNO R4 WiFi が手元に無くても、実機に書き込むのと同じ
 
 <table>
   <tr>
-    <td width="50%" align="center"><img src="docs/ja/source/_static/sim_upload_run.gif" alt="ブラウザ版に自分でビルドした firmware.elf をドロップすると、書き換えたメッセージが出る" width="100%"></td>
-    <td width="50%" align="center"><img src="docs/ja/source/_static/sim_ch07_kill.gif" alt="PC の仮想ボードで第7章を動かし、kill で重いタスクを止めると CPU 負荷のグラフが下がる" width="100%"></td>
+    <td width="50%" align="center" valign="top"><img src="docs/ja/source/_static/sim_upload_run.gif" alt="ブラウザ版に自分でビルドした firmware.elf をドロップすると、書き換えたメッセージが出る" width="100%"></td>
+    <td width="50%" align="center" valign="top"><img src="docs/ja/source/_static/sim_ch07_kill.gif" alt="PC の仮想ボードで第7章を動かし、kill で重いタスクを止めると CPU 負荷のグラフが下がる" width="100%"></td>
   </tr>
   <tr>
     <td align="center">ブラウザ版: 自分でビルドした ELF をドロップして動かす</td>
