@@ -110,6 +110,15 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :::
 
 
+## On the board
+
+```{figure} ../_static/adv1_philosophers.gif
+:name: fig-adv1-philosophers
+:width: 100%
+
+The five counts grow side by side; watching for a while shows that no one is left behind.
+```
+
 ## Pitfalls
 
 (Collected from reader questions — ask via

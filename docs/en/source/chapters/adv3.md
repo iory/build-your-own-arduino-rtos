@@ -50,6 +50,15 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :::
 
 
+## On the board
+
+```{figure} ../_static/adv3_heap.gif
+:name: fig-adv3-heap
+:width: 100%
+
+Sending `S` prints all the dumps at once. The last part shows that an allocation fails when there is no contiguous block even though the total free space is enough, and the detection of a double `free`.
+```
+
 ## Pitfalls
 
 (Collected from reader questions — ask via
