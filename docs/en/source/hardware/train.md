@@ -5,8 +5,11 @@ The policy that walks the chapter 13 quadruped works without any training if you
 starting point when you want to change the rewards, raise the speed limit or get a
 different gait.
 
-Training needs an NVIDIA GPU. **If you do not have one, you can do the whole thing on
-Google Colab (the free T4).**
+There are two ways in. With an NVIDIA GPU, use the **mjlab version**; without one, use
+the **CPU version**, which runs the same task on plain MuJoCo — 2048 environments for
+2300 iterations takes about 69 minutes on a six-core laptop. You can also run the mjlab
+version on Google Colab (the free T4) instead. Whichever you train with, the checkpoint
+format is the same and the same steps export the header for the real robot.
 
 ## How the training code is organised
 
@@ -24,6 +27,7 @@ upstream; it is not a program that runs on its own.
 | `rl_cfg.py` | PPO hyperparameters and the network [96, 64] |
 | `runner.py` | Training runner with ERFI (torque disturbances) added |
 | `scripts/` | Environment setup, training, playback, video export |
+| `cpu/` | The CPU version that trains the same task without mjlab ("Training without a GPU" below) |
 
 `setup.sh` clones the upstream into `.upstream/unitree_rl_mjlab` and places `rl/` as
 `src/tasks/velocity/config/arduino_quad` with a **symbolic link**. The upstream
@@ -168,6 +172,94 @@ python "$ARDUINO_QUAD_ROOT/rl/scripts/record_video.py" \
 With `--bundle`, instead of a checkpoint it plays back **an exported policy** (the `.npz`
 + `.json` in `13_quadruped/`; pass the `13_quadruped` folder, as in
 `--bundle "$ARDUINO_QUAD_ROOT"`) with the same numpy implementation as the real robot.
+
+## Training without a GPU (the CPU version)
+
+`rl/cpu/` trains the same tasks (`ArduinoQuad-Walk` / `-Robust`) on **plain MuJoCo**,
+without mjlab. The physics runs on the CPU through `mujoco.rollout` (a C++ thread pool)
+and PPO uses the same rsl-rl-lib 5.0.1 as the mjlab version. The network updates alone
+can be put on a GPU.
+
+```bash
+cd docs/os-on-arduino/code/13_quadruped/rl/cpu
+uv sync                                   # mujoco 3.7.0 + rsl-rl-lib 5.0.1 + torch
+uv run train.py                           # ArduinoQuad-Walk, 2048 environments, CPU
+uv run train.py --device cuda             # physics stays on the CPU, updates on the GPU
+uv run evaluate.py --checkpoint logs/rsl_rl/arduino_quad_velocity/<run>/model_2299.pt
+```
+
+The mjlab version (`rl/scripts/train.sh`) is still there. Both are the same task and the
+checkpoint format is the same, so **either one can resume training from the other's
+checkpoints, and the same exporter writes the header**. Add `--backend cpu` when
+exporting a checkpoint trained with the CPU version.
+
+```bash
+uv run ../../host/export_quad_policy.py \
+    logs/rsl_rl/arduino_quad_velocity/<run>/model_2299.pt <output directory> --backend cpu
+```
+
+```{note}
+On a server with no display, add `MUJOCO_GL=egl` when using `evaluate.py --video`.
+Without it MuJoCo cannot create a GL context and fails while constructing the
+`Renderer`.
+```
+
+### How long it takes
+
+Measured on a laptop (Core i9-8950HK, 6 cores / 12 threads, 2018).
+
+| Environments | Physics (24 steps) | One iteration (including the PPO update, CPU) |
+|---|---|---|
+| 2048 | 0.78 s | 1.55 s |
+| 4096 | 1.50 s | 3.13 s |
+
+That is about 63,000 env-steps/s, roughly the same as the mjlab version on an RTX 4090
+(63,700 steps/s). On the same laptop, 2048 environments for 2300 iterations took
+**68.9 minutes** end to end (1.80 s/iteration). The 1.55 s above is the benchmark alone;
+real training also writes logs and checkpoints.
+
+### How many iterations until it walks
+
+From that run (`ARDUINO_QUAD_HOME_HEIGHT=0.11 ARDUINO_QUAD_GAIT_PERIOD=0.32`, 2048
+environments, one seed), each checkpoint every 100 iterations was played back with
+`evaluate.py` at **a command of 0.09 m/s, 32 environments, 12 s each**. Contact ratio is
+the fraction of time each of the four feet is on the ground (min–max), diagonal sync is
+the fraction of time the diagonal pair touches down and lifts off together, and slip is
+the horizontal foot speed while in contact.
+
+| Iteration | Forward [m/s] | Contact ratio | Diagonal sync | Slip [mm/s] | Falls |
+|---|---|---|---|---|---|
+| 0 | 0.000 | 0.00–1.00 | 0.00 | 0 | 0 |
+| 100 | — | — | — | — | all |
+| 200 | — | — | — | — | all |
+| 300 | −0.003 | 0.00–0.99 | 0.33 | 19 | 0 |
+| 400 | 0.036 | 0.21–0.86 | 0.44 | 75 | 0 |
+| 600 | 0.026 | 0.28–0.82 | 0.31 | 79 | 0 |
+| 800 | 0.088 | 0.38–0.78 | 0.53 | 73 | 0 |
+| 1000 | 0.089 | 0.38–0.78 | 0.56 | 68 | 0 |
+| 1500 | 0.088 | 0.36–0.77 | 0.55 | 62 | 0 |
+| 1800 | 0.092 | 0.46–0.72 | 0.65 | 45 | 0 |
+| 2000 | 0.090 | 0.46–0.67 | 0.69 | 41 | 0 |
+| 2299 | 0.089 | 0.47–0.68 | 0.70 | 41 | 0 |
+
+**At 100–200 iterations every robot falls over.** It cannot stand yet; this is the
+stretch where it learns not to fall. It stops falling at 300, drifts sideways while
+trying to move forward at 400–600 (the yaw rate reaches 0.36 rad/s there), and reaches
+the commanded speed around 800.
+
+**The speed plateaus at 1000 iterations, but the gait keeps improving until 2300.** The
+four feet even out (contact ratio 0.38–0.78 → 0.47–0.68), the diagonal sync rises from
+0.53 to 0.70 and the slip drops from 73 to 41 mm/s. The step up around 1500–1800 comes
+right after the weight of `trot_guidance` (the reward that teaches the gait) reaches 0
+at 1400 iterations. Stopping training by looking at the forward speed alone throws this
+stretch away.
+
+```{note}
+That the CPU version is the same task as the mjlab one is checked by
+`rl/cpu/parity_check.py`: it runs both from the same initial state with the same action
+sequence and compares the joint angles, the observations and all 26 reward terms step by
+step. How to run it, and the differences that remain, are in `rl/cpu/README.md`.
+```
 
 ## Taking it to the real robot
 
