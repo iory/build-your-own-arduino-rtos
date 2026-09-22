@@ -102,11 +102,9 @@ PPS（3.3〜11V などの可変）しか無い製品も、**普通の 12V 固定
 
 ### 配線で先に知っておくこと
 
-**このボードの UART は `RX-RX` / `TX-TX` で繋ぐ。** Waveshare の説明にそう書いてある。
-
-> the connection must be RX-RX, TX-TX
-
-普通の UART の常識と逆で、実際に 2 回はまった。
+**このボードの UART は、RX 同士・TX 同士をつなぐ**（ボードの RX を Arduino の RX へ、
+TX を TX へ）。一般的な UART のように RX と TX を交差させるのではない点に注意する
+（[Waveshare の製品ページ](https://www.waveshare.com/bus-servo-adapter-a.htm)に記載）。
 
 ボードには **USB Type-C と A/B ジャンパ**があり、「PC から USB で叩く」と
 「Arduino から UART で叩く」を切り替える。立ち上げと校正は USB 側が早いので、
@@ -115,6 +113,14 @@ PPS（3.3〜11V などの可変）しか無い製品も、**普通の 12V 固定
 Arduino とボードの接続はジャンパーワイヤ 3 本
 （ボードの UART ヘッダ ←→ D0/D1/GND）で足りる。歩行中に抜けると転倒するので、
 固くしたいときは 2.54 mm のピンヘッダ・ピンソケットで自作する。
+
+```{figure} ../_static/quadruped_driver_board.jpg
+:target: ../_static/quadruped_driver_board.jpg
+:width: 50%
+:alt: ドライバーボード。黄色が A/B ジャンパ、右下に USB Type-C と DC ジャック
+
+ドライバーボード。黄色が A/B ジャンパ、右下に USB Type-C と DC ジャック
+```
 
 ### バスの分岐（任意）
 
@@ -218,6 +224,13 @@ leg_parts.3mf（脚 8 部品プレート）
 ::::
 
 **9 部品、実体積の合計 約 477 cm³。**
+
+```{figure} ../_static/quadruped_parts.jpg
+:target: ../_static/quadruped_parts.jpg
+:width: 50%
+
+刷り上がった 9 部品と STS3215 ×8
+```
 
 **左右の脚は同じ部品。** ブラケットもリンクも 1 つの STL を 4 回刷ればよく、
 左右の作り分けは要らない。

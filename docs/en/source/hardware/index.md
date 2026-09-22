@@ -39,6 +39,45 @@ the same parts). Units are millimeters.
 </ul>
 ```
 
+## Photos
+
+::::{grid} 2 3 3 3
+:gutter: 2
+
+:::{grid-item}
+```{figure} ../_static/quadruped_parts.jpg
+:target: ../_static/quadruped_parts.jpg
+:alt: All parts: 9 printed parts, 8 STS3215 servos, and the bundled screws
+
+All parts: 9 printed parts, 8 STS3215 servos, and the bundled screws
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_body_servo.jpg
+:target: ../_static/quadruped_body_servo.jpg
+:alt: Body with four servos fixed
+
+Body with four servos fixed
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_legs_x4.jpg
+:target: ../_static/quadruped_legs_x4.jpg
+:alt: Four servos with leg brackets attached
+
+Four servos with leg brackets attached
+```
+:::
+:::{grid-item}
+```{figure} ../_static/quadruped_driver_board.jpg
+:target: ../_static/quadruped_driver_board.jpg
+:alt: Driver board: A/B jumper (yellow), USB Type-C and DC jack
+
+Driver board: A/B jumper (yellow), USB Type-C and DC jack
+```
+:::
+::::
+
 ## Interactive assembly guide
 
 An interactive 3D assembly viewer shows every step as an animation
