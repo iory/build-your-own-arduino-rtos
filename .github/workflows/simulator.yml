@@ -6,6 +6,7 @@ name: simulator
 #   （board.py / verify_chapters.py が自分で見つけられることも確かめる）
 # - code/ の全章をエミュレータで走らせ、本文の「期待される出力」と照らす
 # - 07 章の LED マトリクスを GIF に録って、各 OS での見た目を artifacts に残す
+# - 付録で代わりの手段として案内している Renode も linux で 1 本回す
 #
 # code/ は原稿リポジトリからのミラーなので、ここで直さず原稿側を直すこと。
 # 公開リポジトリなので GitHub-hosted の標準ランナーは無料。
@@ -143,4 +144,93 @@ jobs:
             code/sim-result.json
             code/scripts/results/sim-qemu/*.log
             code/sim-gif/*.gif
+          if-no-files-found: warn
+
+  # 付録では QEMU が動かないときの代わりに Renode を案内している。壊れていないことを
+  # 見るだけなので linux 1 本。Renode で確かめられない項目には
+  # Check(unsupported_on=("renode",)) が付いていて、結果には SKIP と理由が残る。
+  renode:
+    name: renode (linux-x86_64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+        working-directory: code
+
+    env:
+      RENODE_VERSION: 1.17.0
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: code/uv.lock
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-renode-${{ hashFiles('code/*/platformio.ini') }}
+          restore-keys: pio-renode-
+
+      # portable 版は .NET を内蔵しているので、ランナーに何も入れなくてよい。
+      - name: Cache Renode
+        id: cache-renode
+        uses: actions/cache@v4
+        with:
+          path: ~/renode
+          key: renode-${{ env.RENODE_VERSION }}-linux
+
+      - name: Install Renode
+        if: steps.cache-renode.outputs.cache-hit != 'true'
+        working-directory: ${{ github.workspace }}
+        run: |
+          mkdir -p ~/renode
+          curl -sSL -o /tmp/renode.tar.gz \
+            "https://github.com/renode/renode/releases/download/v${RENODE_VERSION}/renode-${RENODE_VERSION}.linux-portable.tar.gz"
+          tar xzf /tmp/renode.tar.gz -C ~/renode --strip-components=1
+
+      - name: Install PlatformIO
+        run: uv sync --frozen
+
+      - name: Verify all chapters in the emulator
+        run: |
+          uv run python scripts/verify_chapters.py --emulator renode \
+            --renode "$HOME/renode/renode" \
+            --capture-scale 2 \
+            --json sim-result.json
+
+      - name: Summary
+        if: always()
+        run: |
+          [ -f sim-result.json ] || exit 0
+          {
+            echo "### renode (linux-x86_64)（Renode $RENODE_VERSION）"
+            echo
+            echo "| chapter | result | checks |"
+            echo "|---|---|---|"
+            uv run --no-project python -c "$SUMMARY_PY" sim-result.json
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          SUMMARY_PY: |
+            import json, sys
+            for r in json.load(open(sys.argv[1], encoding="utf-8")):
+                cs = r["checks"]
+                skip = sum(1 for c in cs if c.get("skipped"))
+                ok = sum(1 for c in cs if c["ok"] and not c.get("skipped"))
+                detail = f"{ok}/{len(cs) - skip}" + (f" (+{skip} skip)" if skip else "")
+                print(f"| {r['chapter']} | {r['status']} | {detail} |")
+        continue-on-error: true
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-renode
+          path: |
+            code/sim-result.json
+            code/scripts/results/sim/*.log
           if-no-files-found: warn
