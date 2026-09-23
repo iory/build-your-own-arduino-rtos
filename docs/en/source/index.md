@@ -76,10 +76,22 @@ Troubleshooting and corrections.
 by Iori Yanokura, published by Mynavi Publishing on September 18, 2026.
 ISBN 978-4-8399-9187-6. Available in print and as a PDF.
 
-{bdg-link-primary}`Mynavi Books (print / PDF)<https://book.mynavi.jp/ec/products/detail/id=152331>`
+Print:
+
 {bdg-link-primary}`Amazon.co.jp<https://www.amazon.co.jp/dp/4839991871>`
 {bdg-link-primary}`Rakuten Books<https://books.rakuten.co.jp/rb/18716697/>`
-{bdg-link-primary}`honto (ebook)<https://honto.jp/isbn/9784839991876>`
+{bdg-link-primary}`Mynavi Books<https://book.mynavi.jp/ec/products/detail/id=152331>`
+
+Also available by ISBN (978-4-8399-9187-6) at Japanese bookstores.
+
+PDF / ebook:
+
+{bdg-link-primary}`Mynavi Books (PDF)<https://book.mynavi.jp/ec/products/detail/id=152331>`
+{bdg-link-primary}`Kindle<https://www.amazon.co.jp/dp/B0HCN7X9PC>`
+{bdg-link-primary}`honto<https://honto.jp/isbn/9784839991876>`
+
+The Mynavi Books PDF is DRM-watermarked with the buyer's information and
+is downloaded from your account page after purchase.
 :::
 ::::
 
