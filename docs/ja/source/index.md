@@ -74,12 +74,22 @@ Arduino UNO R4 WiFi の上で、プリエンプティブなリアルタイム OS
 
 **購入する**
 
-{bdg-link-primary}`マイナビブックス（紙・PDF）<https://book.mynavi.jp/ec/products/detail/id=152331>`
+紙の書籍:
+
 {bdg-link-primary}`Amazon<https://www.amazon.co.jp/dp/4839991871>`
 {bdg-link-primary}`楽天ブックス<https://books.rakuten.co.jp/rb/18716697/>`
-{bdg-link-primary}`honto（電子書籍）<https://honto.jp/isbn/9784839991876>`
+{bdg-link-primary}`マイナビブックス<https://book.mynavi.jp/ec/products/detail/id=152331>`
 
 全国の書店でも ISBN（978-4-8399-9187-6）で注文できます。
+
+PDF・電子書籍:
+
+{bdg-link-primary}`マイナビブックス（PDF直販）<https://book.mynavi.jp/ec/products/detail/id=152331>`
+{bdg-link-primary}`Kindle<https://www.amazon.co.jp/dp/B0HCN7X9PC>`
+{bdg-link-primary}`honto<https://honto.jp/isbn/9784839991876>`
+
+マイナビブックスのPDFは購入者情報を埋め込んだDRM付きで、購入後に
+マイページからダウンロードします。
 :::
 ::::
 

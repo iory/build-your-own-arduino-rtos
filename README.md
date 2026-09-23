@@ -18,10 +18,15 @@ WiFi でプリエンプティブなリアルタイム OS を一から自作す�
 - 著者: 矢野倉伊織 ／ 出版社: マイナビ出版 ／ 発売日: 2026年9月18日
 - ISBN: 978-4-8399-9187-6 ／ 書籍（紙）・電子版（PDF）
 - 購入:
-  [マイナビブックス](https://book.mynavi.jp/ec/products/detail/id=152331)
-  ・[Amazon](https://www.amazon.co.jp/dp/4839991871)
-  ・[楽天ブックス](https://books.rakuten.co.jp/rb/18716697/)
-  ・[honto（電子書籍）](https://honto.jp/isbn/9784839991876)
+  - 紙の書籍:
+    [Amazon](https://www.amazon.co.jp/dp/4839991871)
+    ・[楽天ブックス](https://books.rakuten.co.jp/rb/18716697/)
+    ・[マイナビブックス](https://book.mynavi.jp/ec/products/detail/id=152331)
+    ・全国の書店（ISBN 978-4-8399-9187-6 で注文可）
+  - PDF・電子書籍:
+    [マイナビブックス（PDF、購入後にマイページからDL）](https://book.mynavi.jp/ec/products/detail/id=152331)
+    ・[Kindle](https://www.amazon.co.jp/dp/B0HCN7X9PC)
+    ・[honto](https://honto.jp/isbn/9784839991876)
 
 <br clear="right">
 
