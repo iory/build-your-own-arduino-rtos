@@ -177,7 +177,7 @@ viewer in [Assembly](assembly.md)).
 
 | Part | File | Size [mm] | Qty | Volume |
 |---|---|---|---|---|
-| Body | `body.stl` | **230.0 × 110.0 × 50.0** | 1 | 243.6 cm³ |
+| Body | `body.stl` | **230.0 × 110.0 × 50.0** | 1 | 244.3 cm³ |
 | Leg bracket | `bracket_outline.stl` | 127.9 × 52.2 × 12.0 | 4 | 19.1 cm³ |
 | Leg link | `leg_link1.stl` | 80.0 × 52.0 × 26.0 | 4 | 39.2 cm³ |
 
