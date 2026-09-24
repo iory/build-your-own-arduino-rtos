@@ -208,6 +208,11 @@ leg_link1.stl（×4）
 Textured PEI プレート）。PLA で刷る場合はフィラメントを変えるだけで
 かまいません。
 
+「Bambu Studio で開く」を押すと、Bambu Studio が起動してプロジェクトを
+そのまま開きます（Bambu Studio のインストールが必要）。MakerWorld 以外から
+開くので「This file is not from a trusted site」と確認が出ます。
+**Yes** を押せば開きます。
+
 ::::{grid} 2
 :gutter: 2
 
@@ -219,6 +224,8 @@ Textured PEI プレート）。PLA で刷る場合はフィラメントを変え
 body.3mf（胴体プレート）
 ```
 
+<a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-w-100 bambu-open" data-file="../assembly/quadruped/stl/body.3mf" hidden>Bambu Studio で開く</a>
+
 ![body plate](print_img/bambulab-body-parts.png)
 :::
 :::{grid-item}
@@ -228,6 +235,8 @@ body.3mf（胴体プレート）
 :expand:
 leg_parts.3mf（脚 8 部品プレート）
 ```
+
+<a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-w-100 bambu-open" data-file="../assembly/quadruped/stl/leg_parts.3mf" hidden>Bambu Studio で開く</a>
 
 ![leg plate](print_img/bambulab-leg-parts.png)
 :::

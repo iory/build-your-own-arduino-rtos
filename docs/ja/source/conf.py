@@ -25,6 +25,7 @@ exclude_patterns = ["_build"]
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
+html_js_files = ["bambu-open.js"]
 
 # GitHub Pages では BASE_URL=/build-your-own-arduino-rtos/ を渡す
 _base = os.environ.get("BASE_URL", "/")

@@ -219,6 +219,10 @@ Project files with the same settings and layout as the book's robot was printed 
 (Bambu Lab X1C, 0.4 nozzle, 0.28 mm, **ABS**, automatic tree supports, Textured PEI
 plate). To print in PLA, just change the filament.
 
+**Open in Bambu Studio** launches Bambu Studio and opens the project directly
+(Bambu Studio must be installed). Because the file does not come from MakerWorld,
+Bambu Studio asks "This file is not from a trusted site"; click **Yes** to open it.
+
 ::::{grid} 2
 :gutter: 2
 
@@ -230,6 +234,8 @@ plate). To print in PLA, just change the filament.
 body.3mf (body plate)
 ```
 
+<a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-w-100 bambu-open" data-file="../../assembly/quadruped/stl/body.3mf" hidden>Open in Bambu Studio</a>
+
 ![body plate](print_img/bambulab-body-parts.png)
 :::
 :::{grid-item}
@@ -239,6 +245,8 @@ body.3mf (body plate)
 :expand:
 leg_parts.3mf (plate with the 8 leg parts)
 ```
+
+<a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-w-100 bambu-open" data-file="../../assembly/quadruped/stl/leg_parts.3mf" hidden>Open in Bambu Studio</a>
 
 ![leg plate](print_img/bambulab-leg-parts.png)
 :::
