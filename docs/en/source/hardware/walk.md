@@ -314,7 +314,11 @@ wiring or the power supply.
   (stall current is 2.7 A per servo)
 - Do `stand` and the first walk **with the robot suspended**. With a wrong ID or
   mounting it does not walk badly, it thrashes
-- Put rubber or silicone on the feet (bare plastic slips on hard floors)
+```
+
+```{tip}
+Rubber or silicone on the feet makes them slip less. The robot walks on bare plastic
+too, but on a hard, smooth floor such as wood flooring the feet slip more easily.
 ```
 
 ## FAQ
