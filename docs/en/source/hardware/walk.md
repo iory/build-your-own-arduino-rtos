@@ -1,11 +1,26 @@
 # Learning to walk (reinforcement learning)
 
-The chapter 13 quadruped walks with **a policy trained by reinforcement learning
-(PPO)**. The training side, which did not fit in the book, is supported here.
+:::{sidebar} Aside: a policy?
+:class: yodan
+
+In reinforcement learning, a **policy** is the function that takes the current state
+and returns what to do next.
+
+When I first heard the word, I thought a policy meant the principles a person holds
+dear. Now, if you asked me "what is this robot's policy?", I would answer: "a
+three-layer neural network that takes the joint angles and velocities and puts out a
+target angle for each joint."
+:::
+
+The chapter 13 quadruped walks with **a policy trained by reinforcement learning**.
+The training side, which did not fit in the book, is supported here. What
+reinforcement learning is, and what the tools it uses (PPO, MuJoCo, mjlab) are, is in
+{ref}`what-is-rl`.
 
 ## Try it in the browser
 
-A simulation that runs the trained policy in **MuJoCo (WebAssembly)**. The same
+A simulation that runs the trained policy in the WebAssembly build (the form that
+runs inside a browser) of the physics simulator **MuJoCo**. The same
 neural network you flash onto the robot runs a 50 Hz control loop inside the
 browser. Use the sliders to change the forward and turning commands.
 
@@ -26,13 +41,16 @@ the back-EMF and gearbox friction, and every command reaches the servo 20–35 m
 ```
 
 ```{note}
-The first load downloads about 16 MB (the physics engine in WASM and the robot model).
+The first load downloads about 16 MB (the WebAssembly build of MuJoCo and the robot
+model).
 The simulation's UI labels are in Japanese.
 ```
 
 The control switch compares **the sin/cos gait of section 13.5 in the book** (state
-machine + trot) with the RL policy. The sin/cos gait lifts the swing leg along a sine
-arc and converts it to joint angles with two-link IK (section 13.3); it is the book's
+machine + trot, a gait that moves the legs in diagonal pairs) with the reinforcement
+learning (RL) policy. The sin/cos gait lifts the swing leg along a sine arc and
+converts it to joint angles with two-link inverse kinematics (IK, working out the
+joint angles from where the foot should be; section 13.3); it is the book's
 sample code `src/gait.cpp` + `src/leg_ik.cpp` ported to the browser as is. This
 robot is asymmetric front to back, though, so the gait changes completely with the
 direction: with the same 0.02 m stride (slider ±0.05) it barely moves forward
@@ -41,18 +59,49 @@ stride) gives 0.06 m/s, and at 0.15 it tips over sideways about one run in eight
 Tuning the coefficients by hand can only suit one direction — that is the motivation
 for RL.
 
+(what-is-rl)=
+## What reinforcement learning is
+
+**Reinforcement learning** does not teach the robot the right movements. It lets the
+robot find them by trial and error: good results earn points (the **reward**), and
+the robot gradually picks up the ways of moving that earn more. The rewards for this
+quadruped include:
+
+- points for moving at the commanded speed
+- a few points for staying up; the run is cut short if the body tilts too far or
+  drops too low
+- a penalty when the body height drifts from its target
+- a penalty for spinning the joints faster, or pushing them harder, than needed
+
+Doing this over and over on the real robot would take forever and break it, so the
+training happens in a physics simulation, with 4096 robots walking at once. What is
+left when training ends is the **policy**, which turns observations into the next
+joint targets, and that is what goes onto the Arduino.
+
+The tools and terms involved:
+
+| Name | What it is |
+|---|---|
+| **PPO** | Proximal Policy Optimization. One of the procedures (algorithms) for improving a policy step by step, known for keeping each update from changing the policy too much ([paper, 2017](https://arxiv.org/abs/1707.06347)) |
+| **MuJoCo** | Multi-Joint dynamics with Contact. A physics simulator for bodies made of joints moving while in contact with the ground and other objects. Developed by Roboti LLC, acquired and made free by Google DeepMind in 2021, and open-sourced in 2022 ([official documentation](https://mujoco.readthedocs.io/en/latest/overview.html)). The browser simulation above uses it |
+| **mjlab** | A framework for building reinforcement learning environments on MuJoCo. It runs many copies of MuJoCo side by side on the GPU with MuJoCo Warp, and its environments are written in the style of NVIDIA's Isaac Lab ([mujocolab/mjlab](https://github.com/mujocolab/mjlab)). Training with mjlab needs an NVIDIA GPU (without one, see {doc}`train`) |
+| **unitree_rl_mjlab** | Unitree's code for training its own robots with mjlab ([unitreerobotics/unitree_rl_mjlab](https://github.com/unitreerobotics/unitree_rl_mjlab)). This book trained its robot by plugging this robot's definition and rewards into it |
+| **rsl_rl** | A reinforcement learning library for robots from the Robotic Systems Lab at ETH Zürich. The PPO used here is its implementation ([leggedrobotics/rsl_rl](https://github.com/leggedrobotics/rsl_rl)) |
+| **sim2real** | Taking a policy trained in simulation to the real robot. Simulation and hardware never match exactly, so training allows for the difference ({ref}`"Training code" below <walk-training-code>`) |
+
 ## Inside the policy
 
-A single small MLP does all the walking, small enough to run inference every cycle
-on the Arduino UNO R4.
+A single small multi-layer perceptron (MLP: fully connected layers stacked up, the
+plainest kind of neural network) does all the walking, small enough to run inference
+every cycle on the Arduino UNO R4.
 
 | | |
 |---|---|
 | Input (observation) | **87 dimensions** = command (vx, vy, wz), gait phase (sin/cos), 8 joint angles, 8 joint velocities, the previous 8 actions, each with **3 steps of history** |
-| Network | Fully connected [96, 64], ELU activation |
+| Network | Fully connected [96, 64], ELU (Exponential Linear Unit) activation |
 | Output | 8 (one per joint). Servo target = home angle + 0.25 × action |
 | Control period | 50 Hz (0.02 s), gait clock 0.32 s |
-| Sensors | **Joint angles and velocities only. No IMU** (the robot has none, so the policy cannot see the body's attitude) |
+| Sensors | **Joint angles and velocities only. No IMU** (inertial measurement unit, a sensor for the body's tilt and rotation rate; the robot has none, so the policy cannot see the body's attitude) |
 
 With no abduction joints it cannot move sideways (vy); it turns by taking longer
 steps on one side.
@@ -65,6 +114,7 @@ the same model and controller as the simulation above, five 20 s runs each, aver
 the last 10 s. The low speed is a property of the robot, set by the servos'
 no-load speed, not a failure of training.
 
+(walk-training-code)=
 ## Training code
 
 Training uses PPO (rsl_rl) in
@@ -73,7 +123,8 @@ written as an overlay that swaps in the robot definition, rewards and environmen
 settings:
 
 - Code: [docs/os-on-arduino/code/13_quadruped/rl](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/rl)
-- The full robot description (**URDF**, MJCF, meshes, RViz config, with a script that
+- The full robot description (**URDF**, the robot description format used by ROS and
+  others; MJCF, MuJoCo's model format; meshes; RViz config; with a script that
   reproduces the MJCF from the SolidWorks export):
   [docs/os-on-arduino/code/13_quadruped/arduino_os_quad_robot](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/arduino_os_quad_robot)
 
@@ -96,7 +147,8 @@ Three values have to match your robot. The **servo IDs** follow the
 {ref}`assembly table <servo-id>`, and the **rotation directions (sign)** are fixed by
 how the legs are mounted, so a robot built as in the book keeps the values already in
 `include/quad_calib.h`. That leaves the **zero point**, which is written into each
-servo's EEPROM with the legs held straight. Because it lives in the servos, the
+servo's EEPROM (memory that keeps its contents with the power off) with the legs
+held straight. Because it lives in the servos, the
 firmware does not need editing.
 
 ```{figure} ../_static/quadruped_walk.gif
@@ -137,7 +189,7 @@ The knee servo's cable runs through the hook on the leg bracket into the body
 :::
 ::::
 
-Connect the board's UART header to the Arduino with three wires. On this board
+Connect the board's UART (serial) header to the Arduino with three wires. On this board
 **TX goes to TX and RX to RX** ("Know this before wiring" in {doc}`bom`).
 
 | Driver board | Arduino |
@@ -292,7 +344,7 @@ You can also type commands straight into a serial monitor
 
 | Command | Action |
 |---|---|
-| `iktest` | FK/IK round-trip test. The legs do not move |
+| `iktest` | forward/inverse kinematics (FK/IK) round-trip test. The legs do not move |
 | `stand` / `stop` | move to the home pose over 2 s and hold |
 | `rl <vx> <wz>` | walk with the trained policy, e.g. `rl 0.15 0` (forward m/s, turn rad/s) |
 | `zero` | move every joint to 0 degrees and hold. Suspended only |

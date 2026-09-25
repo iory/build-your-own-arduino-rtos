@@ -34,3 +34,57 @@
   .bd-article > section > .admonition,
   .bd-article > section > table { max-width: 60em; }
 }
+
+/* ------------------------------------------------------------------
+   余談 (欄外の書き込み)
+
+   本筋から外れた作者のひとことを、本文の脇に置く。書き方は MyST の
+   sidebar に yodan クラスを付ける:
+
+     :::{sidebar} 余談: ポリシー？
+     :class: yodan
+     ...
+     :::
+
+   手順や安全に関わることは書かない。読み飛ばしても困らないことだけ。
+
+   広い画面では段落が 60em に留まり (上の「読み物としての行長は保つ」)、
+   その右に空きができるので、そこへ置いて本当に欄外にする。それより狭い
+   画面では右に寄せて本文を回り込ませ、スマホでは本文の流れに入れる。
+   ------------------------------------------------------------------ */
+aside.sidebar.yodan {
+  width: 40%;
+  font-size: 0.85em;
+  line-height: 1.6;
+  color: var(--pst-color-text-muted);
+  background: transparent;
+  border: none;
+  border-left: 3px solid var(--pst-color-accent);
+  border-radius: 0;
+  margin: 0 0 1rem 1.5rem;
+  padding: 0 0 0 0.9rem;
+}
+aside.sidebar.yodan p.sidebar-title {
+  font-size: 0.95em;
+  font-weight: 700;
+  color: var(--pst-color-accent);
+  background: transparent;
+  border: none;
+  margin: 0 0 0.3rem 0;
+  padding: 0;
+}
+aside.sidebar.yodan > *:not(.sidebar-title) {
+  padding-left: 0;
+  padding-right: 0;
+}
+@media (min-width: 1400px) {
+  /* 段落 (60em) の右の空きに収める */
+  aside.sidebar.yodan { width: 15em; }
+}
+@media (max-width: 720px) {
+  aside.sidebar.yodan {
+    float: none;
+    width: auto;
+    margin: 1rem 0;
+  }
+}
