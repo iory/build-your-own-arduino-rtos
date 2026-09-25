@@ -72,6 +72,164 @@ STS3215 に付属するネジ（3 種類）
 | leg_link1 | ×4 |
 | 胴体（body） | ×1 |
 
+(servo-id)=
+## サーボに ID を振る
+
+**ユニットを組む前に、8 個のサーボに 1〜8 の ID を振ります。** 8 個は 1 本の
+バスにつながり、マイコンは ID で相手を呼び分けます。ところが新品の STS3215 は
+**全部 ID 1** で出荷されているので、そのままでは区別できません。
+
+ID を振るときは**サーボを 1 個ずつ**つなぎます。ID 1 のサーボが 2 個つながって
+いると、「ID 1 を 2 に変えろ」という命令が両方に届き、両方とも ID 2 になって
+しまいます。しかもツールからは 1 個に見えるので、失敗したことに気づけません。
+
+### 用意するもの
+
+- PC（Windows / macOS / Linux）
+- ドライバーボード（Waveshare Bus Servo Adapter (A)）と USB Type-C ケーブル
+- 12 V の AC アダプタ（[部品表](bom.md) の 3）
+- STS3215（最初は 1 個だけ）
+- マスキングテープとペン（番号のラベル用）
+
+### ツールを入れる
+
+ID の設定には [feetech-cli](https://github.com/iory/feetech-cli) を使います。
+開発環境の準備で入れた uv で、次の 1 行で `feetech` コマンドが入ります
+（uv がまだなら [macOS](../getting-started/macos.md) /
+[Windows](../getting-started/windows.md) / [Linux](../getting-started/linux.md)
+の「uv を入れる」を先に）。
+
+```console
+$ uv tool install feetech-cli
+```
+
+Python の用意は uv がするので要りません。コマンドは uv 本体と同じ場所に入るので、
+`uv` が動くシェルならそのまま `feetech` も動きます。
+
+### つなぐ
+
+1. ボードの **ジャンパを 2 個とも B（USB-SERVO）** に差す。A は Arduino から
+   動かすときの位置で、A のままだと PC からはサーボが見えません。
+2. サーボを 1 個だけ、ボードの 3 ピンコネクタ（D V G）に差す。
+3. AC アダプタをボードの DC ジャックに差す。**サーボの電源は USB からは取れない**
+   ので、これを忘れるとサーボが応答しません。
+4. USB Type-C で PC とボードをつなぐ。
+
+::::{grid} 1 2 2 2
+:gutter: 2
+
+:::{grid-item}
+
+```{figure} ../_static/servo_id_setup.jpg
+:target: ../_static/servo_id_setup.jpg
+:alt: PC、AC アダプタ、ドライバーボード、サーボ 1 個をつないだところ
+
+全体。PC とボードは USB Type-C で、ボードの電源は AC アダプタから。
+サーボは 1 個だけ
+```
+
+:::
+:::{grid-item}
+
+```{figure} ../_static/servo_id_wiring.jpg
+:target: ../_static/servo_id_wiring.jpg
+:alt: ドライバーボードに DC ジャック、USB Type-C、サーボのケーブルを差したところ
+
+ボードまわり。左から DC ジャック（電源）、USB Type-C（PC）。サーボのケーブルは
+上の 3 ピンコネクタへ。電源が入ると PWR の LED が赤く点く
+```
+
+:::
+:::{grid-item}
+
+```{figure} ../_static/servo_id_jumper.jpg
+:target: ../_static/servo_id_jumper.jpg
+:alt: ジャンパ 2 個が B の位置に差さっている。基板には A が UART-SERVO、B が USB-SERVO と印刷されている
+
+ジャンパは 2 個とも **B（USB-SERVO）**。基板の表に A / B の意味が印刷されている
+```
+
+:::
+::::
+
+### 1 個ずつ番号を振る
+
+1. サーボが見えることを確かめる。
+
+   ```console
+   $ feetech scan
+   Found 1 servo(s) on /dev/cu.usbmodem59710813431 at 1.00Mbps:
+     id   1  model   777  position  4095 (+179.9 deg)  12.3V  32C
+   ```
+
+   `id 1` が 1 行だけ出れば準備完了です。ポート名は環境によって違います
+   （Windows なら `COM3` など）。ツールが自動で探すので、指定は要りません。
+
+2. 新しい ID を書き込む。確認に `y` と答えると書き込まれます。1 個目は ID 1 の
+   ままでよいので、この手順は 2 個目からです。
+
+   ```console
+   $ feetech set-id 1 2
+   Change servo 1 to id 2? This writes the servo EEPROM. [y/N] y
+   Servo 1 is now id 2.
+   ```
+
+   ID はサーボの EEPROM に書かれるので、電源を切っても消えません。
+
+3. もう一度 `feetech scan` を実行して、新しい ID で見えることを確かめる。
+
+4. **サーボにラベルを貼る。** ばらばらになってからでは、1 個ずつつなぎ直さないと
+   見分けられません。組み立てたあとも見える面に貼っておくと、配線や交換のときに
+   も困りません。
+
+5. サーボを外し、次の新品をつないで 1 に戻る。3 個目は `feetech set-id 1 3`、
+   4 個目は `feetech set-id 1 4`、…と 8 まで続けます。
+
+```{figure} ../_static/servo_set_id.gif
+:alt: feetech scan で ID 1 のサーボが見え、feetech set-id 1 2 で ID 2 に変え、もう一度 scan すると ID 2 で見える
+
+手順 1〜3 を実機で実行したところ
+```
+
+```{figure} ../_static/servo_id_label.jpg
+:target: ../_static/servo_id_label.jpg
+:width: 50%
+:alt: 「ID:1」と書いたラベルを側面に貼ったサーボ
+
+番号を書いたラベルを貼ったサーボ
+```
+
+### どのサーボをどこに使うか
+
+ID は脚と関節ごとに決まっています。この割り当てはファームウェアの
+`include/quad_calib.h`（`QUAD_SERVO_ID`）と同じなので、**この通りに組み付けて
+ください。** 違う位置に付けると、別の関節に命令が届いてしまいます。
+
+```{figure} assembly_img/servo_ids.png
+:target: assembly_img/servo_ids.png
+:alt: 四脚ロボットを上と左から見た図に、各サーボの ID を書き込んだもの。右前 1・2、左前 3・4、右後 5・6、左後 7・8。それぞれ股が奇数、膝が偶数
+
+サーボ ID の割り当て。上から見て、胴体の短い辺の中央に出っ張りがある側が前
+（歩く向き）
+```
+
+下のユニットを組むときは、この ID のサーボを使います。
+
+| ユニット | 入るサーボ | 使う ID |
+|---|---|---|
+| body_servo（胴体） | 4 本の脚の股 | 1（右前）、3（左前）、5（右後）、7（左後） |
+| leg_right（右脚）×2 | 右の脚の膝 | 2（右前）、6（右後） |
+| leg_left（左脚）×2 | 左の脚の膝 | 4（左前）、8（左後） |
+
+### うまくいかないとき
+
+| 症状 | 確かめること |
+|---|---|
+| `feetech scan` で何も見つからない | AC アダプタが差さっているか（PWR の LED）。ジャンパが B か。サーボのケーブルが奥まで差さっているか |
+| ポートが見つからない | USB ケーブルがデータ通信対応か（充電専用のケーブルでは見えない） |
+| 以前に通信速度を変えたサーボが見つからない | `feetech scan --all-baudrates` ですべての速度を試す |
+| `id 2 is already used by another servo on this bus` | その ID のサーボが別につながっている。1 個だけにしてやり直す |
+
 ## ユニットの事前組み立て
 
 同じユニットは 1 回だけ手順を示します。**×N** はロボット全体で使う個数です。
@@ -288,9 +446,8 @@ STS3215 に付属するネジ（3 種類）
 :::
 
 ```{warning}
-組み始める前に、**各サーボにユニークな ID を振っておく**こと（工場出荷時は全部
-同じ ID なので、1 個ずつ接続して設定する。機体に組み込んでからだと個体を特定
-できない）。
+組み始める前に、**各サーボに ID を振っておく**こと（[サーボに ID を振る](#servo-id)）。
+機体に組み込んでからだと、どのサーボがどれか見分けられない。
 
 原点（0 点）合わせは**組み上げた後にソフトウェアで行う**ので、組立時のホーンの
 角度は気にしなくてよい。手順は第13章を参照。
