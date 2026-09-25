@@ -75,6 +75,164 @@ the body last. There are **81 individual parts (8 kinds)** in total.
 | leg_link1 | ×4 |
 | Body | ×1 |
 
+(servo-id)=
+## Give each servo an ID
+
+**Before building the units, give the eight servos the IDs 1 to 8.** All eight share
+one bus, and the microcontroller addresses each servo by its ID. New STS3215 servos,
+however, **all ship as ID 1**, so out of the box they cannot be told apart.
+
+Set the IDs with **one servo connected at a time**. With two ID-1 servos on the bus,
+a "change ID 1 to 2" command reaches both of them and both become ID 2. The tool
+still sees what looks like one servo, so nothing tells you it went wrong.
+
+### What you need
+
+- A PC (Windows / macOS / Linux)
+- The driver board (Waveshare Bus Servo Adapter (A)) and a USB Type-C cable
+- The 12 V AC adapter (item 3 in the [parts list](bom.md))
+- An STS3215 (just one to start with)
+- Masking tape and a pen, for number labels
+
+### Install the tool
+
+IDs are set with [feetech-cli](https://github.com/iory/feetech-cli). With the uv you
+installed while setting up (if you have not yet, see "Install uv" for
+[macOS](../getting-started/macos.md) / [Windows](../getting-started/windows.md) /
+[Linux](../getting-started/linux.md) first), one line installs the `feetech` command:
+
+```console
+$ uv tool install feetech-cli
+```
+
+uv takes care of Python, so there is nothing else to install. The command goes into
+the same place as uv itself, so any shell where `uv` runs also finds `feetech`.
+
+### Connect
+
+1. Put **both jumpers on B (USB-SERVO)**. A is the position for driving the servos
+   from an Arduino; left on A, the PC cannot see the servo.
+2. Plug a single servo into one of the board's 3-pin connectors (D V G).
+3. Plug the AC adapter into the board's DC jack. **The servo cannot be powered from
+   USB**, so without this it does not answer.
+4. Connect the board to the PC with the USB Type-C cable.
+
+::::{grid} 1 2 2 2
+:gutter: 2
+
+:::{grid-item}
+
+```{figure} ../_static/servo_id_setup.jpg
+:target: ../_static/servo_id_setup.jpg
+:alt: A PC, the AC adapter, the driver board and a single servo connected together
+
+The whole setup. PC to board over USB Type-C, board powered from the AC adapter,
+exactly one servo
+```
+
+:::
+:::{grid-item}
+
+```{figure} ../_static/servo_id_wiring.jpg
+:target: ../_static/servo_id_wiring.jpg
+:alt: The driver board with the DC jack, the USB Type-C cable and the servo cable plugged in
+
+At the board: DC jack (power) on the left, USB Type-C (PC) next to it, and the servo
+cable in a 3-pin connector at the top. The PWR LED lights red when power is on
+```
+
+:::
+:::{grid-item}
+
+```{figure} ../_static/servo_id_jumper.jpg
+:target: ../_static/servo_id_jumper.jpg
+:alt: Both jumpers in the B position. The board is printed with A = UART-SERVO and B = USB-SERVO
+
+Both jumpers on **B (USB-SERVO)**. What A and B mean is printed on the board
+```
+
+:::
+::::
+
+### Number them one by one
+
+1. Check the servo is visible.
+
+   ```console
+   $ feetech scan
+   Found 1 servo(s) on /dev/cu.usbmodem59710813431 at 1.00Mbps:
+     id   1  model   777  position  4095 (+179.9 deg)  12.3V  32C
+   ```
+
+   A single `id 1` line means you are ready. The port name depends on your system
+   (`COM3` or similar on Windows); the tool finds it by itself, so there is nothing to
+   pass.
+
+2. Write the new ID. It is written once you answer `y`. The first servo can keep
+   ID 1, so this step starts with the second one.
+
+   ```console
+   $ feetech set-id 1 2
+   Change servo 1 to id 2? This writes the servo EEPROM. [y/N] y
+   Servo 1 is now id 2.
+   ```
+
+   The ID is stored in the servo's EEPROM, so it survives a power cycle.
+
+3. Run `feetech scan` again and check the servo answers at its new ID.
+
+4. **Label the servo.** Once they are mixed up, the only way to tell them apart is to
+   connect them one by one again. A label on a face that stays visible after assembly
+   also helps later, when wiring or replacing a servo.
+
+5. Unplug it, connect the next new servo and go back to step 1. The third one gets
+   `feetech set-id 1 3`, the fourth `feetech set-id 1 4`, and so on up to 8.
+
+```{figure} ../_static/servo_set_id.gif
+:alt: feetech scan finds a servo at ID 1, feetech set-id 1 2 changes it to ID 2, and a second scan finds it at ID 2
+
+Steps 1 to 3 on real hardware
+```
+
+```{figure} ../_static/servo_id_label.jpg
+:target: ../_static/servo_id_label.jpg
+:width: 50%
+:alt: A servo with a label reading "ID:1" on its side
+
+A servo with its number label
+```
+
+### Which servo goes where
+
+Each ID belongs to one joint of one leg. The assignment is the one in the firmware's
+`include/quad_calib.h` (`QUAD_SERVO_ID`), so **mount the servos exactly as shown.** A
+servo in the wrong place receives another joint's commands.
+
+```{figure} assembly_img/servo_ids.png
+:target: assembly_img/servo_ids.png
+:alt: The quadruped seen from above and from the left, with each servo's ID marked. Front right 1 and 2, front left 3 and 4, rear right 5 and 6, rear left 7 and 8; the hip is odd and the knee even on every leg
+
+Servo ID assignment. Seen from above, the front (the walking direction) is the end
+with the tab in the middle of the body's short side
+```
+
+Use these servos when building the units below.
+
+| Unit | Servos inside | IDs to use |
+|---|---|---|
+| body_servo (body) | the hips of all four legs | 1 (front right), 3 (front left), 5 (rear right), 7 (rear left) |
+| leg_right (right leg) ×2 | the knees of the right legs | 2 (front right), 6 (rear right) |
+| leg_left (left leg) ×2 | the knees of the left legs | 4 (front left), 8 (rear left) |
+
+### Troubleshooting
+
+| Symptom | Check |
+|---|---|
+| `feetech scan` finds nothing | The AC adapter is plugged in (PWR LED), the jumpers are on B, the servo cable is fully seated |
+| No port is found | The USB cable carries data (a charge-only cable shows no port) |
+| A servo whose bus speed was changed before is not found | `feetech scan --all-baudrates` tries every speed |
+| `id 2 is already used by another servo on this bus` | A servo with that ID is also connected. Leave only one and try again |
+
 ## Building the units
 
 Each kind of unit is shown once; **×N** is how many the whole robot uses. Build them
@@ -290,9 +448,8 @@ Parts: STS3215 ×1, bracket_outline ×1, leg_link1 ×1, M3x6 ×4, M2x6 ×4
 :::
 
 ```{warning}
-Before you start, **give every servo a unique ID** (they all ship with the same ID,
-so connect and set them one at a time; once they are in the robot you cannot tell
-them apart).
+Before you start, **give every servo its ID** ([Give each servo an ID](#servo-id)).
+Once they are in the robot you cannot tell them apart.
 
 The zero point is set **in software after assembly**, so the horn angle does not
 matter while you build. See chapter 13 for the procedure.
