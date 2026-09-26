@@ -14,6 +14,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_togglebutton",
     "sphinxext.opengraph",
+    "sphinx_sitemap",
 ]
 
 myst_enable_extensions = ["colon_fence", "dollarmath"]
@@ -64,6 +65,19 @@ ogp_image = "_static/og_image.png"
 ogp_image_alt = "Cover of the book and the word OS on an LED matrix"
 ogp_social_cards = {"enable": False}
 ogp_custom_meta_tags = ['<meta name="twitter:card" content="summary_large_image">']
+
+# 検索エンジン向けのサイトマップ（sphinx-sitemap）。英語版は /en/の
+# sitemap.xml に出る。既定の URL 形式は言語コードを前に付けて存在しない
+# /en/ 付きの URL を作るので、ページのパスだけにする。
+html_baseurl = SITE_URL + "en/"
+sitemap_url_scheme = "{link}"
+sitemap_excludes = ["search.html", "genindex.html"]
+
+# Google Search Console の所有権確認タグ。CF_BEACON_TOKEN と同じく公開 HTML に
+# そのまま出る値なので、ワークフローの env でだけ持たせる。未設定なら出さない。
+html_context = {
+    "google_site_verification": os.environ.get("GOOGLE_SITE_VERIFICATION", ""),
+}
 
 
 # Cloudflare Web Analytics のビーコン。トークンは公開 HTML に出るものなので

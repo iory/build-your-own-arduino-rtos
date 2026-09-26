@@ -29,6 +29,10 @@ jobs:
       # そのまま出る値なので秘密ではなく、ここに直接書いてよい。
       # 空のままだとビーコンが入らず、アクセスは一切計測されない。
       CF_BEACON_TOKEN: "63496313d65d4ea9b205a875aad06f84"
+      # Google Search Console の所有権確認（HTML タグ方式）の content の値。
+      # これも公開 HTML に出る値なので秘密ではない。空だとタグが入らず、
+      # Search Console の確認は通らない。
+      GOOGLE_SITE_VERIFICATION: "ttRuM6a66PsPv-2HcofYi-kCYfJQ5VR9mwSRgdlvRIw"
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
