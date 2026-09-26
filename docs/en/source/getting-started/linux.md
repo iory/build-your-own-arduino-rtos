@@ -430,9 +430,9 @@ that the `STATE` column and the LED in front of you agree.
 **the same code runs on Linux, macOS and Windows** — only the returned string
 differs (`/dev/ttyACM0` / `/dev/cu.usbmodem...` / `COM3`).
 
-**Wait ~1.5 s after opening.** The UNO R4 restarts the sketch when the port is
-opened. Without the wait you lose the first output, or your command never
-arrives.
+**Wait a moment after opening.** The UNO R4 WiFi does not reset when the port is
+opened, but right after plugging in, the first output or a command can be lost.
+That is what the `time.sleep` in the code above is for.
 
 **Only one process can hold the port.** Close the PlatformIO monitor or the
 Arduino IDE before running your script.
@@ -443,7 +443,7 @@ Bringing up and calibrating the Chapter 13 robot is much faster from the PC —
 every value is on screen and you do not reflash after each change.
 
 ```bash
-cd docs/os-on-arduino/code/13_quadruped/host
+cd 13_quadruped/host                   # from docs/os-on-arduino/code
 uv run python quad_host.py scan        # how many servos are on the bus
 uv run python quad_host.py calibrate   # measure zero and sign -> calib.json
 uv run python quad_host.py stand       # hold the home pose

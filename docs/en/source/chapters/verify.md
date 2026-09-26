@@ -9,7 +9,7 @@ The same commands work on Linux, macOS and Windows.
 ## Usage
 
 ```bash
-cd docs/os-on-arduino/code
+# already in docs/os-on-arduino/code if you followed the chapters page
 uv sync                                            # first time only
 uv run python scripts/verify_chapters.py --list    # chapters and their expectations
 uv run python scripts/verify_chapters.py --build-only  # build only, no board needed

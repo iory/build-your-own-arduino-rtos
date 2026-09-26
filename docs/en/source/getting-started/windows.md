@@ -65,6 +65,13 @@ uv 0.9.26
 
 ### Get the sample code
 
+Windows does not come with git, so install it first and reopen PowerShell
+([Git for Windows](https://git-scm.com/install/windows)).
+
+```powershell
+winget install --id Git.Git -e --source winget
+```
+
 ```powershell
 git clone https://github.com/iory/learning-os-from-arduino.git
 cd learning-os-from-arduino\docs\os-on-arduino\code
@@ -395,7 +402,7 @@ from the PC before flashing anything. Those tools live in
 and run on Windows as they are.
 
 ```powershell
-cd docs\os-on-arduino\code\13_quadruped\host
+cd 13_quadruped\host                   # from docs\os-on-arduino\code
 uv run python quad_host.py --port COM3 scan        # how many servos answer
 uv run python quad_host.py --port COM3 calibrate   # measure sign and zero -> calib.json
 uv run python quad_host.py --port COM3 stand       # hold the home stance
@@ -426,7 +433,7 @@ A bundled script builds, uploads and checks the serial output of every chapter
 in one run.
 
 ```powershell
-cd docs/os-on-arduino/code
+# run in docs\os-on-arduino\code (after step 7, go back with cd ..\..)
 uv run python scripts\verify_chapters.py --port COM3
 ```
 

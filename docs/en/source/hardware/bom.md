@@ -111,6 +111,13 @@ instantly.
 12 V / 3 A = 36 W leaves no margin, so **add one electrolytic capacitor (2200–4700 µF /
 25 V)** to absorb inrush current. If it still drops out, move up to a 67 W class unit.
 
+```{warning}
+Electrolytic capacitors have **polarity (+ and −)**. Put the longer leg on DC+ and the
+leg on the side of the stripe (−) on DC−, screwed into the driver board's **terminal
+block** (the green screw terminal next to the DC jack). Fitted backwards, it can burst.
+It is not in the parts list above, so get one separately.
+```
+
 ### Things to know before wiring
 
 **This board's UART is wired RX to RX and TX to TX** (the board's RX to the Arduino's

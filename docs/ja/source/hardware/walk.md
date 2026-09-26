@@ -131,11 +131,14 @@ sim2real のために、摩擦（0.4〜1.1）・付加質量（電装ぶん 0〜
 報酬や速度上限を変えて回してみたいとき、そして
 **GPU が無い場合の Google Colab での通し方**はそちらです。
 
+(walk-real)=
 ## 実機で歩かせる
 
-使うのは第13章のサンプルコード
+使うのは第13章のサンプルコードで、{doc}`../chapters/index` の手順で入手した
+`docs/os-on-arduino/code/13_quadruped/` です（このサイトの
 [`code/13_quadruped/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped)
-です。学習済み方策は `include/arduino_quad_policy.h` に入っていて、
+も同じものです）。**以下のコマンドは、`docs/os-on-arduino/code` にいる前提で
+書いています。** 学習済み方策は `include/arduino_quad_policy.h` に入っていて、
 **上のブラウザのシミュレーションと同じ方策**です。
 
 機体ごとに合わせる値は 3 つあります。**サーボの ID** は
@@ -231,7 +234,7 @@ USB Type-C をつなぐ
 PC につなぎます。Arduino は使わず、PC から直接サーボを動かします。
 
 ```bash
-cd code/13_quadruped/host
+cd 13_quadruped/host
 uv sync                                  # numpy と feetech-cli が入る
 
 uv run python quad_host.py scan          # 8 個応答するか
@@ -303,7 +306,8 @@ space で止まります。
 ジャンパを **A（UART-SERVO）** に戻し、Arduino を PC に USB でつないで書き込みます。
 
 ```bash
-pio run -d code/13_quadruped -t upload
+cd ../..                                  # 2 で host に入ったので code に戻る
+uv run pio run -d 13_quadruped -t upload
 ```
 
 書き込みが終わると Arduino が起動し、2 秒かけて home 姿勢に立ち上がります。
@@ -311,7 +315,7 @@ pio run -d code/13_quadruped -t upload
 操作するなら:
 
 ```bash
-cd code/13_quadruped/host
+cd 13_quadruped/host
 uv run python quad_host.py serial        # Arduino の USB シリアルへ速度を送る
 ```
 
@@ -329,12 +333,13 @@ home 姿勢で立ったまま止まります。そして指令が 0.3 秒途切�
 ```
 
 シリアルモニタから直接コマンドを打つこともできます
-（`pio device monitor -d code/13_quadruped -b 115200`）。
+（`docs/os-on-arduino/code` で `uv run pio device monitor -b 115200`）。
 
 | コマンド | 動作 |
 |---|---|
 | `iktest` | 順運動学と逆運動学（FK/IK）の往復テスト。脚は動かない |
 | `stand` / `stop` | home 姿勢へ 2 秒で移って保持 |
+| `trot` | 本文 13.5 の sin/cos 歩行（学習なしの歩き方）。吊るして試す |
 | `rl <vx> <wz>` | 学習済み方策で歩く。例 `rl 0.15 0`（前進 m/s・旋回 rad/s） |
 | `zero` | 全関節を 0 度へ移して保持。吊るして使う |
 | `free` | トルクを切る |

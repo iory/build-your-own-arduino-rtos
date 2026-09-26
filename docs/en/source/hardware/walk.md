@@ -136,10 +136,13 @@ why it still walks if the assembly is a few degrees off.
 **How to retrain it yourself is in {doc}`train`**, for when you want to change the
 rewards or the speed limit, and **how to run it on Google Colab if you have no GPU**.
 
+(walk-real)=
 ## Walking the real robot
 
-Use the chapter 13 sample code,
-[`code/13_quadruped/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped).
+Use the chapter 13 sample code: `docs/os-on-arduino/code/13_quadruped/`, obtained as in
+{doc}`../chapters/index` (the same as
+[`code/13_quadruped/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped)
+on this site). **The commands below assume you are in `docs/os-on-arduino/code`.**
 The trained policy is in `include/arduino_quad_policy.h`, and it is **the same policy
 as the browser simulation above**.
 
@@ -239,7 +242,7 @@ Put the driver board's jumpers on **B (USB-SERVO)** and connect the board's USB
 Type-C to the PC. The Arduino is not involved; the PC drives the servos directly.
 
 ```bash
-cd code/13_quadruped/host
+cd 13_quadruped/host
 uv sync                                  # installs numpy and feetech-cli
 
 uv run python quad_host.py scan          # do all 8 answer?
@@ -313,7 +316,8 @@ Put the jumpers back on **A (UART-SERVO)**, connect the Arduino to the PC over U
 flash it.
 
 ```bash
-pio run -d code/13_quadruped -t upload
+cd ../..                                  # back to code from host (step 2)
+uv run pio run -d 13_quadruped -t upload
 ```
 
 When flashing finishes the Arduino boots and rises to the home pose over 2 seconds.
@@ -321,7 +325,7 @@ From here **the Arduino runs the policy**, and the PC only sends velocity comman
 drive it from the keyboard:
 
 ```bash
-cd code/13_quadruped/host
+cd 13_quadruped/host
 uv run python quad_host.py serial        # send velocities over the Arduino's USB serial
 ```
 
@@ -340,12 +344,13 @@ the cable comes out).
 ```
 
 You can also type commands straight into a serial monitor
-(`pio device monitor -d code/13_quadruped -b 115200`).
+(`uv run pio device monitor -b 115200` in `docs/os-on-arduino/code`).
 
 | Command | Action |
 |---|---|
 | `iktest` | forward/inverse kinematics (FK/IK) round-trip test. The legs do not move |
 | `stand` / `stop` | move to the home pose over 2 s and hold |
+| `trot` | the sin/cos gait of section 13.5 (walking without learning). Try it suspended |
 | `rl <vx> <wz>` | walk with the trained policy, e.g. `rl 0.15 0` (forward m/s, turn rad/s) |
 | `zero` | move every joint to 0 degrees and hold. Suspended only |
 | `free` | switch the torque off |

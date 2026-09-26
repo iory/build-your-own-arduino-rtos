@@ -64,6 +64,13 @@ uv 0.9.26
 
 ### サンプルコードを取ってくる
 
+Windows には git が最初から入っていないので、先に入れて PowerShell を開き直します
+（[Git for Windows](https://git-scm.com/install/windows) の手順）。
+
+```powershell
+winget install --id Git.Git -e --source winget
+```
+
 ```powershell
 git clone https://github.com/iory/learning-os-from-arduino.git
 cd learning-os-from-arduino\docs\os-on-arduino\code
@@ -392,7 +399,7 @@ Type 'help' for commands.
 にあります。Windows でもそのまま動きます。
 
 ```powershell
-cd docs\os-on-arduino\code\13_quadruped\host
+cd 13_quadruped\host                   # docs\os-on-arduino\code から
 uv run python quad_host.py --port COM3 scan        # バスに何個いるか
 uv run python quad_host.py --port COM3 calibrate   # sign と zero を測る -> calib.json
 uv run python quad_host.py --port COM3 stand       # home 姿勢を保持
@@ -419,7 +426,7 @@ Arduino をブリッジとして使う場合（`--bus bridge`）は Arduino の 
 実行できます。
 
 ```powershell
-cd docs/os-on-arduino/code
+# docs\os-on-arduino\code で実行（7 で host に入ったなら cd ..\.. で戻る）
 uv run python scripts\verify_chapters.py --port COM3
 ```
 

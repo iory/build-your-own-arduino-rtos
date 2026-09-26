@@ -264,6 +264,10 @@ Hold the screwdriver tip in line with the screw hole. If the tip is at an angle 
 
 Parts: body ×1, STS3215 ×4, M3x6 ×8
 
+**STS3215-1 to -4** below are the CAD part numbers, not servo IDs. The four positions
+in the body take the hip servos (IDs 1, 3, 5, 7); match each position to its ID with
+the {ref}`ID assignment figure <servo-id>`.
+
 1. Place the **body** (base).
 
    ![body_servo step 1](assembly_img/units/body_servo/step_01.png)
@@ -500,7 +504,7 @@ the right legs.
 
 ![Step 9](assembly_img/step_009.png)
 
-The robot is complete. For wiring, power-up and calibration, see chapter 13.
+The robot is complete. For wiring and the zero point, see {ref}`walk-real`.
 
 ---
 

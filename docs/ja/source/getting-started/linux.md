@@ -440,8 +440,9 @@ uv run python serial_console.py
 **Linux / macOS / Windows のどれでも同じコードが動きます**
 （`/dev/ttyACM0` / `/dev/cu.usbmodem...` / `COM3` のどれが返るかの違いだけです）。
 
-**開いたら 1.5 秒待つ。** UNO R4 はポートを開くとスケッチが再起動します。
-待たずに書き込むと、最初の出力を取り逃したり、コマンドが届かなかったりします。
+**開いたら少し待つ。** UNO R4 WiFi はポートを開いてもリセットされませんが、
+挿した直後は、最初の出力やコマンドを取りこぼすことがあります。上のコードの
+`time.sleep` はそのためです。
 
 **ポートは 1 つのプロセスしか開けません。** PlatformIO のモニタや
 Arduino IDE を閉じてから実行してください。
@@ -452,7 +453,7 @@ Arduino IDE を閉じてから実行してください。
 （値が全部画面に出て、直すたびに焼き直さなくて済みます）。
 
 ```bash
-cd docs/os-on-arduino/code/13_quadruped/host
+cd 13_quadruped/host                   # docs/os-on-arduino/code から
 uv run python quad_host.py scan        # バスに何個サーボがいるか
 uv run python quad_host.py calibrate   # zero と sign を測る -> calib.json
 uv run python quad_host.py stand       # home 姿勢を保持

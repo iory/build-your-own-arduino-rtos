@@ -5,9 +5,11 @@
 - Directory: `docs/os-on-arduino/code/adv4_fs`
 
 ```bash
-pio run -d adv4_fs -t upload
-pio device monitor -b 115200
+uv run pio run -d adv4_fs -t upload
+uv run pio device monitor -b 115200
 ```
+
+Output starts when you send the single character `S`.
 
 ## Source code
 

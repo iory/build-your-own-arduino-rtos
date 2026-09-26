@@ -9,7 +9,7 @@ Linux / macOS / Windows のいずれでも同じコマンドで動きます。
 ## 使い方
 
 ```bash
-cd docs/os-on-arduino/code
+# 章ごとのサポートの手順どおりなら、すでに docs/os-on-arduino/code にいます
 uv sync                                            # 初回のみ
 uv run python scripts/verify_chapters.py --list    # 章と期待値の一覧
 uv run python scripts/verify_chapters.py --build-only  # ボード無しでビルドだけ

@@ -123,8 +123,12 @@ angles used in training, so it stays consistent with the real robot as it is.
 
 ## Training on your own GPU
 
+The recommended environment is **Ubuntu**. On Windows it should also work with WSL
+(which runs Linux on top of Windows), but that has not been tried yet. If you have
+neither, use {ref}`train-cpu` below.
+
 ```bash
-cd docs/os-on-arduino/code/13_quadruped
+cd 13_quadruped                          # from docs/os-on-arduino/code
 ./rl/scripts/setup.sh                    # clone the upstream, place the overlay, install dependencies
 source rl/scripts/env.sh                 # tell it where the robot's MJCF is
 ./rl/scripts/train.sh ArduinoQuad-Walk --env.scene.num-envs=4096
@@ -173,6 +177,7 @@ With `--bundle`, instead of a checkpoint it plays back **an exported policy** (t
 + `.json` in `13_quadruped/`; pass the `13_quadruped` folder, as in
 `--bundle "$ARDUINO_QUAD_ROOT"`) with the same numpy implementation as the real robot.
 
+(train-cpu)=
 ## Training without a GPU (the CPU version)
 
 `rl/cpu/` trains the same tasks (`ArduinoQuad-Walk` / `-Robust`) on **plain MuJoCo**,
@@ -181,7 +186,7 @@ and PPO uses the same rsl-rl-lib 5.0.1 as the mjlab version. The network updates
 can be put on a GPU.
 
 ```bash
-cd docs/os-on-arduino/code/13_quadruped/rl/cpu
+cd 13_quadruped/rl/cpu                   # from docs/os-on-arduino/code
 uv sync                                   # mujoco 3.7.0 + rsl-rl-lib 5.0.1 + torch
 uv run train.py                           # ArduinoQuad-Walk, 2048 environments, CPU
 uv run train.py --device cuda             # physics stays on the CPU, updates on the GPU

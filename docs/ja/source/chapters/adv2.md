@@ -8,8 +8,8 @@
 - ビルドと書き込み:
 
 ```bash
-pio run -d adv2_syscall -t upload
-pio device monitor -b 115200
+uv run pio run -d adv2_syscall -t upload
+uv run pio device monitor -b 115200
 ```
 
 コードを見る: [docs/os-on-arduino/code/adv2_syscall](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/adv2_syscall)

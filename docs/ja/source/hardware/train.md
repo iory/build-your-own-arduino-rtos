@@ -122,8 +122,12 @@ Colab の無料枠はセッションが数時間で切れます。学習ログ�
 
 ## 手元の GPU で学習する
 
+推奨環境は **Ubuntu** です。Windows でも WSL（Windows の上で Linux を動かす仕組み）を
+入れれば動くはずですが、まだ確かめていません。どちらも用意できなければ、下の
+{ref}`train-cpu` を使ってください。
+
 ```bash
-cd docs/os-on-arduino/code/13_quadruped
+cd 13_quadruped                          # docs/os-on-arduino/code から
 ./rl/scripts/setup.sh                    # 上流を clone して overlay を置き、依存を入れる
 source rl/scripts/env.sh                 # 機体の MJCF の場所を教える
 ./rl/scripts/train.sh ArduinoQuad-Walk --env.scene.num-envs=4096
@@ -172,6 +176,7 @@ python "$ARDUINO_QUAD_ROOT/rl/scripts/record_video.py" \
 （`13_quadruped/` の `.npz` + `.json`。`--bundle "$ARDUINO_QUAD_ROOT"` のように
 `13_quadruped` のディレクトリを渡す）を、実機と同じ numpy 実装で再生します。
 
+(train-cpu)=
 ## GPU なしで学習する（CPU 版）
 
 `rl/cpu/` は、同じタスク（`ArduinoQuad-Walk` / `-Robust`）を mjlab を使わずに
@@ -180,7 +185,7 @@ python "$ARDUINO_QUAD_ROOT/rl/scripts/record_video.py" \
 ネットワークの更新だけを GPU に置くこともできます。
 
 ```bash
-cd docs/os-on-arduino/code/13_quadruped/rl/cpu
+cd 13_quadruped/rl/cpu                   # docs/os-on-arduino/code から
 uv sync                                   # mujoco 3.7.0 + rsl-rl-lib 5.0.1 + torch
 uv run train.py                           # ArduinoQuad-Walk、2048 環境、CPU
 uv run train.py --device cuda             # 物理は CPU のまま、更新だけ GPU

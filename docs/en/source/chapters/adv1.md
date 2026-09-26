@@ -5,8 +5,8 @@
 - Directory: `docs/os-on-arduino/code/adv1_sync`
 
 ```bash
-pio run -d adv1_sync -t upload
-pio device monitor -b 115200
+uv run pio run -d adv1_sync -t upload
+uv run pio device monitor -b 115200
 ```
 
 ## Source code

@@ -8,8 +8,8 @@
 - ビルドと書き込み:
 
 ```bash
-pio run -d adv1_sync -t upload
-pio device monitor -b 115200
+uv run pio run -d adv1_sync -t upload
+uv run pio device monitor -b 115200
 ```
 
 コードを見る: [docs/os-on-arduino/code/adv1_sync](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/adv1_sync)

@@ -177,8 +177,8 @@ tar xzf qemu-arduino-uno-r4-*-linux-*.tar.gz --strip-components=1
 
 ```bash
 cd code/04_scheduler
-pio run -e sim                       # シミュレータ用にビルド
-python3 ../sim/board.py --chapter .  # 仮想ボードを起動
+uv run pio run -e sim                # シミュレータ用にビルド
+uv run python ../sim/board.py --chapter .  # 仮想ボードを起動
 ```
 
 ブラウザで `http://127.0.0.1:8080` を開くと基板が表示されます。終了は Ctrl-C です。
@@ -322,8 +322,8 @@ Renode は RA4M1 を最初から持っているので、公式のリリースを
 起動するときは `--emulator renode` を付けます。
 
 ```bash
-python3 ../sim/board.py --chapter . --emulator renode
-python3 ../sim/board.py --chapter . --emulator renode --renode /path/to/renode  # PATH に無いとき
+uv run python ../sim/board.py --chapter . --emulator renode
+uv run python ../sim/board.py --chapter . --emulator renode --renode /path/to/renode  # PATH に無いとき
 ```
 
 検証スクリプトも `--emulator renode` で Renode を使います。

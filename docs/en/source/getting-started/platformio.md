@@ -2,6 +2,12 @@
 
 Sample code ships as one PlatformIO project per chapter.
 
+The book uses PlatformIO rather than the Arduino IDE because each chapter's board and
+build settings live in a text file, `platformio.ini`, versioned in Git together with
+the code, and PlatformIO itself is pinned by `uv.lock`. The Arduino IDE keeps board
+settings IDE-wide, so updating the IDE or a board package risks breaking samples that
+used to work.
+
 ```bash
 uv tool install platformio        # or: pipx install platformio
 pio run -d <chapter_dir> -t upload

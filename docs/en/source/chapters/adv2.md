@@ -5,8 +5,8 @@
 - Directory: `docs/os-on-arduino/code/adv2_syscall`
 
 ```bash
-pio run -d adv2_syscall -t upload
-pio device monitor -b 115200
+uv run pio run -d adv2_syscall -t upload
+uv run pio device monitor -b 115200
 ```
 
 ## Source code

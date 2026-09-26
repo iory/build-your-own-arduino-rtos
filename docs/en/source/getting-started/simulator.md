@@ -188,8 +188,8 @@ works without `DISPLAY` (over SSH, for example).
 
 ```bash
 cd code/04_scheduler
-pio run -e sim                       # build for the simulator
-python3 ../sim/board.py --chapter .  # start the virtual board
+uv run pio run -e sim                # build for the simulator
+uv run python ../sim/board.py --chapter .  # start the virtual board
 ```
 
 Open `http://127.0.0.1:8080` in your browser to see the board. Press Ctrl-C to
@@ -334,8 +334,8 @@ All of them are at <https://github.com/renode/renode/releases>. Start the
 board with `--emulator renode`:
 
 ```bash
-python3 ../sim/board.py --chapter . --emulator renode
-python3 ../sim/board.py --chapter . --emulator renode --renode /path/to/renode  # if not on PATH
+uv run python ../sim/board.py --chapter . --emulator renode
+uv run python ../sim/board.py --chapter . --emulator renode --renode /path/to/renode  # if not on PATH
 ```
 
 The verification script also takes `--emulator renode`.
