@@ -7,9 +7,11 @@ different gait.
 
 There are two ways in. With an NVIDIA GPU, use the **mjlab version**; without one, use
 the **CPU version**, which runs the same task on plain MuJoCo — 2048 environments for
-2300 iterations takes about 69 minutes on a six-core laptop. You can also run the mjlab
+2300 iterations takes about 69 minutes on a six-core laptop (an environment is one copy
+of the simulation run in parallel; an iteration is the unit that ends with one update of
+the policy). You can also run the mjlab
 version on Google Colab (the free T4) instead. Whichever you train with, the checkpoint
-format is the same and the same steps export the header for the real robot.
+(training results, i.e. the weights, saved partway through) format is the same and the same steps export the header for the real robot.
 
 ## How the training code is organised
 
@@ -22,10 +24,10 @@ upstream; it is not a program that runs on its own.
 | File | Contents |
 |---|---|
 | `robot_cfg.py` | Robot definition (actuators, initial pose, `home` angles) |
-| `env_cfgs.py` | Observations, commands, domain randomisation |
+| `env_cfgs.py` | Observations, commands, domain randomisation (varying friction, mass and so on at random during training; see {ref}`walk-training-code`) |
 | `rewards.py` | Reward terms (velocity tracking, gait, posture, energy, ...) |
 | `rl_cfg.py` | PPO hyperparameters and the network [96, 64] |
-| `runner.py` | Training runner with ERFI (torque disturbances) added |
+| `runner.py` | Training runner with ERFI (extended random force injection: torque disturbances) added |
 | `scripts/` | Environment setup, training, playback, video export |
 | `cpu/` | The CPU version that trains the same task without mjlab ("Training without a GPU" below) |
 
@@ -94,7 +96,7 @@ finishes a book-sized training run in a realistic time.
 
 With the notebook's default settings (`ArduinoQuad-Walk`, 2048 environments) trained
 for 1500 iterations, each checkpoint every 100 iterations was **played back for 6 s
-at a command of 0.09 m/s and measured** (RTX 4090, one seed).
+at a command of 0.09 m/s and measured** (RTX 4090, one seed; a seed is the initial value of the random number generator).
 
 | Iteration | Measured forward [m/s] | Iteration | Measured forward [m/s] |
 |---|---|---|---|
@@ -110,7 +112,8 @@ at a command of 0.09 m/s and measured** (RTX 4090, one seed).
 **At 100–200 iterations it walks backwards.** It learns "don't fall over" before it
 picks up the forward reward; that is not a failure. It turns forward around 300,
 reaches the commanded speed around 800, and from there tracks it while swinging
-between 0.07 and 0.10. Each point is a single episode, so ±0.02 m/s between
+between 0.07 and 0.10. Each point is a single episode (one run from placing the robot until it falls
+over or time runs out), so ±0.02 m/s between
 neighbouring points is within the noise.
 
 ```{note}
@@ -173,6 +176,9 @@ python "$ARDUINO_QUAD_ROOT/rl/scripts/record_video.py" \
     --vx 0.09 --steps 300 --out walk.mp4
 ```
 
+Replace `<run>` with the name of the dated folder that each training run creates under
+`logs/rsl_rl/arduino_quad_velocity/`.
+
 With `--bundle`, instead of a checkpoint it plays back **an exported policy** (the `.npz`
 + `.json` in `13_quadruped/`; pass the `13_quadruped` folder, as in
 `--bundle "$ARDUINO_QUAD_ROOT"`) with the same numpy implementation as the real robot.
@@ -183,7 +189,8 @@ With `--bundle`, instead of a checkpoint it plays back **an exported policy** (t
 `rl/cpu/` trains the same tasks (`ArduinoQuad-Walk` / `-Robust`) on **plain MuJoCo**,
 without mjlab. The physics runs on the CPU through `mujoco.rollout` (a C++ thread pool)
 and PPO uses the same rsl-rl-lib 5.0.1 as the mjlab version. The network updates alone
-can be put on a GPU.
+can be put on a GPU (`--device cuda`; CUDA is NVIDIA's platform for computing on its
+GPUs).
 
 ```bash
 cd 13_quadruped/rl/cpu                   # from docs/os-on-arduino/code
@@ -298,7 +305,7 @@ the robot first** before moving it.
 
 | Symptom | Cause and fix |
 |---|---|
-| It stops asking you to log in to wandb | mjlab's default logger is wandb. Add `--agent.logger tensorboard` |
+| It stops asking you to log in to wandb | mjlab's default logger is wandb (Weights & Biases, a cloud service that records training progress). Add `--agent.logger tensorboard` to log to TensorBoard (a local tool that graphs training progress) instead |
 | `MJCF が見つかりません` (MJCF not found) | You forgot `source rl/scripts/env.sh` (`$ARDUINO_QUAD_XML`) |
 | `play.sh` hangs with no display | It is trying to open the viewer. Use `record_video.py` |
 | `home 姿勢が環境と方策で違います` (home pose differs between environment and policy) | The policy and the environment were trained with different settings. Re-run with the `ARDUINO_QUAD_HOME_HEIGHT=...` the message suggests |

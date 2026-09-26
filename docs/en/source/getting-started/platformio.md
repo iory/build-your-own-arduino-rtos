@@ -1,6 +1,8 @@
 # PlatformIO Setup
 
-Sample code ships as one PlatformIO project per chapter.
+Sample code ships as one PlatformIO project per chapter. PlatformIO is an
+embedded development tool that builds and flashes from the command line, and it
+also works as a VS Code extension.
 
 The book uses PlatformIO rather than the Arduino IDE because each chapter's board and
 build settings live in a text file, `platformio.ini`, versioned in Git together with
@@ -14,9 +16,18 @@ pio run -d <chapter_dir> -t upload
 pio device monitor -b 115200
 ```
 
+`-b 115200` is the baud rate (the communication speed; it matches the
+`Serial.begin(115200)` in the sketches).
+
+The OS-specific pages ({doc}`windows`, {doc}`linux`, {doc}`macos`) install
+PlatformIO with `uv sync` inside the sample code folder and run it as
+`uv run pio`. The global install shown above is only needed if you want a bare
+`pio` command.
+
 ## Check your setup
 
-From `docs/os-on-arduino/code/`, flash the environment-check sketch:
+The OS-specific pages below also show how to get the sample code with
+`git clone`. From `docs/os-on-arduino/code/`, flash the environment-check sketch:
 
 ```bash
 pio run -d 00_intro -t upload

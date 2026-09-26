@@ -45,7 +45,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 It installs into `~/.local/bin`. **The shell you installed from does not know
-that path yet**, so typing `uv` right away gives `command not found`. Open a new
+that path yet** (the PATH is the list of folders the OS searches so a command runs by
+its name alone), so typing `uv` right away gives `command not found`. Open a new
 terminal, or run:
 
 ```bash
@@ -200,7 +201,8 @@ before flashing.
 
 - **USB hubs sometimes fail.** Plug straight into the Mac
 - A charge-only cable powers the board but carries no data. Use a data cable
-- Failing that, press RESET **twice quickly** to enter the bootloader, then
+- Failing that, press RESET **twice quickly** to enter the bootloader (a small
+  program resident on the MCU that accepts new firmware), then
   flash again
 
 ### The `/dev/cu.` name is long
@@ -236,6 +238,9 @@ time.sleep(0.8)
 print(ser.read(4096).decode("utf-8", errors="replace").replace("\r\n", "\n"))
 ser.close()
 ```
+
+First save the code above as `hello_serial.py` in the `docs/os-on-arduino/code`
+folder, then run it:
 
 ```bash
 uv run python hello_serial.py

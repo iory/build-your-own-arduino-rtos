@@ -37,7 +37,9 @@ OS: Darwin 25.5.0  Python: 3.14.2
 
 What it checks is not the output text itself but **the properties the book
 claims**. For chapter 1, for example, it confirms from the printed values that BSS
-was zeroed and DATA was copied from Flash. Values that depend on the environment,
+(the area for global variables with no initial value) was zeroed and DATA (the area
+for global variables with an initial value) was copied from Flash; chapter 1
+explains both. Values that depend on the environment,
 such as addresses and times, are matched with regular expressions that allow for
 the variation.
 
@@ -45,9 +47,9 @@ Three checks cannot be written as regular expressions:
 
 | Check | What it verifies | Where in the book |
 |---|---|---|
-| `cpu_sum` | The CPU% column of `ps` does not add up to more than 100% | Chapter 4, 4.7 ("the total is close to 100%") |
+| `cpu_sum` | The CPU% column of `ps` (a command of the shell built in chapter 5) does not add up to more than 100% | Chapter 4, 4.7 ("the total is close to 100%") |
 | `preemption` | The 1-second task keeps its period while a heavy computation runs | The point of chapter 4 itself |
-| `philosophers` | All five philosophers keep eating | Deadlock avoidance in Advanced 1 |
+| `philosophers` | All five philosophers keep eating (the dining philosophers problem is covered in Advanced 1) | Deadlock avoidance in Advanced 1 |
 
 ## Stepping through the chapters while watching the LEDs
 
@@ -62,7 +64,7 @@ uv run python scripts/verify_chapters.py -i
 | Input | Action |
 |---|---|
 | Enter alone | Next chapter |
-| Any text | Sent to the board as is (`ps`, `kill 1`, ...) |
+| Any text | Sent to the board as is (`ps`, `kill 1`, ...; commands of the shell built in chapter 5) |
 | `!` | Sends the chapter's "things to try" in order |
 | `r` / `b` / `q` | Re-upload / previous chapter / quit |
 
@@ -81,9 +83,12 @@ Each chapter shows what to look for (in Japanese):
 
 ## Throwing bad input at the shell
 
-`scripts/fuzz_shell.py` sends badly behaved input to the shells and REPLs (lines
-that are too long, task IDs that do not exist, control characters, unclosed
-brackets and so on) and checks that **the OS survives**. It checks the board is
+`scripts/fuzz_shell.py` sends badly behaved input (lines that are too long, task IDs
+that do not exist, control characters, unclosed brackets and so on) to the shells
+and REPLs and checks that **the OS survives**. The shell is what you type commands
+into over serial, built in chapter 5; a REPL is an interactive environment that reads
+your input, runs it and prints the result, over and over, such as chapter 11's
+TinyPython. The script checks the board is
 still alive after every input, so you can tell which input made it hang.
 
 ```bash
@@ -98,5 +103,6 @@ uv run python scripts/fuzz_shell.py
 | Windows 11 (ARM64) | All 20 projects PASS |
 | Ubuntu | Build checked in CI |
 
-The output of chapter 1 and of chapter 13's `iktest` was byte-for-byte identical on
+The output of chapter 1 and of chapter 13's `iktest` (a command that checks the
+quadruped's leg-angle calculation with a round trip) was byte-for-byte identical on
 macOS and Windows.

@@ -70,7 +70,7 @@ the body last. There are **81 individual parts (8 kinds)** in total.
 |---|---|
 | Screw M3×6 | ×40 |
 | Screw M2×6 | ×16 |
-| STS3215 (case + horn) | ×8 |
+| STS3215 (case + horn: the part on the servo shaft that turns with it) | ×8 |
 | bracket_outline | ×4 |
 | leg_link1 | ×4 |
 | Body | ×1 |
@@ -237,6 +237,8 @@ Use these servos when building the units below.
 
 Each kind of unit is shown once; **×N** is how many the whole robot uses. Build them
 from top to bottom and you will have every unit you need.
+In the steps, "coaxial φ◯ mm" means lining up the centres of the holes, and "mating
+faces" means pressing two faces flat against each other.
 
 :::{dropdown} STS3215 servo (fitting the horn) **×8**
 :open:

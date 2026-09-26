@@ -50,7 +50,8 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 [uv のインストール手順](https://docs.astral.sh/uv/getting-started/installation/)
 を参照してください。
 
-インストーラは `%USERPROFILE%\.local\bin` に置いて、そこを PATH に足します。
+インストーラは `%USERPROFILE%\.local\bin` に置いて、
+そこを PATH（コマンド名だけで実行できるように、OS が探しに行くフォルダの一覧）に足します。
 **PowerShell を開き直さないと `uv` が見つかりません。** 開き直してから
 確認してください。
 
@@ -244,7 +245,8 @@ Linux の `/dev/ttyACM0` / `/dev/ttyACM1` でも同じことが起きます。
 
 ### `No device found on COMn` で止まる
 
-ブートローダに入れていないときの症状です。**RESET ボタンを素早く 2 回押す**と
+ブートローダ（書き込みを受け付けるためにマイコンに常駐している小さなプログラム）に入れていないときの症状です。
+**RESET ボタンを素早く 2 回押す**と
 ブートローダに落ちます（L の LED がゆっくり明滅すれば成功）。そのまま
 もう一度 `upload` してください。
 
@@ -289,6 +291,8 @@ for cmd in (b"help\n", b"info\n"):
 
 ser.close()
 ```
+
+上のコードを `docs\os-on-arduino\code` フォルダに `hello_serial.py` という名前で保存してから、実行します。
 
 ```powershell
 uv run python hello_serial.py
@@ -392,6 +396,8 @@ Type 'help' for commands.
 ```
 
 ## 7. 四脚ロボットを PC から動かす
+
+第13章まで読み飛ばしてかまいません。
 
 第13章の四脚ロボットは、マイコンに焼く前に PC から直接サーボを叩いて
 立ち上げるのが早道です。そのツールが

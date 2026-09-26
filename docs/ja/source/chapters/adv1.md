@@ -121,7 +121,7 @@ uv run pio device monitor -b 115200
 Arduino UNO R4 WiFi の実機で実際に取得した出力です（macOS / Windows の
 両方で同じ結果を確認しています）。手元の出力と見比べてください。
 
-5 人の哲学者の食事回数です。全員が増え続けていれば、誰も飢えていない（デッドロックしていない）ことになります。
+5 人の哲学者の食事回数です。全員が増え続けていれば、誰も飢えていない（どの哲学者も食べられている）ことになります。全員が止まったままになるデッドロックも起きていません。
 
 ```{figure} ../_static/adv1_philosophers.gif
 :name: fig-adv1-philosophers

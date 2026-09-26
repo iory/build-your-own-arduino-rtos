@@ -3,7 +3,7 @@
 You can follow the book without an Arduino UNO R4 WiFi on your desk. The
 **same firmware you would flash to the board** runs on your PC instead, with
 the 12×8 LED matrix and the built-in LED drawn on a photo of the board in your
-browser. The shell works too.
+browser. The shell you build in Chapter 5 works too.
 
 ```
 pio run -e sim   →   firmware.elf   →   QEMU (RA4M1)   →   browser
@@ -11,9 +11,19 @@ pio run -e sim   →   firmware.elf   →   QEMU (RA4M1)   →   browser
    build)            you would flash)    Cortex-M4)          on the board)
 ```
 
+In the diagram, QEMU is an emulator that reproduces the CPU and the board in
+software, and ELF is the format of the executable file the build produces.
+
 Not a single line of the sample code changes. The only difference from the
 build for real hardware is one extra flag, `-D NO_USB`, which comes from the
 Arduino core itself (see below).
+
+:::{note}
+The browser version needs no install. The part from "What you need" onwards,
+which runs the simulator on your PC, assumes the environment from
+{doc}`platformio` and the OS-specific pages ({doc}`windows`, {doc}`linux`,
+{doc}`macos`). Set that up first, then come back.
+:::
 
 :::{tip}
 **Try it in your browser first, with nothing to install.** A page runs each
@@ -31,7 +41,7 @@ board. (The page itself is in Japanese.)
 
 :::{note}
 The kernel in this book only uses standard Cortex-M facilities — SysTick,
-PendSV, NVIC, MPU. Those behave in the emulator as they do on silicon, and the
+PendSV, NVIC, MPU (all of these come up in the book in turn). Those behave in the emulator as they do on silicon, and the
 faults in Chapter 6 (divide by zero, bad address) happen just as the text
 describes.
 :::
@@ -253,7 +263,8 @@ contradict the text, so keep this section in mind when something looks off.**
 
 - **`Serial` is a UART, not USB**
   The emulator has no USB, so `-D NO_USB` switches `Serial` to a hardware UART
-  (SCI9). That `Serial` is USB CDC on the UNO R4 WiFi is itself a topic of the
+  (SCI9). That `Serial` is USB CDC (the standard way for a USB device to
+  show up as a serial port) on the UNO R4 WiFi is itself a topic of the
   book, so check that part on the real board.
 - **No ESP32 / Wi-Fi**
   The second chip on the UNO R4 WiFi is not there.

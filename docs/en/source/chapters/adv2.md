@@ -92,7 +92,7 @@ The sketch for this chapter. Click a file name to expand. The code is mirrored a
 :name: fig-adv2-svc
 :width: 100%
 
-`[A]` and `[B]` keep alternating, each character going out through `svc`. The `[probe]` lines at the start scrolled by before the monitor opened.
+`[A]` and `[B]` keep alternating, each character going out through `svc` (Supervisor Call, the instruction user code uses to call into the OS). The `[probe]` lines at the start scrolled by before the monitor opened.
 ```
 
 ## Pitfalls

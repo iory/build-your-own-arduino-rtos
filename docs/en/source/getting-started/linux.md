@@ -42,7 +42,8 @@ We run PlatformIO through it.
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-It installs into `~/.local/bin`. Open a new shell, or reload your PATH:
+It installs into `~/.local/bin`. Open a new terminal, or reload your PATH (the list of
+folders the OS searches so a command runs by its name alone):
 
 ```bash
 source ~/.bashrc          # or ~/.zshrc for zsh
@@ -60,6 +61,10 @@ Install `git` first if you do not have it:
 sudo apt install -y git   # Ubuntu / Debian
 ```
 
+A command starting with `sudo` runs with administrator rights, so it asks for
+your login password. Nothing is shown on screen while you type it; just type it
+and press Enter.
+
 ### Get the sample code
 
 ```bash
@@ -74,7 +79,8 @@ hundred MB on the first build, which takes a few minutes).
 
 ## 2. Before plugging in the board — install the udev rules
 
-**Do this first.** It solves both problems described later (permissions and
+**Do this first.** This adds a rule to udev (the Linux mechanism that decides
+things like permissions when a USB device is plugged in). It solves both problems described later (permissions and
 ModemManager) in one step.
 
 ```bash
@@ -316,7 +322,7 @@ scripts.
   with the UNO R4 WiFi, but it can happen with USB-serial adapters
 - Flashing **through a USB hub** sometimes fails. Try a direct port on the machine
 - If the board stops responding, **press RESET twice quickly** to enter the
-  bootloader
+  bootloader (a small program resident on the MCU that accepts new firmware)
 
 ## 7. Talking to the board from Python
 
@@ -347,6 +353,9 @@ time.sleep(1.0)
 print(ser.read(4096).decode("utf-8", errors="replace"))
 ser.close()
 ```
+
+First save the code above as `hello_serial.py` in the `docs/os-on-arduino/code`
+folder, then run it:
 
 ```bash
 uv run python hello_serial.py
@@ -409,6 +418,9 @@ for line in iter(sys.stdin.readline, ""):
     ser.flush()
 ```
 
+Save the code above as `serial_console.py` in the `docs/os-on-arduino/code` folder,
+then run it:
+
 ```bash
 uv run python serial_console.py
 ```
@@ -438,6 +450,8 @@ That is what the `time.sleep` in the code above is for.
 Arduino IDE before running your script.
 
 ## 8. Driving the quadruped from your PC
+
+You can skip this until Chapter 13.
 
 Bringing up and calibrating the Chapter 13 robot is much faster from the PC —
 every value is on screen and you do not reflash after each change.

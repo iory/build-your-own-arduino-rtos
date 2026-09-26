@@ -97,13 +97,13 @@ every cycle on the Arduino UNO R4.
 
 | | |
 |---|---|
-| Input (observation) | **87 dimensions** = command (vx, vy, wz), gait phase (sin/cos), 8 joint angles, 8 joint velocities, the previous 8 actions, each with **3 steps of history** |
+| Input (observation) | **87 dimensions** = command (vx, vy, wz), gait phase (sin/cos), 8 joint angles, 8 joint velocities, the previous 8 actions (an action is the policy's output), each with **3 steps of history** |
 | Network | Fully connected [96, 64], ELU (Exponential Linear Unit) activation |
-| Output | 8 (one per joint). Servo target = home angle + 0.25 × action |
+| Output | 8 (one per joint). Servo target = home angle + 0.25 × action. The home angle is the joint angle in the home pose (the reference standing pose the robot starts walking from) |
 | Control period | 50 Hz (0.02 s), gait clock 0.32 s |
 | Sensors | **Joint angles and velocities only. No IMU** (inertial measurement unit, a sensor for the body's tilt and rotation rate; the robot has none, so the policy cannot see the body's attitude) |
 
-With no abduction joints it cannot move sideways (vy); it turns by taking longer
+With no abduction joints (joints that swing a leg out sideways) it cannot move sideways (vy); it turns by taking longer
 steps on one side.
 
 Performance in simulation: 0.120 m/s (0.48 body lengths/s) for a forward command of
@@ -119,7 +119,8 @@ no-load speed, not a failure of training.
 
 Training uses PPO (rsl_rl) in
 [mjlab (unitree_rl_mjlab)](https://github.com/unitreerobotics/unitree_rl_mjlab),
-written as an overlay that swaps in the robot definition, rewards and environment
+written as an overlay (the upstream code is used as is, and only the files this robot
+needs are laid over it) that swaps in the robot definition, rewards and environment
 settings:
 
 - Code: [docs/os-on-arduino/code/13_quadruped/rl](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/rl)

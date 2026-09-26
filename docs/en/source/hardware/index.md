@@ -40,8 +40,9 @@ available too.
 :link: walk
 :link-type: doc
 
-The training side that did not fit in the book, with a MuJoCo simulation of the
-trained policy in the browser.
+The training side that did not fit in the book, with a MuJoCo (physics simulator)
+simulation of the trained policy (the learned neural network that decides how the
+robot walks) in the browser.
 :::
 
 :::{grid-item-card} 🧠 Training the policy yourself
@@ -49,7 +50,8 @@ trained policy in the browser.
 :link-type: doc
 
 Retrain with different rewards or speed limits. **Works end to end on Google Colab
-(the free T4) even without a GPU.**
+(Google's service for running Python in the browser) on its free T4 (a GPU model)
+even without a GPU of your own.**
 :::
 ::::
 
