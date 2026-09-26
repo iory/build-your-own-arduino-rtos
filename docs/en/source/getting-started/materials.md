@@ -1,5 +1,22 @@
 # What You Need
 
+:::{sidebar} Aside: the name Arduino
+:class: yodan
+
+Arduino is a microcontroller board bundled with a development environment that makes
+it easy to program. It was born in 2005 at a design school in Ivrea, Italy (the
+Interaction Design Institute Ivrea), as a cheap board for students. Until then the
+students had used a BASIC Stamp, at about 50 dollars each.
+
+The name comes from a bar in Ivrea where some of the founders used to meet, the
+"Bar di Re Arduino" (King Arduin's bar). King Arduin was a real person who became
+King of Italy in 1002. So we are building an OS on a board named after a bar named
+after a king.
+
+Sources: Wikipedia, [Arduino](https://en.wikipedia.org/wiki/Arduino) and
+[Arduin of Ivrea](https://en.wikipedia.org/wiki/Arduin_of_Ivrea)
+:::
+
 | Item | Qty | Notes |
 |---|---|---|
 | Arduino UNO R4 **WiFi** | 1 | The WiFi variant (with the LED matrix), not the Minima |
@@ -30,6 +47,16 @@ marks the WiFi variant (shown here displaying "OS")
 ```
 
 ## Where to buy the Arduino UNO R4 WiFi
+
+:::{sidebar} Aside: why UNO?
+:class: yodan
+
+"Uno" is Italian for "one", chosen to mark a major redesign of the Arduino hardware
+and software. The R4 came out in 2023 and moved from the 8-bit AVR (ATmega328P) of
+R1 to R3 to the Arm Cortex-M4 microcontroller this book's OS runs on (Renesas RA4M1).
+
+Source: Wikipedia, [Arduino Uno](https://en.wikipedia.org/wiki/Arduino_Uno)
+:::
 
 The part number is **ABX00087**. Prices include tax and are as of 2026-09-14.
 
