@@ -426,7 +426,7 @@ probing the attached USB serial devices.
 window**. `Ctrl-C` releases servo torque.
 
 ```{warning}
-Power the eight servos from the battery. Never from the PC's USB
+Power the eight servos from the 12 V AC adapter or a battery. Never from the PC's USB
 (2.7 A stall current each). Assembly and safety notes are on the Japanese
 site.
 ```

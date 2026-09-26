@@ -13,7 +13,7 @@ The quadruped walking on your own OS, driving 8 servos (1.5x speed)
 |---|---|---|
 | FEETECH STS3215 serial bus servo (12V) | 8 | [Akizuki Denshi 130969](https://akizukidenshi.com/catalog/g/g130969/) |
 | Bus servo driver board (Waveshare 25514) | 1 | [Akizuki Denshi 131227](https://akizukidenshi.com/catalog/g/g131227/) |
-| 12V 5A AC adapter | 1 | bench use only |
+| 12V 5A AC adapter | 1 | enough for walking too |
 | 3D-printed body & legs | 1 set | STL downloads below |
 | Arduino UNO R4 WiFi | 1 | |
 

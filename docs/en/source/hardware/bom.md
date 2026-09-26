@@ -30,9 +30,9 @@ You need **only one of the two cables**: C-to-C if your computer has a Type-C po
 The screws for assembly (M3×6 ×40, M2×6 ×16) **come with the STS3215 servos**, so you
 do not need to buy them.
 
-You also need an **Arduino UNO R4 WiFi** and, for walking, a **12 V battery (about a 3S
-LiPo)**. A 3S LiPo is three lithium-polymer cells in series; fully charged it is
-12.6 V.
+You also need an **Arduino UNO R4 WiFi**. **The AC adapter above is enough to walk the
+robot on the floor** (the book's robot walks with the adapter plugged in). Use
+"Battery power (optional)" below only if you want to walk without a cable.
 
 ### AC adapter capacity
 
@@ -55,15 +55,15 @@ servo resets caused by the voltage sagging.
 There is no point in buying a 21.6 A supply: every joint stalls at once only in an
 accident.
 
-**Use a battery when walking on the floor.** A quadruped dragging a 1 m DC cable is
-dangerous, and the cable has actually come out. The AC adapter is for the bench.
+**When walking on the AC adapter, hold the DC cable slack in your hand so the robot
+never pulls on it.** Dragging a 1 m DC cable, the cable has actually come out.
 
-The driver board's input limit is **12.6 V**. A fully charged 3S LiPo is exactly
-12.6 V, right at the limit.
+The driver board's input limit is **12.6 V**. A fully charged 3S LiPo (three lithium-polymer
+cells in series) is exactly 12.6 V, right at the limit.
 
 ### Battery power (optional)
 
-To walk on the floor you need a battery. **Taking 12 V from a USB-C PD power bank is
+Use a battery only if you want to walk without a cable. **Taking 12 V from a USB-C PD power bank is
 the easiest way, and it works on the real robot.**
 
 | # | Item | Requirement |
