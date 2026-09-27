@@ -2,7 +2,7 @@
 
 Arduino UNO R4 WiFi が手元に無くても、**実機と同じファームウェアを PC の中で
 動かして**本書を読み進められます。LED マトリクスと内蔵 LED はブラウザ上の
-基板写真に重ねて表示され、シェルもそのまま使えます。
+基板写真に重ねて表示され、第5章で作るシェルもそのまま使えます。
 
 ```
 pio run -e sim   →   firmware.elf   →   QEMU (RA4M1)   →   ブラウザ
@@ -10,8 +10,18 @@ pio run -e sim   →   firmware.elf   →   QEMU (RA4M1)   →   ブラウザ
     ビルド）          同じ ELF）           Cortex-M4）         LED が光る）
 ```
 
+図の QEMU は CPU とボードをソフトウェアで再現するエミュレータ、
+ELF はビルドでできる実行ファイルの形式です。
+
 サンプルコードは 1 行も変えません。実機向けのビルドとの違いは、Arduino コア
 公式のフラグ `-D NO_USB` を足すことだけです（理由は後述）。
+
+:::{note}
+ブラウザ版はインストール不要です。
+後半の「必要なもの」から先の、PC で動かす手順は、
+{doc}`platformio` と OS 別のページ（{doc}`windows`・{doc}`linux`・{doc}`macos`）で環境を整えてあることが前提です。
+そちらを済ませてから戻ってきてください。
+:::
 
 :::{tip}
 **インストールなしで、まずブラウザで試せます。** 各章のファームウェアを
@@ -28,7 +38,7 @@ PC に何も入れずに、LED の点滅やシェルを触れます。自分で�
 
 :::{note}
 本書のカーネルが使うのは SysTick・PendSV・NVIC・MPU といった Cortex-M の
-標準機能です。エミュレータ上でもこれらは実機と同じように動き、第6章の
+標準機能です（いずれも本文で順に出てきます）。エミュレータ上でもこれらは実機と同じように動き、第6章の
 フォールト（ゼロ除算・不正アドレス）も本文どおりに起きます。
 :::
 
@@ -177,8 +187,8 @@ tar xzf qemu-arduino-uno-r4-*-linux-*.tar.gz --strip-components=1
 
 ```bash
 cd code/04_scheduler
-pio run -e sim                       # シミュレータ用にビルド
-python3 ../sim/board.py --chapter .  # 仮想ボードを起動
+uv run pio run -e sim                # シミュレータ用にビルド
+uv run python ../sim/board.py --chapter .  # 仮想ボードを起動
 ```
 
 ブラウザで `http://127.0.0.1:8080` を開くと基板が表示されます。終了は Ctrl-C です。
@@ -242,7 +252,7 @@ CPU 負荷のグラフが消えていきます。
 - **`Serial` が USB ではなく UART になります**
   エミュレータには USB が実装されていないため、`-D NO_USB` で `Serial` を
   ハードウェア UART（SCI9）に切り替えています。UNO R4 WiFi の `Serial` が
-  USB CDC であること自体は本書で扱う話題なので、そこは実機で確かめてください。
+  USB CDC（USB をシリアルポートとして見せる標準の方式）であること自体は本書で扱う話題なので、そこは実機で確かめてください。
 - **ESP32 / Wi-Fi はありません**
   UNO R4 WiFi のもう 1 つのチップは載っていません。
 - **時間の進み方は近似です**
@@ -322,8 +332,8 @@ Renode は RA4M1 を最初から持っているので、公式のリリースを
 起動するときは `--emulator renode` を付けます。
 
 ```bash
-python3 ../sim/board.py --chapter . --emulator renode
-python3 ../sim/board.py --chapter . --emulator renode --renode /path/to/renode  # PATH に無いとき
+uv run python ../sim/board.py --chapter . --emulator renode
+uv run python ../sim/board.py --chapter . --emulator renode --renode /path/to/renode  # PATH に無いとき
 ```
 
 検証スクリプトも `--emulator renode` で Renode を使います。

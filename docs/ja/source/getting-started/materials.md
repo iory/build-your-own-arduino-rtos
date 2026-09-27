@@ -2,6 +2,24 @@
 
 ## 必須
 
+:::{sidebar} 余談: Arduino という名前
+:class: yodan
+
+Arduino は、マイコンを載せた基板と、それに手軽に書き込むための開発環境を
+ひとまとめにしたものです。2005 年、イタリアのイヴレーアにあったデザインの学校
+（Interaction Design Institute Ivrea）で、学生向けの安い基板として生まれました。
+当時学生が使えたのは、1 枚 50 ドルほどする BASIC Stamp くらいだったそうです。
+
+名前は、創設メンバーが通っていたイヴレーアのバー「Bar di Re Arduino」
+（アルドゥイーノ王のバー）から来ています。そのアルドゥイーノ王は、1002 年に
+イタリア王になった実在の人物です。僕たちは、バーの名前の、そのまた元になった
+王様の名前の基板で OS を作っていることになります。
+
+出典: Wikipedia
+[「Arduino」](https://ja.wikipedia.org/wiki/Arduino)・
+[Arduin of Ivrea](https://en.wikipedia.org/wiki/Arduin_of_Ivrea)
+:::
+
 | 品目 | 数量 | 備考 |
 |---|---|---|
 | Arduino UNO R4 **WiFi** | 1 | Minima ではなく WiFi 版（LED マトリクス搭載） |
@@ -33,6 +51,18 @@ Arduino UNO R4 WiFi。基板の右下にある 12×8 の LED マトリクスが 
 ```
 
 ### Arduino UNO R4 WiFi の購入先
+
+:::{sidebar} 余談: UNO って？
+:class: yodan
+
+UNO はイタリア語で「1」です。ハードウェアとソフトウェアを大きく作り直した
+節目に付けられた名前だそうです。R4 は 2023 年に出た版で、それまでの R1〜R3 の
+8 ビット AVR（ATmega328P）から、この本の OS が動く Arm Cortex-M4 のマイコン
+（ルネサス RA4M1）に変わりました。
+
+出典: Wikipedia
+[Arduino Uno](https://en.wikipedia.org/wiki/Arduino_Uno)
+:::
 
 型番は **ABX00087** です。価格は税込で、2026 年 9 月 14 日時点のものです。
 

@@ -97,13 +97,13 @@ every cycle on the Arduino UNO R4.
 
 | | |
 |---|---|
-| Input (observation) | **87 dimensions** = command (vx, vy, wz), gait phase (sin/cos), 8 joint angles, 8 joint velocities, the previous 8 actions, each with **3 steps of history** |
+| Input (observation) | **87 dimensions** = command (vx, vy, wz), gait phase (sin/cos), 8 joint angles, 8 joint velocities, the previous 8 actions (an action is the policy's output), each with **3 steps of history** |
 | Network | Fully connected [96, 64], ELU (Exponential Linear Unit) activation |
-| Output | 8 (one per joint). Servo target = home angle + 0.25 × action |
+| Output | 8 (one per joint). Servo target = home angle + 0.25 × action. The home angle is the joint angle in the home pose (the reference standing pose the robot starts walking from) |
 | Control period | 50 Hz (0.02 s), gait clock 0.32 s |
 | Sensors | **Joint angles and velocities only. No IMU** (inertial measurement unit, a sensor for the body's tilt and rotation rate; the robot has none, so the policy cannot see the body's attitude) |
 
-With no abduction joints it cannot move sideways (vy); it turns by taking longer
+With no abduction joints (joints that swing a leg out sideways) it cannot move sideways (vy); it turns by taking longer
 steps on one side.
 
 Performance in simulation: 0.120 m/s (0.48 body lengths/s) for a forward command of
@@ -119,7 +119,8 @@ no-load speed, not a failure of training.
 
 Training uses PPO (rsl_rl) in
 [mjlab (unitree_rl_mjlab)](https://github.com/unitreerobotics/unitree_rl_mjlab),
-written as an overlay that swaps in the robot definition, rewards and environment
+written as an overlay (the upstream code is used as is, and only the files this robot
+needs are laid over it) that swaps in the robot definition, rewards and environment
 settings:
 
 - Code: [docs/os-on-arduino/code/13_quadruped/rl](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/rl)
@@ -136,10 +137,13 @@ why it still walks if the assembly is a few degrees off.
 **How to retrain it yourself is in {doc}`train`**, for when you want to change the
 rewards or the speed limit, and **how to run it on Google Colab if you have no GPU**.
 
+(walk-real)=
 ## Walking the real robot
 
-Use the chapter 13 sample code,
-[`code/13_quadruped/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped).
+Use the chapter 13 sample code: `docs/os-on-arduino/code/13_quadruped/`, obtained as in
+{doc}`../chapters/index` (the same as
+[`code/13_quadruped/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped)
+on this site). **The commands below assume you are in `docs/os-on-arduino/code`.**
 The trained policy is in `include/arduino_quad_policy.h`, and it is **the same policy
 as the browser simulation above**.
 
@@ -239,7 +243,7 @@ Put the driver board's jumpers on **B (USB-SERVO)** and connect the board's USB
 Type-C to the PC. The Arduino is not involved; the PC drives the servos directly.
 
 ```bash
-cd code/13_quadruped/host
+cd 13_quadruped/host
 uv sync                                  # installs numpy and feetech-cli
 
 uv run python quad_host.py scan          # do all 8 answer?
@@ -313,7 +317,8 @@ Put the jumpers back on **A (UART-SERVO)**, connect the Arduino to the PC over U
 flash it.
 
 ```bash
-pio run -d code/13_quadruped -t upload
+cd ../..                                  # back to code from host (step 2)
+uv run pio run -d 13_quadruped -t upload
 ```
 
 When flashing finishes the Arduino boots and rises to the home pose over 2 seconds.
@@ -321,7 +326,7 @@ From here **the Arduino runs the policy**, and the PC only sends velocity comman
 drive it from the keyboard:
 
 ```bash
-cd code/13_quadruped/host
+cd 13_quadruped/host
 uv run python quad_host.py serial        # send velocities over the Arduino's USB serial
 ```
 
@@ -340,12 +345,13 @@ the cable comes out).
 ```
 
 You can also type commands straight into a serial monitor
-(`pio device monitor -d code/13_quadruped -b 115200`).
+(`uv run pio device monitor -b 115200` in `docs/os-on-arduino/code`).
 
 | Command | Action |
 |---|---|
 | `iktest` | forward/inverse kinematics (FK/IK) round-trip test. The legs do not move |
 | `stand` / `stop` | move to the home pose over 2 s and hold |
+| `trot` | the sin/cos gait of section 13.5 (walking without learning). Try it suspended |
 | `rl <vx> <wz>` | walk with the trained policy, e.g. `rl 0.15 0` (forward m/s, turn rad/s) |
 | `zero` | move every joint to 0 degrees and hold. Suspended only |
 | `free` | switch the torque off |

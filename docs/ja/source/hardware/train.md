@@ -7,8 +7,9 @@
 
 学習の入口は 2 つあります。NVIDIA GPU があれば **mjlab 版**、無ければ
 **CPU 版**です。CPU 版は同じタスクを素の MuJoCo で回すもので、6 コアのノート PC で
-2048 環境 × 2300 iteration が約 69 分です。GPU が無くても、Google Colab
-（無料枠の T4）で mjlab 版を通す道もあります。どれで学習してもチェックポイントの
+2048 環境 × 2300 iteration が約 69 分です（環境は並列に動かす 1 台ぶんのシミュレーション、iteration
+は方策を 1 回更新するまでの区切り）。GPU が無くても、Google Colab
+（無料枠の T4）で mjlab 版を通す道もあります。どれで学習してもチェックポイント（途中で保存した学習結果（重み））の
 形式は同じで、同じ手順で実機用のヘッダに書き出せます。
 
 ## 学習コードの構成
@@ -21,10 +22,10 @@
 | ファイル | 中身 |
 |---|---|
 | `robot_cfg.py` | 機体定義（アクチュエータ、初期姿勢、`home` 角） |
-| `env_cfgs.py` | 観測・コマンド・ドメインランダマイゼーション |
+| `env_cfgs.py` | 観測・コマンド・ドメインランダマイゼーション（摩擦や質量などを学習中にランダムに変えること。{ref}`walk-training-code`） |
 | `rewards.py` | 報酬項（速度追従、歩容、姿勢、エネルギー等） |
 | `rl_cfg.py` | PPO のハイパーパラメータとネットワーク構成 [96, 64] |
-| `runner.py` | ERFI（トルク外乱）を足した学習ランナー |
+| `runner.py` | ERFI（extended random force injection。トルク外乱）を足した学習ランナー |
 | `scripts/` | 環境構築・学習・再生・動画書き出し |
 | `cpu/` | 同じタスクを mjlab なしで学習する CPU 版（下の「GPU なしで学習する（CPU 版）」） |
 
@@ -93,7 +94,7 @@ Colab の無料枠はセッションが数時間で切れます。学習ログ�
 
 ノートブック既定の設定（`ArduinoQuad-Walk`、2048 環境）で 1500 iteration
 回し、100 iteration ごとのチェックポイントを**指令 0.09 m/s で 6 秒ずつ
-再生した実測**です（RTX 4090、1 シード）。
+再生した実測**です（RTX 4090、1 シード。シードは乱数の初期値）。
 
 | iteration | 実測 前進 [m/s] | iteration | 実測 前進 [m/s] |
 |---|---|---|---|
@@ -109,7 +110,7 @@ Colab の無料枠はセッションが数時間で切れます。学習ログ�
 **100〜200 iteration では後ろに進みます。** 前進報酬を拾うより先に
 「転ばない」を覚えるためで、失敗ではありません。前進に転じるのが 300 付近、
 指令の速度に届くのが 800 前後、そこから先は 0.07〜0.10 の範囲で揺れながら
-追従します。各点は 1 エピソードの測定なので、隣り合う点の ±0.02 m/s は
+追従します。各点は 1 エピソード（ロボットを置いてから倒れるか時間切れになるまでの 1 回）の測定なので、隣り合う点の ±0.02 m/s は
 誤差の範囲です。
 
 ```{note}
@@ -122,8 +123,12 @@ Colab の無料枠はセッションが数時間で切れます。学習ログ�
 
 ## 手元の GPU で学習する
 
+推奨環境は **Ubuntu** です。Windows でも WSL（Windows の上で Linux を動かす仕組み）を
+入れれば動くはずですが、まだ確かめていません。どちらも用意できなければ、下の
+{ref}`train-cpu` を使ってください。
+
 ```bash
-cd docs/os-on-arduino/code/13_quadruped
+cd 13_quadruped                          # docs/os-on-arduino/code から
 ./rl/scripts/setup.sh                    # 上流を clone して overlay を置き、依存を入れる
 source rl/scripts/env.sh                 # 機体の MJCF の場所を教える
 ./rl/scripts/train.sh ArduinoQuad-Walk --env.scene.num-envs=4096
@@ -168,19 +173,23 @@ python "$ARDUINO_QUAD_ROOT/rl/scripts/record_video.py" \
     --vx 0.09 --steps 300 --out walk.mp4
 ```
 
+`<run>` は、学習を始めるたびに `logs/rsl_rl/arduino_quad_velocity/` の下に作られる、
+日時の付いたフォルダの名前に置き換えてください。
+
 `--bundle` を渡すと、チェックポイントの代わりに**エクスポート済みの方策**
 （`13_quadruped/` の `.npz` + `.json`。`--bundle "$ARDUINO_QUAD_ROOT"` のように
 `13_quadruped` のディレクトリを渡す）を、実機と同じ numpy 実装で再生します。
 
+(train-cpu)=
 ## GPU なしで学習する（CPU 版）
 
 `rl/cpu/` は、同じタスク（`ArduinoQuad-Walk` / `-Robust`）を mjlab を使わずに
 **素の MuJoCo** で学習するものです。物理は CPU の `mujoco.rollout`（C++ の
 スレッドプール）で回し、PPO は mjlab 版と同じ rsl-rl-lib 5.0.1 を使います。
-ネットワークの更新だけを GPU に置くこともできます。
+ネットワークの更新だけを GPU に置くこともできます（`--device cuda`。CUDA は NVIDIA の GPU で計算するための仕組み）。
 
 ```bash
-cd docs/os-on-arduino/code/13_quadruped/rl/cpu
+cd 13_quadruped/rl/cpu                   # docs/os-on-arduino/code から
 uv sync                                   # mujoco 3.7.0 + rsl-rl-lib 5.0.1 + torch
 uv run train.py                           # ArduinoQuad-Walk、2048 環境、CPU
 uv run train.py --device cuda             # 物理は CPU のまま、更新だけ GPU
@@ -288,7 +297,7 @@ python "$ARDUINO_QUAD_ROOT/host/export_quad_policy.py" \
 
 | 症状 | 原因と対処 |
 |---|---|
-| wandb のログインを求められて止まる | mjlab の既定ロガーが wandb です。`--agent.logger tensorboard` を付ける |
+| wandb のログインを求められて止まる | mjlab の既定ロガーが wandb（Weights & Biases。学習の経過を記録するクラウドサービス）です。`--agent.logger tensorboard` を付けると、TensorBoard（学習の経過をグラフで見るローカルのツール）に記録します |
 | `MJCF が見つかりません` | `source rl/scripts/env.sh` を忘れています（`$ARDUINO_QUAD_XML`） |
 | 画面が無い環境で `play.sh` が止まる | ビューアを開こうとしています。`record_video.py` を使ってください |
 | `home 姿勢が環境と方策で違います` | 方策と環境の学習設定が食い違っています。メッセージが出す `ARDUINO_QUAD_HOME_HEIGHT=...` を付けて実行し直す |

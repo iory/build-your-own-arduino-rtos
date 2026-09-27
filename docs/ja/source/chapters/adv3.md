@@ -8,9 +8,11 @@ malloc / free を自分で書き、断片化と戦います。
 - ビルドと書き込み:
 
 ```bash
-pio run -d adv3_heap -t upload
-pio device monitor -b 115200
+uv run pio run -d adv3_heap -t upload
+uv run pio device monitor -b 115200
 ```
+
+`S` を 1 文字送ると出力が始まります。
 
 コードを見る: [docs/os-on-arduino/code/adv3_heap](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/adv3_heap)
 

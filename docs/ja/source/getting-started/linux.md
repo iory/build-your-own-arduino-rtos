@@ -41,9 +41,10 @@ Linux でも Windows / macOS と同じコマンドで全章をビルド・書き
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-インストール先は `~/.local/bin` です。**入れた直後のシェルはまだ PATH を
+インストール先は `~/.local/bin` です。PATH は、コマンド名だけで実行できるように
+OS が探しに行くフォルダの一覧のことです。**入れた直後のシェルはまだ PATH を
 知らない**ので、そのまま `uv` を打つと `command not found` になります。
-シェルを開き直すか、次を実行して PATH に反映してください。
+端末を開き直すか、次を実行して PATH に反映してください。
 
 ```bash
 source ~/.bashrc          # zsh なら ~/.zshrc
@@ -61,6 +62,9 @@ uv --version
 sudo apt install -y git   # Ubuntu / Debian
 ```
 
+`sudo` を付けたコマンドは管理者の権限で実行されるので、自分のログインパスワードを聞かれます。
+打っている間は画面に何も表示されませんが、そのまま打って Enter を押してください。
+
 ### サンプルコードを取ってくる
 
 ```bash
@@ -75,7 +79,9 @@ uv sync
 
 ## 2. ボードをつなぐ前に — udev ルールを入れる
 
-**先にこれをやってください。** あとで説明する 2 つの問題（権限と
+**先にこれをやってください。**
+udev（USB 機器を挿したときの権限などを決める Linux の仕組み）にルールを足します。
+あとで説明する 2 つの問題（権限と
 ModemManager）が、これ 1 つでまとめて解決します。
 
 ```bash
@@ -326,7 +332,8 @@ Arduino IDE のシリアルモニタや、自分で書いた Python スクリプ
 - **USB ハブ経由**だと書き込みに失敗することがあります。PC 本体に直挿しを
   試してください
 - ボードが応答しなくなったら **RESET ボタンを素早く 2 回押す**と
-  ブートローダに入ります
+  ブートローダ（書き込みを受け付けるためにマイコンに常駐している小さな
+  プログラム）に入ります
 
 ## 7. Python からボードと通信する
 
@@ -357,6 +364,8 @@ time.sleep(1.0)
 print(ser.read(4096).decode("utf-8", errors="replace"))
 ser.close()
 ```
+
+上のコードを `docs/os-on-arduino/code` フォルダに `hello_serial.py` という名前で保存してから、実行します。
 
 ```bash
 uv run python hello_serial.py
@@ -419,6 +428,9 @@ for line in iter(sys.stdin.readline, ""):   # 打った行をボードへ送る
     ser.flush()
 ```
 
+上のコードを `docs/os-on-arduino/code` フォルダに `serial_console.py` という名前で
+保存してから、実行します。
+
 ```bash
 uv run python serial_console.py
 ```
@@ -440,19 +452,22 @@ uv run python serial_console.py
 **Linux / macOS / Windows のどれでも同じコードが動きます**
 （`/dev/ttyACM0` / `/dev/cu.usbmodem...` / `COM3` のどれが返るかの違いだけです）。
 
-**開いたら 1.5 秒待つ。** UNO R4 はポートを開くとスケッチが再起動します。
-待たずに書き込むと、最初の出力を取り逃したり、コマンドが届かなかったりします。
+**開いたら少し待つ。** UNO R4 WiFi はポートを開いてもリセットされませんが、
+挿した直後は、最初の出力やコマンドを取りこぼすことがあります。上のコードの
+`time.sleep` はそのためです。
 
 **ポートは 1 つのプロセスしか開けません。** PlatformIO のモニタや
 Arduino IDE を閉じてから実行してください。
 
 ## 8. 四脚ロボットを PC から動かす
 
+第13章まで読み飛ばしてかまいません。
+
 第13章の四脚ロボットは、組み立てと校正を PC 側からやるほうが早いです
 （値が全部画面に出て、直すたびに焼き直さなくて済みます）。
 
 ```bash
-cd docs/os-on-arduino/code/13_quadruped/host
+cd 13_quadruped/host                   # docs/os-on-arduino/code から
 uv run python quad_host.py scan        # バスに何個サーボがいるか
 uv run python quad_host.py calibrate   # zero と sign を測る -> calib.json
 uv run python quad_host.py stand       # home 姿勢を保持

@@ -5,9 +5,11 @@
 - Directory: `docs/os-on-arduino/code/adv3_heap`
 
 ```bash
-pio run -d adv3_heap -t upload
-pio device monitor -b 115200
+uv run pio run -d adv3_heap -t upload
+uv run pio device monitor -b 115200
 ```
+
+Output starts when you send the single character `S`.
 
 ## Source code
 

@@ -94,13 +94,13 @@ Arduino に書き込みます。
 
 | | |
 |---|---|
-| 入力（観測） | **87 次元** = 指令 (vx, vy, wz) ・歩容位相 (sin/cos) ・関節角 8 ・関節速度 8 ・前回 action 8、それぞれ **3 ステップ分の履歴** |
+| 入力（観測） | **87 次元** = 指令 (vx, vy, wz) ・歩容位相 (sin/cos) ・関節角 8 ・関節速度 8 ・前回 action（方策の出力）8、それぞれ **3 ステップ分の履歴** |
 | ネットワーク | 全結合 [96, 64]、活性化関数 ELU（Exponential Linear Unit） |
-| 出力 | 8（各関節）。サーボ目標角 = home 角 + 0.25 × action |
+| 出力 | 8（各関節）。サーボ目標角 = home 角 + 0.25 × action。home 角は home 姿勢（立って歩き出す基準の姿勢）での関節角 |
 | 制御周期 | 50 Hz（0.02 s）、歩容クロック 0.32 s |
 | センサ | **関節角・関節速度のみ。IMU（慣性計測装置。胴体の傾きや回転の速さを測るセンサ）は使っていない**（この機体に無いため。胴体の姿勢は方策から見えていない） |
 
-外転関節が無いので横移動（vy）はできません。旋回は左右の歩幅差で作ります。
+外転関節（脚を横に開く関節）が無いので横移動（vy）はできません。旋回は左右の歩幅差で作ります。
 
 シミュレーションでの性能: 前進指令 0.12 m/s で 0.120 m/s（0.48 体長/秒）、
 最大の指令 0.15 m/s で 0.148 m/s。指令にほぼ追従します。旋回は指令
@@ -113,7 +113,7 @@ Arduino に書き込みます。
 ## 学習のコード
 
 学習は [mjlab (unitree_rl_mjlab)](https://github.com/unitreerobotics/unitree_rl_mjlab)
-の PPO（rsl_rl）で行い、ロボット定義・報酬・環境設定を差し替える overlay として
+の PPO（rsl_rl）で行い、ロボット定義・報酬・環境設定を差し替える overlay（上流のコードはそのまま使い、この機体に必要なファイルだけを上から被せる書き方）として
 書いてあります:
 
 - コードを見る: [docs/os-on-arduino/code/13_quadruped/rl](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/rl)
@@ -131,11 +131,14 @@ sim2real のために、摩擦（0.4〜1.1）・付加質量（電装ぶん 0〜
 報酬や速度上限を変えて回してみたいとき、そして
 **GPU が無い場合の Google Colab での通し方**はそちらです。
 
+(walk-real)=
 ## 実機で歩かせる
 
-使うのは第13章のサンプルコード
+使うのは第13章のサンプルコードで、{doc}`../chapters/index` の手順で入手した
+`docs/os-on-arduino/code/13_quadruped/` です（このサイトの
 [`code/13_quadruped/`](https://github.com/iory/build-your-own-arduino-rtos/tree/main/code/13_quadruped)
-です。学習済み方策は `include/arduino_quad_policy.h` に入っていて、
+も同じものです）。**以下のコマンドは、`docs/os-on-arduino/code` にいる前提で
+書いています。** 学習済み方策は `include/arduino_quad_policy.h` に入っていて、
 **上のブラウザのシミュレーションと同じ方策**です。
 
 機体ごとに合わせる値は 3 つあります。**サーボの ID** は
@@ -231,7 +234,7 @@ USB Type-C をつなぐ
 PC につなぎます。Arduino は使わず、PC から直接サーボを動かします。
 
 ```bash
-cd code/13_quadruped/host
+cd 13_quadruped/host
 uv sync                                  # numpy と feetech-cli が入る
 
 uv run python quad_host.py scan          # 8 個応答するか
@@ -303,7 +306,8 @@ space で止まります。
 ジャンパを **A（UART-SERVO）** に戻し、Arduino を PC に USB でつないで書き込みます。
 
 ```bash
-pio run -d code/13_quadruped -t upload
+cd ../..                                  # 2 で host に入ったので code に戻る
+uv run pio run -d 13_quadruped -t upload
 ```
 
 書き込みが終わると Arduino が起動し、2 秒かけて home 姿勢に立ち上がります。
@@ -311,7 +315,7 @@ pio run -d code/13_quadruped -t upload
 操作するなら:
 
 ```bash
-cd code/13_quadruped/host
+cd 13_quadruped/host
 uv run python quad_host.py serial        # Arduino の USB シリアルへ速度を送る
 ```
 
@@ -329,12 +333,13 @@ home 姿勢で立ったまま止まります。そして指令が 0.3 秒途切�
 ```
 
 シリアルモニタから直接コマンドを打つこともできます
-（`pio device monitor -d code/13_quadruped -b 115200`）。
+（`docs/os-on-arduino/code` で `uv run pio device monitor -b 115200`）。
 
 | コマンド | 動作 |
 |---|---|
 | `iktest` | 順運動学と逆運動学（FK/IK）の往復テスト。脚は動かない |
 | `stand` / `stop` | home 姿勢へ 2 秒で移って保持 |
+| `trot` | 本文 13.5 の sin/cos 歩行（学習なしの歩き方）。吊るして試す |
 | `rl <vx> <wz>` | 学習済み方策で歩く。例 `rl 0.15 0`（前進 m/s・旋回 rad/s） |
 | `zero` | 全関節を 0 度へ移して保持。吊るして使う |
 | `free` | トルクを切る |

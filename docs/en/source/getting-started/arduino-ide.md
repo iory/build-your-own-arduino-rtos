@@ -22,8 +22,13 @@ The Arduino IDE is the quickest way to check that the board works.
 
    To see which chip your Mac has, open the Apple menu → "About This Mac". "Chip:
    Apple M…" means Apple Silicon; "Processor: … Intel" means Intel.
-2. In the Boards Manager, add **Arduino UNO R4 Boards**.
+2. In the Boards Manager, add **Arduino UNO R4 Boards**. Open the Boards Manager
+   from `Tools → Board → Boards Manager`, or in Arduino IDE 2 from the board icon
+   in the row of icons on the left edge.
 3. Select **Arduino UNO R4 WiFi** as the board and the connected port as the port.
+   Ports are under `Tools → Port`; the board is the one shown with
+   "Arduino UNO R4 WiFi" next to it. The port name looks like `COMn` (e.g. `COM3`)
+   on Windows, `/dev/cu.usbmodem…` on macOS and `/dev/ttyACM0` on Linux.
 4. Upload `File → Examples → 01.Basics → Blink`. If the LED blinks, you are ready.
 
 ```{note}

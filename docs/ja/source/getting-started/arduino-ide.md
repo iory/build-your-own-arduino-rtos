@@ -24,7 +24,12 @@
    「チップ」に Apple M… と出れば Apple Silicon、「プロセッサ」に Intel と
    出れば Intel です。
 2. ボードマネージャで **Arduino UNO R4 Boards** を追加
+   （ボードマネージャは `ツール → ボード → ボードマネージャ` か、
+   Arduino IDE 2 なら左端に並ぶアイコンのうちボードの形のものから開けます）
 3. ボードに **Arduino UNO R4 WiFi**、ポートに接続中のポートを選択
+   （ポートは `ツール → ポート` で選びます。
+   Arduino UNO R4 WiFi と名前が添えて表示されるものがボードです。
+   ポート名は Windows なら `COM3` のような `COMn`、macOS なら `/dev/cu.usbmodem…`、Linux なら `/dev/ttyACM0` のような形です）
 4. `ファイル → スケッチ例 → 01.Basics → Blink` を書き込み、
    LED が点滅すれば準備完了
 

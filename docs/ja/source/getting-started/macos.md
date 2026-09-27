@@ -44,7 +44,8 @@ bash なら `$` です。どちらでも打つ内容は同じです。
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-インストール先は `~/.local/bin` です。**入れた直後のシェルはまだ PATH を
+インストール先は `~/.local/bin` です。PATH は、コマンド名だけで実行できるように
+OS が探しに行くフォルダの一覧のことです。**入れた直後のシェルはまだ PATH を
 知らない**ので、そのまま `uv` を打つと `command not found` になります。
 ターミナルを開き直すか、次を実行してください。
 
@@ -201,8 +202,8 @@ If you see this, boot sequence completed!
 - **USB ハブ経由だと失敗することがあります。** Mac 本体に直挿ししてください
 - ケーブルが充電専用だと、電源は入っても通信できません。データ線のあるものを
   使ってください
-- それでも見つからないときは、**RESET を素早く 2 回**押してブートローダに
-  入れてから、もう一度書き込んでください
+- それでも見つからないときは、**RESET を素早く 2 回**押してブートローダ（書き込みを
+  受け付けるためにマイコンに常駐している小さなプログラム）に入れてから、もう一度書き込んでください
 
 ### `/dev/cu.` の名前が長い
 
@@ -237,6 +238,8 @@ time.sleep(0.8)
 print(ser.read(4096).decode("utf-8", errors="replace").replace("\r\n", "\n"))
 ser.close()
 ```
+
+上のコードを `docs/os-on-arduino/code` フォルダに `hello_serial.py` という名前で保存してから、実行します。
 
 ```bash
 uv run python hello_serial.py

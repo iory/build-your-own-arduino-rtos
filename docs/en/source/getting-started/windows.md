@@ -52,7 +52,9 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 `winget install --id=astral-sh.uv -e` works too. Other options are in
 [uv's installation guide](https://docs.astral.sh/uv/getting-started/installation/).
 
-The installer drops uv in `%USERPROFILE%\.local\bin` and adds that to PATH, so
+The installer drops uv in `%USERPROFILE%\.local\bin` and adds that to PATH
+(the list of folders the OS searches so that you can run a command by its name
+alone), so
 **`uv` is not found until you reopen PowerShell.** Reopen it, then check:
 
 ```powershell
@@ -64,6 +66,13 @@ uv 0.9.26
 ```
 
 ### Get the sample code
+
+Windows does not come with git, so install it first and reopen PowerShell
+([Git for Windows](https://git-scm.com/install/windows)).
+
+```powershell
+winget install --id Git.Git -e --source winget
+```
 
 ```powershell
 git clone https://github.com/iory/learning-os-from-arduino.git
@@ -240,7 +249,8 @@ shows how to write code that does not depend on the number.
 
 ### It stops with `No device found on COMn`
 
-The board is not in bootloader mode. **Press RESET twice quickly** to drop into
+The board is not in bootloader mode (the bootloader is a small program that
+stays on the microcontroller to accept new firmware). **Press RESET twice quickly** to drop into
 the bootloader — the L LED fading slowly in and out means it worked — then
 upload again.
 
@@ -285,6 +295,9 @@ for cmd in (b"help\n", b"info\n"):
 
 ser.close()
 ```
+
+First save the code above as `hello_serial.py` in the `docs\os-on-arduino\code`
+folder, then run it:
 
 ```powershell
 uv run python hello_serial.py
@@ -389,13 +402,15 @@ Type 'help' for commands.
 
 ## 7. Driving the quadruped from the PC
 
+You can skip this until Chapter 13.
+
 The fastest way to bring the Chapter 13 quadruped up is to drive the servos
 from the PC before flashing anything. Those tools live in
 [`docs/os-on-arduino/code/13_quadruped/host/`](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/host)
 and run on Windows as they are.
 
 ```powershell
-cd docs\os-on-arduino\code\13_quadruped\host
+cd 13_quadruped\host                   # from docs\os-on-arduino\code
 uv run python quad_host.py --port COM3 scan        # how many servos answer
 uv run python quad_host.py --port COM3 calibrate   # measure sign and zero -> calib.json
 uv run python quad_host.py --port COM3 stand       # hold the home stance
@@ -411,7 +426,7 @@ probing the attached USB serial devices.
 window**. `Ctrl-C` releases servo torque.
 
 ```{warning}
-Power the eight servos from the battery. Never from the PC's USB
+Power the eight servos from the 12 V AC adapter or a battery. Never from the PC's USB
 (2.7 A stall current each). Assembly and safety notes are on the Japanese
 site.
 ```
@@ -426,7 +441,7 @@ A bundled script builds, uploads and checks the serial output of every chapter
 in one run.
 
 ```powershell
-cd docs/os-on-arduino/code
+# run in docs\os-on-arduino\code (after step 7, go back with cd ..\..)
 uv run python scripts\verify_chapters.py --port COM3
 ```
 

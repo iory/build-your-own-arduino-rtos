@@ -1,6 +1,6 @@
 # 応用編 第2章: ユーザー／カーネルモードと SVC
 
-特権レベルを分離し、SVC でシステムコールを生やします。
+特権レベルを分離し、SVC（Supervisor Call。ユーザーのコードから OS の機能を呼ぶための命令）でシステムコール（ユーザーのコードが OS に仕事を頼む入口）を生やします。
 
 ## サンプルコード
 
@@ -8,8 +8,8 @@
 - ビルドと書き込み:
 
 ```bash
-pio run -d adv2_syscall -t upload
-pio device monitor -b 115200
+uv run pio run -d adv2_syscall -t upload
+uv run pio device monitor -b 115200
 ```
 
 コードを見る: [docs/os-on-arduino/code/adv2_syscall](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/adv2_syscall)
@@ -120,6 +120,8 @@ Arduino UNO R4 WiFi の実機で実際に取得した出力です（macOS / Wind
 [B] count=5
 ...
 ```
+
+1 行目の ENOSYS（Linux で「そのシステムコールは無い」を表すエラー番号）は、未定義の SVC 番号を呼ぶとそれに相当する -1 が返ることを確かめています。
 
 ## つまずきやすいポイント
 

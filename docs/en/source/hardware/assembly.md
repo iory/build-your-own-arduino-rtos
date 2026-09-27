@@ -70,7 +70,7 @@ the body last. There are **81 individual parts (8 kinds)** in total.
 |---|---|
 | Screw M3×6 | ×40 |
 | Screw M2×6 | ×16 |
-| STS3215 (case + horn) | ×8 |
+| STS3215 (case + horn: the part on the servo shaft that turns with it) | ×8 |
 | bracket_outline | ×4 |
 | leg_link1 | ×4 |
 | Body | ×1 |
@@ -237,6 +237,8 @@ Use these servos when building the units below.
 
 Each kind of unit is shown once; **×N** is how many the whole robot uses. Build them
 from top to bottom and you will have every unit you need.
+In the steps, "coaxial φ◯ mm" means lining up the centres of the holes, and "mating
+faces" means pressing two faces flat against each other.
 
 :::{dropdown} STS3215 servo (fitting the horn) **×8**
 :open:
@@ -263,6 +265,10 @@ Hold the screwdriver tip in line with the screw hole. If the tip is at an angle 
 :::{dropdown} body_servo (fixing 4 servos in the body) **×1**
 
 Parts: body ×1, STS3215 ×4, M3x6 ×8
+
+**STS3215-1 to -4** below are the CAD part numbers, not servo IDs. The four positions
+in the body take the hip servos (IDs 1, 3, 5, 7); match each position to its ID with
+the {ref}`ID assignment figure <servo-id>`.
 
 1. Place the **body** (base).
 
@@ -500,7 +506,7 @@ the right legs.
 
 ![Step 9](assembly_img/step_009.png)
 
-The robot is complete. For wiring, power-up and calibration, see chapter 13.
+The robot is complete. For wiring and the zero point, see {ref}`walk-real`.
 
 ---
 

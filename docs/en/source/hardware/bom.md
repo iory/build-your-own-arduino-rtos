@@ -30,21 +30,24 @@ You need **only one of the two cables**: C-to-C if your computer has a Type-C po
 The screws for assembly (M3×6 ×40, M2×6 ×16) **come with the STS3215 servos**, so you
 do not need to buy them.
 
-You also need an **Arduino UNO R4 WiFi** and, for walking, a **12 V battery (about a 3S
-LiPo)**.
+You also need an **Arduino UNO R4 WiFi**. **The AC adapter above is enough to walk the
+robot on the floor** (the book's robot walks with the adapter plugged in). Use
+"Battery power (optional)" below only if you want to walk without a cable.
 
 ### AC adapter capacity
 
-From the datasheet's **stall torque 2.942 N·m / 2.7 A**, assuming current is roughly
+From the datasheet's **stall torque 2.942 N·m / 2.7 A** (stall: the shaft is held
+by the load and cannot turn, which draws the largest current), assuming current is roughly
 proportional to torque, we estimated **0.92 A/(N·m)**.
 
 | State | Torque per joint | Total for 8 |
 |---|---|---|
 | Holding the standing pose (measured 0.27 N·m) | 9% | about 2 A |
-| Walking (rms 0.75 N·m, fastest gait) | 76% | about 5.5 A |
+| Walking (rms 0.75 N·m, fastest gait; a gait is the pattern of leg movements) | 76% | about 5.5 A |
 | All 8 stalled at once | 100% | 21.6 A |
 
-**We chose 5 A.** Bench work (calibration, identification, holding a pose) needs about
+**We chose 5 A.** Bench work (calibration, identification, holding a pose;
+identification means measuring the real robot to fit the simulation's parameters) needs about
 2 A, and walking fits on average. The peaks at each footstep exceed 5 A, so **adding
 one electrolytic capacitor (2200–4700 µF / 25 V) across the terminal block** reduces
 servo resets caused by the voltage sagging.
@@ -52,20 +55,20 @@ servo resets caused by the voltage sagging.
 There is no point in buying a 21.6 A supply: every joint stalls at once only in an
 accident.
 
-**Use a battery when walking on the floor.** A quadruped dragging a 1 m DC cable is
-dangerous, and the cable has actually come out. The AC adapter is for the bench.
+**When walking on the AC adapter, hold the DC cable slack in your hand so the robot
+never pulls on it.** Dragging a 1 m DC cable, the cable has actually come out.
 
-The driver board's input limit is **12.6 V**. A fully charged 3S LiPo is exactly
-12.6 V, right at the limit.
+The driver board's input limit is **12.6 V**. A fully charged 3S LiPo (three lithium-polymer
+cells in series) is exactly 12.6 V, right at the limit.
 
 ### Battery power (optional)
 
-To walk on the floor you need a battery. **Taking 12 V from a USB-C PD power bank is
+Use a battery only if you want to walk without a cable. **Taking 12 V from a USB-C PD power bank is
 the easiest way, and it works on the real robot.**
 
 | # | Item | Requirement |
 |---|---|---|
-| a | USB-C PD power bank | **Its output PDOs must list `12V ⎓ 3A`** |
+| a | USB-C PD power bank | **Its output PDOs (the voltage/current combinations a USB PD charger can supply) must list `12V ⎓ 3A`** |
 | b | USB Type-C to C cable (short) | Supports data. A normal 60 W cable is fine for 3 A |
 | c | [PD trigger cable PDC-12VE](https://www.sengoku.co.jp/mod/sgk_cart/detail.php?code=EEHD-5X3J) | **Fixed 12 V**, 5 A, DC 5.5/2.1, **centre positive**, ¥1,830 |
 
@@ -82,9 +85,10 @@ not tell you.
 USB PD's fixed voltages are basically 5 V / 9 V / 15 V / 20 V; **12 V is optional**, and
 plenty of products do not have it. **Anker does not offer 12 V on its USB-C outputs**
 (checked in the official specs: the Nano Power Bank 10K 45W has 5V/9V/**10V**/15V/20V,
-and 12 V is only available on the USB-A port's QC modes).
+and 12 V is only available on the USB-A port's QC (Quick Charge) modes).
 
-Products with only PPS (variable, e.g. 3.3–11 V) **cannot deliver 12 V to an ordinary
+Products with only PPS (Programmable Power Supply, a USB PD mode whose
+voltage can be set in fine steps, e.g. 3.3–11 V) **cannot deliver 12 V to an ordinary
 fixed-12 V trigger cable** either.
 
 And **15 V and 20 V exceed the board's 12.6 V limit.** If you use a switchable trigger
@@ -111,9 +115,16 @@ instantly.
 12 V / 3 A = 36 W leaves no margin, so **add one electrolytic capacitor (2200–4700 µF /
 25 V)** to absorb inrush current. If it still drops out, move up to a 67 W class unit.
 
+```{warning}
+Electrolytic capacitors have **polarity (+ and −)**. Put the longer leg on DC+ and the
+leg on the side of the stripe (−) on DC−, screwed into the driver board's **terminal
+block** (the green screw terminal next to the DC jack). Fitted backwards, it can burst.
+It is not in the parts list above, so get one separately.
+```
+
 ### Things to know before wiring
 
-**This board's UART is wired RX to RX and TX to TX** (the board's RX to the Arduino's
+**This board's UART (serial link) is wired RX to RX and TX to TX** (the board's RX to the Arduino's
 RX, TX to TX). Note that this is not the usual crossed RX/TX UART wiring (stated on
 [Waveshare's product page](https://www.waveshare.com/bus-servo-adapter-a.htm)).
 

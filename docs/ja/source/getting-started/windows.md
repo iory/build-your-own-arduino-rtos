@@ -50,7 +50,8 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 [uv のインストール手順](https://docs.astral.sh/uv/getting-started/installation/)
 を参照してください。
 
-インストーラは `%USERPROFILE%\.local\bin` に置いて、そこを PATH に足します。
+インストーラは `%USERPROFILE%\.local\bin` に置いて、
+そこを PATH（コマンド名だけで実行できるように、OS が探しに行くフォルダの一覧）に足します。
 **PowerShell を開き直さないと `uv` が見つかりません。** 開き直してから
 確認してください。
 
@@ -63,6 +64,13 @@ uv 0.9.26
 ```
 
 ### サンプルコードを取ってくる
+
+Windows には git が最初から入っていないので、先に入れて PowerShell を開き直します
+（[Git for Windows](https://git-scm.com/install/windows) の手順）。
+
+```powershell
+winget install --id Git.Git -e --source winget
+```
 
 ```powershell
 git clone https://github.com/iory/learning-os-from-arduino.git
@@ -237,7 +245,8 @@ Linux の `/dev/ttyACM0` / `/dev/ttyACM1` でも同じことが起きます。
 
 ### `No device found on COMn` で止まる
 
-ブートローダに入れていないときの症状です。**RESET ボタンを素早く 2 回押す**と
+ブートローダ（書き込みを受け付けるためにマイコンに常駐している小さなプログラム）に入れていないときの症状です。
+**RESET ボタンを素早く 2 回押す**と
 ブートローダに落ちます（L の LED がゆっくり明滅すれば成功）。そのまま
 もう一度 `upload` してください。
 
@@ -282,6 +291,8 @@ for cmd in (b"help\n", b"info\n"):
 
 ser.close()
 ```
+
+上のコードを `docs\os-on-arduino\code` フォルダに `hello_serial.py` という名前で保存してから、実行します。
 
 ```powershell
 uv run python hello_serial.py
@@ -386,13 +397,15 @@ Type 'help' for commands.
 
 ## 7. 四脚ロボットを PC から動かす
 
+第13章まで読み飛ばしてかまいません。
+
 第13章の四脚ロボットは、マイコンに焼く前に PC から直接サーボを叩いて
 立ち上げるのが早道です。そのツールが
 [`docs/os-on-arduino/code/13_quadruped/host/`](https://github.com/iory/learning-os-from-arduino/tree/main/docs/os-on-arduino/code/13_quadruped/host)
 にあります。Windows でもそのまま動きます。
 
 ```powershell
-cd docs\os-on-arduino\code\13_quadruped\host
+cd 13_quadruped\host                   # docs\os-on-arduino\code から
 uv run python quad_host.py --port COM3 scan        # バスに何個いるか
 uv run python quad_host.py --port COM3 calibrate   # sign と zero を測る -> calib.json
 uv run python quad_host.py --port COM3 stand       # home 姿勢を保持
@@ -408,7 +421,7 @@ Arduino をブリッジとして使う場合（`--bus bridge`）は Arduino の 
 ください。`Ctrl-C` でサーボのトルクが抜けます。
 
 ```{warning}
-サーボ 8 個の電源は必ずバッテリーから取ってください。PC の USB からは
+サーボ 8 個の電源は必ず 12 V の AC アダプターかバッテリーから取ってください。PC の USB からは
 絶対に取らないでください（1 個あたりストール 2.7 A）。
 組み立てと安全上の注意は[四脚ロボットを歩かせる](../hardware/walk.md)にあります。
 ```
@@ -419,7 +432,7 @@ Arduino をブリッジとして使う場合（`--bus bridge`）は Arduino の 
 実行できます。
 
 ```powershell
-cd docs/os-on-arduino/code
+# docs\os-on-arduino\code で実行（7 で host に入ったなら cd ..\.. で戻る）
 uv run python scripts\verify_chapters.py --port COM3
 ```
 
