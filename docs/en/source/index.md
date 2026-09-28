@@ -76,6 +76,10 @@ Troubleshooting and corrections.
 by Iori Yanokura, published by Mynavi Publishing on September 18, 2026.
 ISBN 978-4-8399-9187-6. Available in print and as a PDF.
 
+Free sample (Japanese):
+
+{bdg-link-secondary}`Read sample pages (Mynavi Publishing)<https://book.mynavi.jp/files/user/trial/9784839991876/index.html>`
+
 Print:
 
 {bdg-link-primary}`Amazon.co.jp<https://www.amazon.co.jp/dp/4839991871>`
