@@ -14,6 +14,33 @@ Arduino UNO R4 WiFi の上で、プリエンプティブなリアルタイム OS
        aria-label="書籍の紹介動画: 自作 OS の起動から四脚ロボットの歩行まで"></video>
 ```
 
+## まず触ってみる
+
+準備の前に、完成したものをブラウザで動かせます。インストールも基板も要りません。
+
+::::{grid} 1 1 2 2
+:gutter: 3
+
+:::{grid-item-card} 🖥️ 自作 OS を動かす
+:link: sim/index.html
+:link-type: url
+各章のファームウェアが、ブラウザの中の仮想ボードで動きます。
+LED マトリクスに CPU の使用率が横棒で出て、シェルに `top` や `kill 3` を打てます。
+:::
+
+:::{grid-item-card} 🐾 四脚ロボットを歩かせる
+:link: assembly/quadruped/walk/index.html
+:link-type: url
+第13章のロボットを物理シミュレーションで歩かせます。
+実機に書き込むものと同じニューラルネットワークです。
+:::
+::::
+
+触ってみて気になったところから読み始められるように、
+{doc}`気になることから章を探すページ <start>` を用意しました。
+
+## 目次
+
 ::::{grid} 1 2 2 2
 :gutter: 3
 
@@ -110,6 +137,7 @@ PDF・電子書籍:
 
 ```{toctree}
 :hidden:
+start
 getting-started/index
 chapters/index
 hardware/index

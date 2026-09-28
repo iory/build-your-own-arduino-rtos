@@ -19,6 +19,35 @@ site currently covers setup and per-chapter build instructions.
 Full translations are in progress.
 ```
 
+## Try It First
+
+Before any setup, you can run the finished pieces in your browser.
+No installation and no board needed.
+
+::::{grid} 1 1 2 2
+:gutter: 3
+
+:::{grid-item-card} 🖥️ Run your own OS
+:link: ../sim/index.html
+:link-type: url
+Each chapter's firmware runs on a virtual board in your browser. The LED
+matrix shows CPU usage as bars, and you can type `top` or `kill 3` into the
+shell. (The page itself is in Japanese.)
+:::
+
+:::{grid-item-card} 🐾 Walk the quadruped
+:link: ../assembly/quadruped/walk/index.html
+:link-type: url
+Walk the chapter-13 robot in a physics simulation, with the same neural
+network that is written to the real board.
+:::
+::::
+
+To start reading from whatever caught your interest, see
+{doc}`Start from what you are curious about <start>`.
+
+## Contents
+
 ::::{grid} 1 2 2 2
 :gutter: 3
 
@@ -101,6 +130,7 @@ is downloaded from your account page after purchase.
 
 ```{toctree}
 :hidden:
+start
 getting-started/index
 chapters/index
 hardware/index

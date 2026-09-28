@@ -210,8 +210,9 @@ few seconds longer.)
 :name: fig-sim-browser
 :width: 80%
 
-The Chapter 7 sample after typing `ps` into the serial monitor. The board is
-at the top, the serial monitor below it.
+The improved Chapter 7 sample, `07_led_matrix_v2`, after typing `ps` into the
+serial monitor. The board is at the top, the serial monitor below it. The bars
+on the matrix show the same numbers as the CPU% column of `ps`.
 ```
 
 On Windows, type `python` instead of `python3`.
@@ -242,9 +243,11 @@ The Chapter 2 sample blinking the built-in LED "L" (D13), zoomed in around it.
 :name: fig-sim-matrix
 :width: 80%
 
-The Chapter 7 sample. The top half of the LED matrix is a CPU load graph, the
-bottom half shows what each task is doing. Stopping the busy task (Heavy)
-with `kill 3` from the serial monitor makes the CPU load graph drain away.
+The improved Chapter 7 sample, `07_led_matrix_v2`. Each bar on the matrix is CPU
+usage, with 12 dots meaning 100%. The top two rows are the whole CPU; after one blank row, the five rows
+below are one per task (LED, Light, Heavy, Shell, Display from the top).
+Stopping the busy task (Heavy) with `kill 3` removes its row and shrinks the
+total bar; `exec 3` brings them back.
 ```
 
 ## Chapter coverage

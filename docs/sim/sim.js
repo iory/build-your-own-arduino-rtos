@@ -35,6 +35,7 @@ const CHAPTERS = [
   { dir: '05_shell', title: '第5章: 対話型シェル' },
   { dir: '06_memory_protection', title: '第6章: メモリ保護' },
   { dir: '07_led_matrix', title: '第7章: LEDマトリクス可視化' },
+  { dir: '07_led_matrix_v2', title: '第7章 改良版: htop 風の表示と top（書籍未掲載）' },
   { dir: '08_interpreter', title: '第8章: 簡易インタプリタ' },
   { dir: '09_integration', title: '第9章: 統合とロボット制御',
     note: 'ブラウザ版の QEMU は命令をインタプリタで実行するため、実機の約 1/10 の速さしか出ません。この章の ps が出す CPU% は、合計が 100% を少し超えることがあります。'
@@ -45,7 +46,7 @@ const CHAPTERS = [
   { dir: 'adv2_syscall', title: '応用編 第2章: ユーザー／カーネルモードと SVC' },
   { dir: 'adv3_heap', title: '応用編 第3章: ヒープ自作' },
 ];
-const DEFAULT_CHAPTER = '07_led_matrix';
+const DEFAULT_CHAPTER = '07_led_matrix_v2';
 // 章の代わりに、読者が自分でビルドした ELF を選んで動かす
 const CUSTOM = { dir: 'custom', title: '自分でビルドした ELF を動かす…' };
 
@@ -102,10 +103,24 @@ function setStatus(text, kind = '') {
   el.dataset.kind = kind;
 }
 
+// エスケープシーケンスのうち、画面消去（ESC[2J。07_led_matrix_v2 の top が
+// 描き直しのたびに出す）だけを解釈し、それ以外は表示せずに捨てる。
+// シリアルは細切れに届くので、途中で切れたシーケンスは次の分とつなげて読む。
+const CSI_CLEAR = /\x1b\[2J/g;
+const CSI_ANY = /\x1b\[[0-9;?]*[@-~]/g;
+const CSI_PARTIAL = /\x1b(\[[0-9;?]*)?$/;
+let consolePending = '';
+
 function appendConsole(text) {
   const el = $('console');
   const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
-  el.textContent += text;
+  text = consolePending + text;
+  const partial = text.match(CSI_PARTIAL);
+  consolePending = partial ? partial[0] : '';
+  if (partial) text = text.slice(0, partial.index);
+  const pages = text.split(CSI_CLEAR);
+  if (pages.length > 1) el.textContent = '';
+  el.textContent += pages[pages.length - 1].replace(CSI_ANY, '');
   if (el.textContent.length > CONSOLE_TRIM_AT) {
     el.textContent = el.textContent.slice(-CONSOLE_KEEP);
   }
