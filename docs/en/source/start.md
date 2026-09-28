@@ -107,8 +107,8 @@ Chapter 12: understand PWM generation and A/D conversion at the register level.
 
 Chapters 4, 6, and 7 end with "break it" experiments: change one place in the
 code, predict what will happen, then run it. They also work in the browser
-version. These sections are in Japanese for now.
+version.
 
-- <a href="../chapters/ch04.html#ch04-break">Chapter 4: stop the tick, stop saving registers (Japanese)</a>
-- <a href="../chapters/ch06.html#ch06-break">Chapter 6: run out of task slots, turn off the divide-by-zero trap (Japanese)</a>
-- <a href="../chapters/ch07.html#ch07-break">Chapter 7: kill the shell itself, take idle out of the rotation (Japanese)</a>
+- {ref}`ch04-break`
+- {ref}`ch06-break`
+- {ref}`ch07-break`
