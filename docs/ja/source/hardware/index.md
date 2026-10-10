@@ -45,6 +45,14 @@ PDF 版もあります。
 報酬や速度上限を変えて学習し直す手順。**GPU が無くても Google Colab
 （ブラウザで Python を動かせる Google のサービス）の無料枠の T4（GPU の機種名）で最後まで通せます。**
 :::
+
+:::{grid-item-card} 🦿 近藤科学の KRS サーボで組む
+:link: krs
+:link-type: doc
+
+STS3215 の代わりに KRS-3302 ICS と RCB-4mini で組む版。Dual USB アダプターでの
+ID の振り方、ゼロ点の合わせ方、Ni-MH バッテリー 1 本での配線まで。
+:::
 ::::
 
 ```{toctree}
@@ -54,6 +62,8 @@ bom
 assembly
 walk
 train
+krs
+krs_bom
 ```
 
 ## 組み立ての流れ
