@@ -16,8 +16,8 @@
 
 ```{note}
 胴体と脚の 3D プリント部品は、KRS サーボの形に合わせたもので、Feetech 版の
-STL とは形が違います。KRS 版の CAD と組み立てのページは準備中です。
-このページでは、サーボの準備・配線・書き込みを説明します。
+STL とは形が違います（STL は {doc}`krs_bom` にあります）。
+このページでは、サーボの準備、3D ビューアでの組み立て、配線、書き込みを説明します。
 ```
 
 ## Feetech 版との違い
@@ -200,7 +200,8 @@ ID の割り当ては Feetech 版と同じです。
 2. **`z` を押す。** サーボが真ん中の角度（0 度、パルスの値で 7500）へ動き、
    その角度で止まります。
 3. その状態のまま、**脚がまっすぐ真下を向く向き**（CAD の 0 度）でホーンをはめ、
-   ホーンと脚をネジで止める。
+   付属の M3-6 低頭ホーン止めビスで留める。膝は、先にホーンを足先にネジで止めておき、
+   足先ごとはめる（下の {ref}`krs-assembly`）。
 
 ```{figure} ../_static/krs_servo_spline.jpg
 :target: ../_static/krs_servo_spline.jpg
@@ -279,6 +280,270 @@ KRS-3302 が測れる・動ける範囲。真ん中（7500）で脚がまっす�
 
 :::
 ::::
+
+(krs-assembly)=
+## 組み立て
+
+先に 4 種類のユニット（ホーン付きの股サーボ・サーボ入りの胴体・足先・脚）を組み、
+最後に脚を胴体へ取り付けます。足先（脚ブラケット）は**先にホーンにネジで止めてから**、
+ホーンごとサーボの出力軸にはめます。手順と図は、ネジまで入れた KRS 版の CAD から
+自動で作ったものです。
+
+ホーンをサーボにはめる前に、上の「サーボを真ん中に合わせてから、ホーンと脚を付ける」で
+**サーボを真ん中（0 度）に合わせて**おいてください。
+
+### インタラクティブ 3D ビューア
+
+ブラウザ上で 1 ステップずつアニメーションを再生できます。マウスで視点を回し、
+スライダーで手順を前後できます。
+
+```{raw} html
+<p>
+  <a class="sd-btn sd-btn-primary" href="../assembly/quadruped_krs/index.html"
+     target="_blank" rel="noopener">ビューアを全画面で開く ↗</a>
+  &nbsp;
+  <a class="sd-btn sd-btn-outline-primary" href="../assembly/quadruped_krs/instructions.pdf"
+     target="_blank" rel="noopener">PDF 版の手順書</a>
+</p>
+<iframe src="../assembly/quadruped_krs/index.html"
+        style="width:100%; height:75vh; border:1px solid var(--pst-color-border, #ddd); border-radius:8px;"
+        loading="lazy"
+        title="KRS 版四脚ロボット 組み立てビューア"></iframe>
+```
+
+(krs-screws)=
+### ネジ
+
+ネジはすべて近藤科学のもので、長さは近藤科学の資料の決め方に合わせてあります。
+
+| ネジ | 本数 | 使う場所 | 長さの決め方 |
+|---|---|---|---|
+| **M3-6 低頭ホーン止めビス** | 8 | ホーン → サーボの出力軸 | サーボに 1 本ずつ付いてくる（近藤科学の取扱説明書「サーボホーンの取り付けについて」） |
+| **M2-8 低頭ビス** | 8 | 胴体 → 股サーボのアッパーケース | アッパーケースのネジ穴（φ1.6 の下穴）は有効長 4.8mm。胴体の壁が 3.7mm なので、届く長さが 4.8mm 以内で一番長い 8mm |
+| **M2-6 低頭ビス** | 8 | 脚リンク → 膝サーボのアッパーケース | 同じ決め方。脚リンクの板厚 2.0mm（座ぐりの底から）で 6mm |
+| **M2-6 低頭ビス** | 16 | 脚ブラケット（足先） → 膝のホーン | 小径ホーン B のネジ穴は M2 のめねじで、厚み 2mm。ブラケットの板厚 4.0mm + 2mm = 6mm |
+| **M2-4 低頭ビス** | 16 | 脚リンク → 股のホーン | 脚リンクの板厚 2.0mm + ホーン 2mm = 4mm |
+| **ケースビス（2-20 低頭タッピングビス）** | 8 | 脚リンク → 膝サーボのボトムケース | 買わなくてよい。**買ってきたサーボに最初から締めてあるケースビス**を、いったん抜いて、脚リンクにはめたあとで同じネジで止め直す（近藤科学の指定） |
+
+M2-4・M2-6・M2-8 の低頭ビスと M3-6 のホーン止めビスは、近藤科学の
+[ビスセット A（KXR 用）](https://kondo-robot.com/product/02328) にまとめて入っています。
+近藤科学の取扱説明書で「フラットヘッド」（2.6-4 フラットヘッドビス）が指定されているのは
+フリーホーン側のネジで、このロボットでは使いません。
+
+```{warning}
+膝のボトムケース側は、サーボから抜いたケースビス（20mm）を脚リンク（座ぐりの底から
+サーボまで約 3.5mm）ごと締めるので、**ケースビスがサーボにかかる長さが短くなります**。CAD で測ると、
+下穴にかかるのは約 1.8mm です。締めすぎると下穴をなめるので、軽く締めて止めてください。
+近藤科学の図は板厚 1mm のフレームでの例です。
+```
+
+### 部品のユニット構成
+
+単一部品は全部で **89 個（10 種類）**。
+
+| ユニット | 数量 | 単一部品の数 |
+|---|---|---|
+| body_servo_krs（胴体 + ホーン付きの股サーボ 4） | ×1 | 21 |
+| foot_left_krs / foot_right_krs（足先 + ホーン） | 各 ×2 | 6 |
+| leg_left_krs / leg_right_krs（脚。足先を含む） | 各 ×2 | 13 |
+
+これに本体の組み立てで使う M2-4 低頭ビス 16 本を足して 89 個です。
+
+| 部品 | 個数 |
+|---|---|
+| M2-6 低頭ビス | ×24 |
+| M2-4 低頭ビス | ×16 |
+| ケースビス（2-20 低頭タッピング） | ×8 |
+| M2-8 低頭ビス | ×8 |
+| M3-6 低頭ホーン止めビス | ×8 |
+| KRS-3302 ICS（図では KRS3300_scale） | ×8 |
+| 小径ホーン B（small_diameter_hornB） | ×8 |
+| 脚ブラケット（bracket_outline_krs） | ×4 |
+| 脚リンク（leg_link1_krs） | ×4 |
+| 胴体（body_krs） | ×1 |
+
+図の **KRS3300-1〜4** は CAD 上の部品の通し番号で、サーボの ID ではありません。
+上の「どのサーボをどこに使うか」の ID と、次のように対応します。
+
+| ユニット | CAD の番号 → 位置 | 使う ID |
+|---|---|---|
+| body_servo_krs（胴体） | KRS3300-3 → 右前、KRS3300-4 → 左前、KRS3300-1 → 右後、KRS3300-2 → 左後 | 1（右前）、3（左前）、5（右後）、7（左後） |
+| leg_right_krs（右脚）×2 | 右の脚の膝 | 2（右前）、6（右後） |
+| leg_left_krs（左脚）×2 | 左の脚の膝 | 4（左前）、8（左後） |
+
+### ユニットの事前組み立て
+
+同じユニットは 1 回だけ手順を示します。**×N** はロボット全体で使う個数です。
+上から順に組めば部品が揃います。図でオレンジの矢印が付いているのが、その手順で
+付ける部品とネジです。
+
+:::{dropdown} KRS3300（股のサーボにホーンを付ける） **×4**
+:open:
+
+股の 4 個（ID 1・3・5・7）だけです。膝のホーンは足先と一緒に付けます（下の foot と leg）。
+
+1. **小径ホーン B** を置く（土台）
+
+   ![KRS3300 step 1](krs_assembly_img/units/KRS3300/step_01.png)
+
+2. **サーボ**をホーンへ — 真ん中に合わせたサーボの出力軸にはめる
+
+   ![KRS3300 step 2](krs_assembly_img/units/KRS3300/step_02.png)
+
+3. 🔩 **M3-6 低頭ホーン止めビス ×1** を締める（ホーン ↔ 出力軸）
+
+   ![KRS3300 step 3](krs_assembly_img/units/KRS3300/step_03.png)
+
+:::
+
+:::{dropdown} body_servo_krs（胴体にサーボ 4 個を固定） **×1**
+
+使う部品: 胴体 ×1、ホーン付きの股サーボ ×4、M2-8 低頭ビス ×8
+
+サーボは胴体の内側から入れ、ホーンを胴体の壁の丸穴から外へ出します。
+ネジは胴体の外側から、壁を通してアッパーケース（出力軸側）のネジ穴に締めます。
+
+1. **body_krs**（胴体）を置く（土台）
+
+   ![body_servo step 1](krs_assembly_img/units/body_servo_krs/step_01.png)
+
+2. **KRS3300-4**（左前・ID 3）— 胴体へ差し込む（ホーンを壁の穴へ、同軸 φ2.3mm ×2、面合わせ ×2）
+
+   ![body_servo step 2](krs_assembly_img/units/body_servo_krs/step_02.png)
+
+3. 🔩 **M2-8 低頭ビス ×2** を締める（サーボ ↔ 胴体）
+
+   ![body_servo step 3](krs_assembly_img/units/body_servo_krs/step_03.png)
+
+4. **KRS3300-3**（右前・ID 1）— 胴体へ差し込む
+
+   ![body_servo step 4](krs_assembly_img/units/body_servo_krs/step_04.png)
+
+5. 🔩 **M2-8 低頭ビス ×2** を締める
+
+   ![body_servo step 5](krs_assembly_img/units/body_servo_krs/step_05.png)
+
+6. **KRS3300-2**（左後・ID 7）— 胴体へ差し込む
+
+   ![body_servo step 6](krs_assembly_img/units/body_servo_krs/step_06.png)
+
+7. 🔩 **M2-8 低頭ビス ×2** を締める
+
+   ![body_servo step 7](krs_assembly_img/units/body_servo_krs/step_07.png)
+
+8. **KRS3300-1**（右後・ID 5）— 胴体へ差し込む
+
+   ![body_servo step 8](krs_assembly_img/units/body_servo_krs/step_08.png)
+
+9. 🔩 **M2-8 低頭ビス ×2** を締める
+
+   ![body_servo step 9](krs_assembly_img/units/body_servo_krs/step_09.png)
+
+:::
+
+:::{dropdown} foot_left_krs / foot_right_krs（足先にホーンを止める） **各 ×2**
+
+使う部品: 脚ブラケット ×1、小径ホーン B ×1、M2-6 低頭ビス ×4
+
+サーボにはめる前に、ホーンを足先（脚ブラケット）に止めます。左右で手順は同じで、
+ホーンを付ける面が鏡像になります。
+
+1. **小径ホーン B** を置く（土台）
+
+   ![foot step 1](krs_assembly_img/units/foot_left_krs/step_01.png)
+
+2. **bracket_outline_krs**（脚ブラケット）— ホーンに合わせる（同軸 φ8.4mm、同軸 φ2.3mm、面合わせ）
+
+   ![foot step 2](krs_assembly_img/units/foot_left_krs/step_02.png)
+
+3. 🔩 **M2-6 低頭ビス ×4** を締める（脚ブラケット ↔ ホーン）
+
+   ![foot step 3](krs_assembly_img/units/foot_left_krs/step_03.png)
+
+:::
+
+:::{dropdown} leg_left_krs / leg_right_krs（脚） **各 ×2**
+
+使う部品: 膝のサーボ（KRS-3302）×1、足先 ×1、脚リンク ×1、M3-6 低頭ホーン止めビス ×1、
+M2-6 低頭ビス ×2、ケースビス ×2（サーボに最初から締めてあるもの）。右脚は足先が
+foot_right_krs になるだけで、手順は同じです。
+
+1. **KRS3300_scale**（膝のサーボ。真ん中に合わせておく）を置く（土台）
+
+   ![leg step 1](krs_assembly_img/units/leg_left_krs/step_01.png)
+
+2. **foot_left_krs**（ホーン付きの足先）— 脚がまっすぐ伸びる向きで、ホーンを出力軸にはめる
+
+   ![leg step 2](krs_assembly_img/units/leg_left_krs/step_02.png)
+
+3. 🔩 **M3-6 低頭ホーン止めビス ×1** を、脚ブラケットの真ん中の穴から締める（ホーン ↔ 出力軸）
+
+   ![leg step 3](krs_assembly_img/units/leg_left_krs/step_03.png)
+
+4. **leg_link1_krs**（脚リンク）— まず、サーボのボトムケース側（出力軸と反対側）の
+   ケースビスのうち、脚リンクの穴に重なる 2 本をサーボから**抜いておく**。それから、
+   サーボを脚リンクの間に差し込む（同軸 φ2.3mm ×4、面合わせ ×2）
+
+   ![leg step 4](krs_assembly_img/units/leg_left_krs/step_04.png)
+
+5. 🔩 **ケースビス ×2** — 手順 4 で抜いたケースビスを、脚リンクの座ぐりから通して
+   サーボに締め直す
+
+   ![leg step 5](krs_assembly_img/units/leg_left_krs/step_05.png)
+
+6. 🔩 **M2-6 低頭ビス ×2** を締める（脚リンク ↔ アッパーケース）
+
+   ![leg step 6](krs_assembly_img/units/leg_left_krs/step_06.png)
+
+:::
+
+### 本体の組み立て
+
+事前に組んだユニットを胴体（body_servo_krs）に取り付けます。脚リンクの上の端を
+股のホーンに合わせ、脚リンクの外側の穴から M2-4 低頭ビスでホーンに留めます。
+股のサーボも真ん中のままにして、脚がまっすぐ真下を向く向きで合わせます。
+
+#### Step 1: body_servo_krs を置く
+
+![Step 1](krs_assembly_img/step_001.png)
+
+#### Step 2: leg_right_krs（1 本目・右前）を取り付ける
+
+右前の股のホーン（KRS3300-3）へ、脚リンクを合わせます（同軸 φ8.4mm、同軸 φ2.3mm ×2）。
+
+![Step 2](krs_assembly_img/step_002.png)
+
+#### Step 3: 🔩 M2-4 低頭ビス ×4 を締める
+
+![Step 3](krs_assembly_img/step_003.png)
+
+#### Step 4: leg_right_krs（2 本目・右後）を取り付ける
+
+![Step 4](krs_assembly_img/step_004.png)
+
+#### Step 5: 🔩 M2-4 低頭ビス ×4 を締める
+
+![Step 5](krs_assembly_img/step_005.png)
+
+#### Step 6: leg_left_krs（1 本目・左後）を取り付ける
+
+反対側の股のホーンへ合わせます。差し込む向きが右脚と逆になります。
+
+![Step 6](krs_assembly_img/step_006.png)
+
+#### Step 7: 🔩 M2-4 低頭ビス ×4 を締める
+
+![Step 7](krs_assembly_img/step_007.png)
+
+#### Step 8: leg_left_krs（2 本目・左前）を取り付ける
+
+![Step 8](krs_assembly_img/step_008.png)
+
+#### Step 9: 🔩 M2-4 低頭ビス ×4 を締める
+
+![Step 9](krs_assembly_img/step_009.png)
+
+これで機体は完成です。
 
 ## 胴体に組み付ける
 
@@ -521,6 +786,20 @@ RCB-4mini は、近藤科学の Heart to Heart 4 で書き込んだプロジェ�
 - 新品の KRS サーボの ID（0）: KRS シリーズ取扱説明書 V2.1（上と同じ）
 - ROBO パワーセル E タイプ（Ni-MH 6 セル、公称 7.2 V、800 mAh、VH 2 ピン）: <https://kondo-robot.com/product/02335>
 - Arduino UNO R4 WiFi の VIN（6〜24 V）: <https://docs.arduino.cc/resources/datasheets/ABX00087-datasheet.pdf>
+- ホーン止めビス（KRS-3300 シリーズは M3-6 低頭ホーン止めビスが付属）、ホーン用ビス、
+  フリーホーン側だけ 2.6-4 フラットヘッドビス: KRS シリーズ取扱説明書 V2.1 の 10 ページ
+  「サーボホーンの取り付けについて」（上と同じ）
+- フレーム取り付けビスの長さ（2-4 + フレーム厚、アッパーケースの下穴有効長 4.8mm、
+  ボトムケースはケースビス 2-20 低頭タッピングビス）: 近藤科学「フレーム取り付けビス参考図
+  KRS-3300 シリーズ」<https://kondo-robot.com/w/wp-content/uploads/KRS-3300_Frame-BISS-A4-0809.pdf>
+  （<https://kondo-robot.com/faq/krs-3300dimention> から）
+- アッパーケースには 2mm のビス、ボトムケースはケースビスを外して共締め:
+  <https://kondo-robot.com/product/03146>
+- 小径ホーン B（PCD φ12・M2）: <https://kondo-robot.com/product/02157>
+- ビスセット A（KXR 用）の中身: <https://kondo-robot.com/product/02328>
+- ケースビスセット KRS-3300 シリーズ用（2-20 タッピングビス）: <https://kondo-robot.com/product/02183>
+- 板厚・ホーンのネジ穴の厚み・ケースビスと M3 ホーン止めビスのかかりは、KRS 版の CAD
+  （SolidWorks）で測った値
 - `ics-manager` の表示とキー操作: `rcb4/ics.py` <https://github.com/iory/rcb4>。
   逆転モードの `v` キーは <https://github.com/iory/rcb4/pull/232> で追加され、
   PyPI の rcb4 0.1.4 <https://pypi.org/project/rcb4/0.1.4/> に入っている
