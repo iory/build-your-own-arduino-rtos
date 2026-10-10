@@ -115,6 +115,9 @@ Python の用意は uv がするので要りません。コマンドは uv 本�
    ので、これを忘れるとサーボが応答しません。
 4. USB Type-C で PC とボードをつなぐ。
 
+```{include} _tips/one_servo.md
+```
+
 ::::{grid} 1 2 2 2
 :gutter: 2
 
@@ -185,6 +188,9 @@ Python の用意は uv がするので要りません。コマンドは uv 本�
 5. サーボを外し、次の新品をつないで 1 に戻る。3 個目は `feetech set-id 1 3`、
    4 個目は `feetech set-id 1 4`、…と 8 まで続けます。
 
+```{include} _tips/eeprom.md
+```
+
 ```{figure} ../_static/servo_set_id.gif
 :alt: feetech scan で ID 1 のサーボが見え、feetech set-id 1 2 で ID 2 に変え、もう一度 scan すると ID 2 で見える
 
@@ -238,6 +244,9 @@ ID は脚と関節ごとに決まっています。この割り当てはファ�
 
 :::{dropdown} STS3215 サーボ（ホーン取り付け） **×8**
 :open:
+
+```{include} _tips/horn.md
+```
 
 ホーンが外れた状態で届いた場合のみ。取り付け済みならこのユニットは飛ばして
 かまいません。

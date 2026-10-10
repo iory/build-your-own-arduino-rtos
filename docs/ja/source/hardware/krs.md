@@ -10,7 +10,7 @@
 <figure style="margin:1.5rem auto; max-width:80%;">
   <video src="../_static/krs_walk.mp4" poster="../_static/krs_walk_poster.jpg" autoplay loop muted playsinline preload="metadata"
          style="width:100%; border-radius:8px;" aria-label="KRS サーボ版の四脚ロボットが廊下の床を歩く"></video>
-  <figcaption style="font-size:0.9em;">KRS-3302 ICS ×8 と RCB-4mini で組んだ四脚ロボット。2S LiFe バッテリー 1 本だけで、ケーブルをつながずに歩いている</figcaption>
+  <figcaption style="font-size:0.9em;">KRS-3302 ICS ×8 と RCB-4mini で組んだ四脚ロボット。Ni-MH バッテリー（ROBO パワーセル E タイプ、7.2 V）1 本だけで、ケーブルをつながずに歩いている</figcaption>
 </figure>
 ```
 
@@ -28,29 +28,23 @@ STL とは形が違います。KRS 版の CAD と組み立てのページは準�
 | サーボをまとめる基板 | Waveshare Bus Servo Adapter (A) | 近藤科学 RCB-4mini |
 | ID を振る道具 | 基板の USB と `feetech` コマンド | **Dual USB アダプター HS** と `ics-manager` コマンド |
 | Arduino との配線 | D0 / D1（Serial1） | **D8 / D9**（D0 / D1 は空けておく） |
-| 電源 | 12 V | 2S LiFe（6.6 V）1 本で、Arduino も同じ電池から |
+| 電源 | 12 V | ROBO パワーセル E タイプ（Ni-MH 7.2 V） 1 本で、Arduino も同じ電池から |
 | 書き込み | `pio run -e uno_r4_wifi` | `pio run -e uno_r4_wifi_rcb4` |
 
 ID の振り方と、どの ID をどの関節に使うかは Feetech 版と同じです。
 
 ## 用意するもの
 
+**{doc}`krs_bom` に、近藤科学の商品ページへのリンクと価格つきの部品表があります。**
+近藤科学の部品をまとめて買うなら、サーボ 18 個・RCB-4mini・Dual USB アダプター HS・
+バッテリー・充電器が入った **KXR アドバンスセット B Ver.2** がおすすめです。
+
 ```{figure} ../_static/krs_parts.jpg
 :target: ../_static/krs_parts.jpg
-:width: 60%
 :alt: 胴体、脚、ブラケットの 3D プリント部品、KRS サーボ 8 個、ホーン、ネジのケース
 
 部品一式。KRS 版の 3D プリント部品、KRS-3302 ICS ×8、ホーン、ネジ
 ```
-
-| 部品 | 数 | 役目 |
-|---|---|---|
-| 近藤科学 KRS-3302 ICS | 8 | 関節のサーボ |
-| 近藤科学 RCB-4mini | 1 | 8 個のサーボをまとめて動かす基板 |
-| 近藤科学 Dual USB アダプター HS | 1 | PC からサーボに ID を振る。組み上げたあとは使わない |
-| 近藤科学の 2S LiFe バッテリー（6.6 V） | 1 | サーボ・RCB-4mini・Arduino の電源 |
-| Arduino UNO R4 WiFi | 1 | 制御ループと方策を回す |
-| ZH 3 ピンのケーブル、ジャンパワイヤ | 少々 | RCB-4mini と Arduino の配線 |
 
 ## Dual USB アダプター HS の使い方
 
@@ -67,10 +61,11 @@ Dual USB アダプター HS。スイッチで ICS / Serial を切り替える
 ```
 
 1. **ICS モードにする。** LED が赤なら ICS モード、緑ならシリアルモードです。
-2. サーボを **1 個だけ** アダプターのケーブルにつなぐ。2 個以上つなぐと、同じ ID の
-   サーボが同時に返事をして、どれも正しく読めません。
-3. アダプターを PC の USB に差す。サーボに別の電源はつないでいません（下の写真の
-   状態で、`ics-manager` からサーボの設定が読めることを確かめています）。
+2. サーボを **1 個だけ** アダプターのケーブルにつなぐ。
+3. アダプターを PC の USB に差す。
+
+```{include} _tips/one_servo.md
+```
 
 ```{figure} ../_static/krs_id_setup.jpg
 :target: ../_static/krs_id_setup.jpg
@@ -81,11 +76,14 @@ PC → Dual USB アダプター HS → KRS-3302 を 1 個。これで ID を振�
 
 ### OS ごとの準備
 
-| OS | 準備 |
-|---|---|
-| macOS | `brew install libusb`。`ics-manager` は libusb 経由でアダプターに直接つなぐ（ドライバは要らない） |
-| Linux | アダプターを FTDI のシリアルとして認識させる。下のコマンドを 1 回実行する |
-| Windows | 近藤科学の KO Driver を入れる。**Windows で `ics-manager` が動くかは、まだ確かめていません** |
+macOS と Linux では、下で入れる `ics-manager` を使います。Windows では、近藤科学の
+公式ソフト **ICS3.5/3.6 マネージャー** を使ってください。
+
+| OS | 使うソフト | 準備 |
+|---|---|---|
+| Windows | [ICS3.5/3.6 マネージャー](https://kondo-robot.com/faq/ics35mag)（近藤科学の公式） | アダプターのドライバ（KO Driver）を入れる。使い方は [近藤科学の解説](https://kondo-robot.com/faq/how-to-use_ics3-5-manager) |
+| macOS | `ics-manager` | `brew install libusb`。libusb 経由でアダプターに直接つなぐので、ドライバは要らない |
+| Linux | `ics-manager` | アダプターを FTDI のシリアルとして認識させる。下のコマンドを 1 回実行する |
 
 Linux では、`ics-manager` がつながらないときに自分でこの手順を表示します。
 
@@ -96,6 +94,9 @@ $ sudo su
 # exit
 ```
 
+Windows の ICS3.5/3.6 マネージャーでも、確かめる項目（ID、通信速度、連続回転モード、
+逆転モード）は下と同じです。
+
 ## サーボの設定を確かめて、ID を振る
 
 ### ics-manager を入れる
@@ -104,8 +105,7 @@ $ sudo su
 [rcb4](https://github.com/iory/rcb4) という Python パッケージに入っています。
 開発環境の準備で入れた uv で、次の 1 行で入ります
 （uv がまだなら [macOS](../getting-started/macos.md) /
-[Windows](../getting-started/windows.md) / [Linux](../getting-started/linux.md)
-の「uv を入れる」を先に）。
+[Linux](../getting-started/linux.md) の「uv を入れる」を先に）。
 
 ```console
 $ uv tool install rcb4
@@ -113,8 +113,8 @@ $ uv tool install rcb4
 
 ### 画面の見方
 
-サーボを 1 個つないで `ics-manager` を実行すると、次の画面が出ます（実機の ID 2 の
-サーボで実行したもの）。
+サーボを **1 個だけ** つないで `ics-manager` を実行すると、次の画面が出ます。
+2 個以上つないだまま実行しないでください（上の「サーボは 1 個ずつつなぐ」）。
 
 ```console
 $ ics-manager
@@ -155,15 +155,26 @@ $ ics-manager
    配線や交換のときに困りません。
 6. 次のサーボにつなぎ替えて、1 に戻る。
 
-ID はサーボの中（EEPROM）に書かれるので、電源を切っても消えません。
+```{figure} ../_static/krs_set_id.gif
+:alt: ics-manager の画面。Current Servo ID が 3 のサーボで、→ キーを 2 回押して緑色の数字を 2 に合わせ、Enter を押すと Current Servo ID が 2 に変わる
+
+手順 1〜3 を実機で実行したところ。→ で緑色の数字を 2 に合わせて Enter を押すと、
+ID 3 のサーボが ID 2 になる
+```
+
+ID はサーボの中の EEPROM に書かれるので、電源を切っても消えません。
+
+```{include} _tips/eeprom.md
+```
 
 ### Rotation Mode や Reverse Mode が Enabled だったら
 
 - **Rotation Mode** は `r` キーで切り替わります。`Disabled` になるまで押してください。
-- **Reverse Mode** には切り替えのキーがありません。`d` を押して `y` で答えると、
-  サーボの設定が標準の値（回転モード・逆転モードともに無効、通信速度 1.25Mbps）に
-  戻ります。そのあと **ID を確かめ直し、違っていれば振り直してください**。`d` は
-  サーボの設定をまとめて書き換えるので、上の 2 つで困ったときだけ使います。
+- **Reverse Mode** は `v` キーで切り替わります。`Disabled` になるまで押してください。
+  切り替える前にサーボを脱力させるので、軸が急に動くことはありません。
+
+どちらも押すたびに EEPROM に書き込まれ、画面に `Rotation mode set to Disabled` の
+ように結果が出ます。
 
 ### どのサーボをどこに使うか
 
@@ -176,31 +187,53 @@ ID の割り当ては Feetech 版と同じです。
 サーボ ID の割り当て。上から見て、胴体の短い辺の中央に出っ張りがある側が前
 ```
 
-## ホーンの向き（サーボのゼロ点）を合わせる
+## サーボを真ん中に合わせてから、ホーンと脚を付ける
 
-サーボの出力軸にホーン（脚を固定する円盤）を付ける向きで、「サーボが真ん中のとき
-脚がどちらを向くか」が決まります。
+サーボの出力軸にはホーンを付け、そこに脚をネジで止めます。
+
+```{include} _tips/horn.md
+```
+
+ホーンを付ける向きは、**サーボを真ん中の角度（0 度）に動かしてから決めます。**
+
+1. サーボを Dual USB アダプターにつなぎ、`ics-manager` を実行する。
+2. **`z` を押す。** サーボが真ん中の角度（0 度、パルスの値で 7500）へ動き、
+   その角度で止まります。
+3. その状態のまま、**脚がまっすぐ真下を向く向き**（CAD の 0 度）でホーンをはめ、
+   ホーンと脚をネジで止める。
 
 ```{figure} ../_static/krs_servo_spline.jpg
 :target: ../_static/krs_servo_spline.jpg
 :width: 60%
-:alt: ホーンを付ける前の KRS サーボ 2 個。出力軸のギザギザ（スプライン）と、ケースの目盛りが見える
+:alt: ホーンを付ける前の KRS サーボ 2 個。出力軸のギザギザ（スプライン）が見える
 
 ホーンを付ける前のサーボ。出力軸はギザギザ（スプライン）になっていて、ホーンは
 ギザギザ 1 山ずつの向きにしか付かない
 ```
 
-**ぴったり合わせる必要はありません。** 最後に組み上げた機体で、脚をまっすぐ
-伸ばしたときのサーボの値を測ってファームウェアに書きます（下の「校正する」）。
-ホーンのずれは、そこで吸収されます。
+### なぜ真ん中に合わせるのか
 
-ただし、大きくずれると関節の動く範囲がサーボの範囲（中央から ±135 度）からはみ出す
-ので、次の手順でだいたい合わせておきます。
+KRS-3302 が角度を測れるのは、真ん中から **±135 度（合わせて 270 度）** の範囲だけです。
 
-1. サーボを Dual USB アダプターにつないで `ics-manager` を実行する。
-   `Free: Enabled`（脱力）なので、出力軸は手で回せます。
-2. 出力軸を手で回して、`Angle` が **0 付近** になるところで止める。
-3. 脚をまっすぐ真下に伸ばした向き（CAD の 0 度）になるように、ホーンと脚を付ける。
+```{include} _tips/encoder.md
+```
+
+```{figure} ../_static/krs_servo_range.svg
+:width: 100%
+:alt: サーボの出力軸を上から見た図。真上が 0 度で、左右 135 度ずつ、合わせて 270 度の範囲が青く塗られ、下側の 90 度は測れない範囲として灰色の破線になっている。下にパルスの値 3500、7500、11500 と角度 −135 度、0 度、+135 度の対応
+
+KRS-3302 が測れる・動ける範囲。真ん中（7500）で脚がまっすぐ真下を向くように付けておけば、
+関節を動かしたい角度がこの範囲の中に収まる
+```
+
+この四脚ロボットでは、膝を立ち姿勢まで曲げると、脚がまっすぐのときから約 100 度
+回ります。脚がまっすぐの向きを真ん中にしておけば、その角度も 270 度の範囲の中に
+収まります。ホーンを大きくずらして付けると、曲げたい角度が範囲の外にはみ出して、
+そこへは動けなくなります。
+
+ギザギザ 1 山ぶんのずれは気にしなくてかまいません。組み上げたあと、脚をまっすぐ
+伸ばしたときのサーボの値を測ってファームウェアに書く（下の「書き込んで、校正する」）
+ので、小さなずれはそこで吸収されます。
 
 ::::{grid} 1 2 2 2
 :gutter: 2
@@ -276,24 +309,90 @@ ID の割り当ては Feetech 版と同じです。
 
 ## 配線
 
+### RCB-4mini の各部
+
+```{figure} ../_static/krs_ref_rcb4mini_ports.png
+:target: ../_static/krs_ref_rcb4mini_ports.png
+:alt: RCB-4mini の各部の名称の図。SIO ポートは左の列が SIO3・SIO2・SIO1、右の列が SIO7・SIO6・SIO5。右に AD ポート AD1〜AD5、下に電源端子と COM ポート。SIO ポートのピンは SIO・Vcc・GND、COM ポートのピンは GND・Rx・Tx
+
+RCB-4mini の各部の名称（出典：近藤科学「HeartToHeart4 取扱説明書 Ver.8」7 ページ）
+```
+
+| ポート | 使い方 |
+|---|---|
+| SIO1〜3、SIO5〜7 | サーボをつなぐ。ピンは SIO（信号）・Vcc（電池の電圧）・GND |
+| COM | Arduino とつなぐ。ピンは GND 側から GND・Rx・Tx |
+| 電源端子 | バッテリーをつなぐ |
+| AD1〜AD5 | 使わない |
+
 ### サーボ → RCB-4mini
 
-RCB-4mini の SIO ポートは 2 系統に分かれていて、**右側（SIO1〜4）につないだ ID n の
-サーボは RCB-4 の中で n × 2 番、左側（SIO5〜8）なら n × 2 + 1 番** として扱われます
-（RCB-4 コマンドリファレンス）。ファームウェアは起動時に両方を調べるので、
-**どちらの系統に挿してもかまいません。** サーボどうしは数珠つなぎにできます。
+サーボは SIO ポートにつなぎ、サーボどうしは数珠つなぎにできます。RCB-4 は、つないだ
+サーボを **ICS 番号** で区別します。ICS 番号は、サーボの ID と、どちらの系統の
+SIO ポートにつないだかで決まります。
+
+| つないだ SIO ポート | ICS 番号 | 例：ID 3 のサーボ |
+|---|---|---|
+| SIO1〜3 | ID × 2 | 6 |
+| SIO5〜7 | ID × 2 + 1 | 7 |
+
+```{figure} ../_static/krs_ref_ics_number.png
+:target: ../_static/krs_ref_ics_number.png
+:alt: ICS 番号はサーボ ID × 2（SIO1〜4 に接続の場合）、サーボ ID × 2 + 1（SIO5〜8 に接続の場合）という説明と、ICS0〜ICS7 のビットの並び
+
+ICS 番号の決まり方（出典：近藤科学「RCB-4HV コマンドリファレンス」17 ページ、
+RCB-4 リファレンスセット Ver.2.2 所収）。RCB-4HV は SIO が 1〜4 と 5〜8 の 8 個、
+RCB-4mini は 1〜3 と 5〜7 の 6 個で、決まり方は同じ
+```
+
+ファームウェアは起動時に両方の系統を調べるので、**どちらの系統に挿してもかまいません。**
+起動時の表示では、SIO1〜3 側を「右」、SIO5〜7 側を「左」と出します。
+
+### つなぐもの
+
+```{figure} ../_static/krs_wiring.jpg
+:target: ../_static/krs_wiring.jpg
+:width: 70%
+:alt: 胴体の中の配線全体。番号 1 が RCB-4mini、2 が Arduino、3 がバッテリー、4 と 5 が ZH接続ケーブル2 Bタイプとジャンパワイヤ
+
+配線の全体。番号は下の表と対応する
+```
+
+| 番号 | もの | つなぎ先 |
+|---|---|---|
+| 1 | RCB-4mini | SIO ポートにサーボ 8 個、COM ポートに 4、空いた SIO ポートに 5、電源端子にバッテリー |
+| 2 | Arduino UNO R4 WiFi | D8・D9・GND に 4、VIN に 5 |
+| 3 | バッテリー（ROBO パワーセル E タイプ（Ni-MH 7.2 V）） | RCB-4mini の電源端子 |
+| 4 | ZH接続ケーブル2 Bタイプ ＋ ジャンパワイヤ 3 本（COM 用） | RCB-4mini の COM ポート → Arduino の D8・D9・GND |
+| 5 | ZH接続ケーブル2 Bタイプ ＋ ジャンパワイヤ 1 本（電源用） | RCB-4mini の空いた SIO ポートの Vcc → Arduino の VIN |
+
+::::{grid} 1 2 2 2
+:gutter: 2
+
+:::{grid-item}
 
 ```{figure} ../_static/krs_rcb4_wiring.jpg
 :target: ../_static/krs_rcb4_wiring.jpg
-:alt: RCB-4mini の SIO ポートにサーボのケーブルが何本も差さっているところ
+:alt: RCB-4mini まわりに番号を付けた写真。1 が SIO1〜3、2 が SIO5〜7、3 が AD ポート、4 が COM ポート、5 が電源端子
 
-RCB-4mini まわり。白いコネクタが SIO ポート、緑が AD ポート
+RCB-4mini まわり。1：SIO1〜3、2：SIO5〜7、3：AD ポート（使わない）、
+4：COM ポート、5：電源端子
 ```
 
-### RCB-4mini → Arduino
+:::
+:::{grid-item}
 
-RCB-4mini の **COM ポート**（青い 3 ピン）と Arduino を、ZH 3 ピンのケーブルと
-ジャンパワイヤでつなぎます。COM ポートのピンは GND 側から **GND・Rx・Tx** の順です。
+```{figure} ../_static/krs_uno_wiring.jpg
+:target: ../_static/krs_uno_wiring.jpg
+:alt: Arduino UNO R4 WiFi に番号を付けた写真。1 が D8・D9 に挿したジャンパワイヤ、2 が VIN と GND に挿したジャンパワイヤ
+
+Arduino 側。1：D8・D9（RCB-4 の COM へ）、2：VIN・GND（SIO ポートの電源）
+```
+
+:::
+::::
+
+### RCB-4mini の COM → Arduino
 
 | RCB-4mini COM | Arduino UNO R4 WiFi |
 |---|---|
@@ -312,46 +411,39 @@ D8 / D9 をタイマーと DMA で直接動かして話します。D0 / D1 は�
 
 ### 電源
 
-2S LiFe バッテリー 1 本で、サーボ・RCB-4mini・Arduino をまとめて動かします。
+近藤科学の **ROBO パワーセル E タイプ（Ni-MH 7.2 V）** 1 本で、サーボ・RCB-4mini・Arduino をまとめて動かします
+（KXR アドバンスセット B に入っているバッテリーです）。
 
 1. バッテリーを RCB-4mini の **電源端子** につなぐ。サーボの電源はここから SIO ポート
    経由で配られます。
-2. **空いている SIO ポート** の **Vcc を Arduino の VIN** へ、**GND を Arduino の GND**
-   へつなぐ。SIO ポートの Vcc にはバッテリーの電圧（6.6〜7.2 V）がそのまま出ていて、
-   Arduino の VIN は 6〜24 V を受け付けます。**SIO ポートの信号線はつながないでください**
-   （サーボの通信線そのものです）。
-
-::::{grid} 1 2 2 2
-:gutter: 2
-
-:::{grid-item}
-
-```{figure} ../_static/krs_wiring.jpg
-:target: ../_static/krs_wiring.jpg
-:alt: 胴体の中の配線全体。緑のバッテリー、RCB-4mini、Arduino、サーボのケーブル
-
-配線の全体。右下の緑がバッテリー
-```
-
-:::
-:::{grid-item}
-
-```{figure} ../_static/krs_uno_wiring.jpg
-:target: ../_static/krs_uno_wiring.jpg
-:alt: Arduino UNO R4 WiFi の D8・D9 に黄と青のジャンパワイヤ、電源ヘッダの VIN と GND に赤と黒の線がつながっている
-
-Arduino 側。黄と青が D8 / D9（RCB-4 の COM）、赤と黒が VIN / GND（SIO ポートの電源）
-```
-
-:::
-::::
+2. **空いている SIO ポート** の **Vcc を Arduino の VIN** へつなぐ。SIO ポートの Vcc には
+   バッテリーの電圧（公称 7.2 V）がそのまま出ていて、Arduino の VIN は 6〜24 V を
+   受け付けます。GND は COM ポートの GND でつながっています。
+   **SIO ポートの SIO（信号）ピンはつながないでください**（サーボの通信線そのものです）。
 
 USB ケーブルを同時に差していても問題ありません。書き込みのときに外す必要はありません。
 
 ```{warning}
-LiFe は使い終わり近くで電圧が急に下がります。6 V を切ると Arduino の VIN の範囲を
-外れるので、その前に充電してください。
+バッテリーが減って電圧が 6 V を切ると、Arduino の VIN の範囲を外れます。
+その前に充電してください。
 ```
+
+### 下側の配線
+
+膝のサーボのケーブルは、胴体の下を通して中へ入れます。ふたを閉めたあと、
+下から見て次のようになっているか確かめてください。
+
+```{figure} ../_static/krs_done.jpg
+:target: ../_static/krs_done.jpg
+:width: 70%
+:alt: 組み上がった機体を下から見た写真。1 が四隅の膝のサーボ、2 がケーブルを胴体の中へ通す穴、3 がケーブルを留めるところ
+
+下から見たところ。1：膝のサーボ（4 個）、2：ケーブルを胴体の中へ通す穴、
+3：ケーブルを脚に沿わせて留めるところ
+```
+
+脚を動かしたときにケーブルが引っ張られたり、挟まれたりしないよう、留めるところ（3）で
+ケーブルを脚に沿わせておきます。
 
 ## 書き込んで、校正する
 
@@ -381,7 +473,7 @@ LiFe は使い終わり近くで電圧が急に下がります。6 V を切る�
    `include/quad_calib_rcb4.h` の `QUAD_RCB4_ZERO` に書きます。
 4. **向きを確かめる。** 股だけを動かして足先を後ろへ振り、`raw` の値が増えるか
    減るかを見ます。膝も同じように確かめます。ゼロ点より **減った** 関節は
-   `QUAD_RCB4_SIGN` を `-1` にします（本書の機体では左の脚が `-1`、右の脚が `+1`）。
+   `QUAD_RCB4_SIGN` を `-1` にします（左の脚が `-1`、右の脚が `+1` になるはずです）。
 5. `QUAD_RCB4_CALIBRATED` を `1` にして、もう一度書き込む。**起動するとすぐに 2 秒
    かけて立ち姿勢へ動く** ので、機体は吊るしたままにしてください。
 6. 吊るしたまま `rl 0.06 0` を送り、4 本の脚が交互に足踏みすれば完成です。床に
@@ -392,41 +484,43 @@ LiFe は使い終わり近くで電圧が急に下がります。6 V を切る�
 [code/13_quadruped/README.md](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/13_quadruped/README.md)
 にあります。
 
-```{figure} ../_static/krs_done.jpg
-:target: ../_static/krs_done.jpg
-:width: 60%
-:alt: ふたを閉めた KRS 版の四脚ロボットを上から見たところ
-
-組み上がった KRS 版
-```
-
 ## うまくいかないとき
 
 | 症状 | 確かめること |
 |---|---|
 | `ics-manager` が `Connection is not open.` のまま | アダプターの LED が赤（ICS モード）か。サーボを 1 個だけつないでいるか。macOS なら libusb、Linux なら上の `new_id` |
 | 起動時に一部の関節が `見つからない` | そのサーボの ID と `Baud Rate`（1.25Mbps）を `ics-manager` で確かめる。ケーブルが奥まで差さっているか |
-| 1 本の脚だけ逆に動く | そのサーボの `Reverse Mode` が `Enabled` になっていないか。`QUAD_RCB4_SIGN` の値 |
-| 関節が止まらずに回り続ける | そのサーボの `Rotation Mode` が `Enabled`（連続回転モード）になっていないか |
+| 1 本の脚だけ逆に動く | そのサーボの `Reverse Mode` が `Enabled` になっていないか（`ics-manager` の `v` で戻す）。`QUAD_RCB4_SIGN` の値 |
+| 関節が止まらずに回り続ける | そのサーボの `Rotation Mode` が `Enabled`（連続回転モード）になっていないか（`ics-manager` の `r` で戻す） |
+| 関節が途中までしか曲がらない | ホーンを大きくずらして付けていないか。上の「サーボを真ん中に合わせてから、ホーンと脚を付ける」からやり直す |
 | 歩いている最中に Arduino がリセットする | バッテリーの電圧。6 V を切っていないか |
 
 ```{admonition} RCB-4mini に書き込まれたプロジェクトについて
 :class: tip
 
 RCB-4mini は、近藤科学の Heart to Heart 4 で書き込んだプロジェクトに「割り当て」られた
-サーボとしか話しません。本書の機体でも、届いた時点のプロジェクトは 8 個のうち 5 個しか
-割り当てていませんでした。ファームウェアは起動時に割り当てを自分で足すので、
-Heart to Heart 4 でプロジェクトを作り直す必要はありません（RCB-4mini の RAM に書くだけで、
-中に保存されたプロジェクトは書き換えません）。
+サーボとしか話しません。ファームウェアは起動時に、見つからない関節のサーボを自分で
+割り当てるので、Heart to Heart 4 でプロジェクトを作り直す必要はありません
+（RCB-4mini の RAM に書くだけで、中に保存されたプロジェクトは書き換えません）。
 ```
 
 ## 出典
 
-- RCB-4mini の電源電圧（6〜12 V）・SIO / AD / COM ポートの配置: <https://kondo-robot.com/product/rcb4_mini>、
-  HeartToHeart4 取扱説明書 Ver.8 の 6〜7 ページ <https://www.kondokagaku.jp/data_download/HeartToHeart4_manual_Ver8_JP.pdf>
-- ICS 番号（SIO1〜4 は ID × 2、SIO5〜8 は ID × 2 + 1）と、ICS の割り当て表（RAM `$0044`）:
-  RCB-4 リファレンスセット Ver.2.2 のコマンドリファレンスとファームウェアリファレンス <https://kondo-robot.com/faq/rcb-4-reference-ver-2_2>
+- RCB-4mini の電源電圧（6〜12 V）: <https://kondo-robot.com/product/rcb4_mini>
+- RCB-4mini の各部の名称（SIO / AD / COM / 電源端子、ピンの並び）の図:
+  近藤科学「HeartToHeart4 取扱説明書 Ver.8」6〜7 ページ <https://www.kondokagaku.jp/data_download/HeartToHeart4_manual_Ver8_JP.pdf>
+- ICS 番号の決まり方の図、ICS の割り当て表（RAM `$0044`）: 近藤科学「RCB-4HV コマンドリファレンス」17 ページと
+  「RCB-4HV ファームウェアリファレンス」（RCB-4 リファレンスセット Ver.2.2 所収）<https://kondo-robot.com/faq/rcb-4-reference-ver-2_2>
 - Dual USB アダプター HS（LED 赤が ICS、緑がシリアル）: <https://kondo-robot.com/product/02116>
-- 近藤科学の 2S LiFe バッテリー（公称 6.6 V）: <https://kondo-robot.com/product/03241>
+- ICS3.5/3.6 マネージャー（Windows）: <https://kondo-robot.com/faq/ics35mag>、
+  使い方 <https://kondo-robot.com/faq/how-to-use_ics3-5-manager>
+- KRS-3302 の動作角 270 度（±135 度）: <https://kondo-robot.com/product/03146>、
+  KRS シリーズ取扱説明書 V2.1 <https://kondo-robot.com/w/wp-content/uploads/KRS-series_manual_Download-V2_1.pdf>
+- 位置の値 3500〜11500（中央 7500）: ICS3.5/3.6 ソフトウェアマニュアル v2.9
+  <https://kondo-robot.com/w/wp-content/uploads/ICS3.5_3.6_SoftwareManual_2_9.pdf>
+- 新品の KRS サーボの ID（0）: KRS シリーズ取扱説明書 V2.1（上と同じ）
+- ROBO パワーセル E タイプ（Ni-MH 6 セル、公称 7.2 V、800 mAh、VH 2 ピン）: <https://kondo-robot.com/product/02335>
 - Arduino UNO R4 WiFi の VIN（6〜24 V）: <https://docs.arduino.cc/resources/datasheets/ABX00087-datasheet.pdf>
-- `ics-manager` の表示とキー操作: rcb4 v0.1.3 の `rcb4/ics.py` <https://github.com/iory/rcb4>
+- `ics-manager` の表示とキー操作: `rcb4/ics.py` <https://github.com/iory/rcb4>。
+  逆転モードの `v` キーは <https://github.com/iory/rcb4/pull/232> で追加され、
+  PyPI の rcb4 0.1.4 <https://pypi.org/project/rcb4/0.1.4/> に入っている

@@ -51,7 +51,7 @@ PDF 版もあります。
 :link-type: doc
 
 STS3215 の代わりに KRS-3302 ICS と RCB-4mini で組む版。Dual USB アダプターでの
-ID の振り方、ゼロ点の合わせ方、2S LiFe 1 本での配線まで。
+ID の振り方、ゼロ点の合わせ方、Ni-MH バッテリー 1 本での配線まで。
 :::
 ::::
 
@@ -63,6 +63,7 @@ assembly
 walk
 train
 krs
+krs_bom
 ```
 
 ## 組み立ての流れ
