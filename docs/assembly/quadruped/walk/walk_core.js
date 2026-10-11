@@ -1,9 +1,10 @@
-// 学習済み方策 (87 -> [96, 64] -> 8, ELU) と観測ベクトルの組み立て。
+// 学習済み方策 (87 または 105 -> [96, 64] -> 8, ELU) と観測ベクトルの組み立て。
 // host/quad_policy.py の JS 移植で、同じ契約に従う:
 //   - 各観測項は履歴 3 段を持ち、古い順に並ぶ
 //   - 初回 push は全スロットを同じ値で埋める (mjlab の CircularBuffer と同じ)
 //   - 歩容位相は |cmd| < 0.1 のとき 0 固定
 //   - サーボ目標 = default_q + action_scale * action
+//   - IMU 版 (105) は先頭に胴体の角速度と重力の向き (どちらも胴体座標) が入る
 
 export class QuadPolicy {
   constructor(bundle) {
@@ -31,8 +32,10 @@ export class QuadPolicy {
     this.layout = {};
     for (const e of this.meta.obs_layout) this.layout[e.term] = e;
     this.hist = this.layout.joint_pos.history;
-    this.terms = ['command', 'phase', 'joint_pos', 'joint_vel', 'actions']
+    this.terms = ['base_ang_vel', 'projected_gravity', 'command', 'phase',
+                  'joint_pos', 'joint_vel', 'actions']
         .filter(t => t in this.layout);
+    this.usesImu = 'base_ang_vel' in this.layout;
     this.clip = this.meta.clip_actions;
     this.reset();
   }
@@ -40,6 +43,7 @@ export class QuadPolicy {
   reset() {
     const h = this.hist, nj = this.nj;
     this.buf = {
+      base_ang_vel: this._zeros(h, 3), projected_gravity: this._zeros(h, 3),
       command: this._zeros(h, 3), phase: this._zeros(h, 2),
       joint_pos: this._zeros(h, nj), joint_vel: this._zeros(h, nj),
       actions: this._zeros(h, nj),
@@ -74,14 +78,16 @@ export class QuadPolicy {
   }
 
   // q, qd: 方策順の関節角 [rad] / 角速度 [rad/s]。cmd: [vx, vy, wz] (vy は 0)。
+  // imu: {angVel, gravity} (胴体座標の角速度 [rad/s] と重力の単位ベクトル)。
   // 返り値: 関節目標角 [rad]。
-  step(q, qd, cmd) {
+  step(q, qd, cmd, imu) {
     const t = this.stepI * this.dt;
     const dq = new Float32Array(this.nj);
     for (let i = 0; i < this.nj; i++) dq[i] = q[i] - this.defaultQ[i];
     this._push({
       command: cmd, phase: this.phase(t, cmd),
       joint_pos: dq, joint_vel: qd, actions: this.lastAction,
+      base_ang_vel: imu.angVel, projected_gravity: imu.gravity,
     });
 
     const obs = new Float32Array(this.obsDim);
@@ -136,7 +142,8 @@ export const DELAY_MIN = 4, DELAY_MAX = 7;
 
 // MuJoCo の model/data に方策を接続する。qpos/qvel のインデックスは
 // 関節名から引く (方策の出力順とアクチュエータ順は XML で一致している)。
-export function makeController(mujoco, model, data, policy) {
+export function makeController(mujoco, model, data, initialPolicy) {
+  let policy = initialPolicy;
   const qadr = [], vadr = [];
   for (const name of policy.jointNames) {
     const j = model.jnt(name);
@@ -147,6 +154,7 @@ export function makeController(mujoco, model, data, policy) {
   const nj = policy.nj;
   const nSub = Math.max(1, Math.round(policy.dt / model.opt.timestep));
   const q = new Float32Array(nj), qd = new Float32Array(nj);
+  const angVel = new Float32Array(3), gravity = new Float32Array(3);
   const L = DELAY_MAX + 1;
   const hist = Array.from({length: L}, () => new Float64Array(nj));
   let head = 0, pushes = 0;
@@ -172,13 +180,25 @@ export function makeController(mujoco, model, data, policy) {
     nSub,
     stepTargets,
     reset() { pushes = 0; },
+    // 方策を差し替える (IMU なし / IMU 版)。関節の並びと制御周期は同じ。
+    setPolicy(p) { policy = p; },
+    // 胴体 (freejoint) の IMU 相当の値。qvel[3..5] は MuJoCo の freejoint では
+    // 胴体座標の角速度。重力の向きは R^T (0, 0, -1) = -(R の 3 行目)。
+    imu() {
+      const w = data.qpos[3], x = data.qpos[4], y = data.qpos[5], z = data.qpos[6];
+      for (let i = 0; i < 3; i++) angVel[i] = data.qvel[3 + i];
+      gravity[0] = -2 * (x * z - w * y);
+      gravity[1] = -2 * (y * z + w * x);
+      gravity[2] = -(1 - 2 * (x * x + y * y));
+      return {angVel, gravity};
+    },
     // 1 制御周期ぶん進める: 観測 -> 方策 -> 遅延線 -> 物理 nSub 回
     controlStep(cmd) {
       for (let i = 0; i < nj; i++) {
         q[i] = data.qpos[qadr[i]];
         qd[i] = data.qvel[vadr[i]];
       }
-      stepTargets(policy.step(q, qd, cmd));
+      stepTargets(policy.step(q, qd, cmd, this.imu()));
     },
   };
 }

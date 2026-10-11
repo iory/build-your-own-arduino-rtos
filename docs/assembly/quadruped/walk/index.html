@@ -39,9 +39,13 @@
     <label>制御
       <select id="mode">
         <option value="rl">RL 方策</option>
+        <option value="imu">RL 方策（IMU あり）</option>
         <option value="naive">sin/cos 歩行（本文 13.5）</option>
       </select>
     </label>
+    <button id="pushBtn">押す</button>
+    <label>強さ <input type="range" id="push" min="0.5" max="3.0" step="0.1" value="2.0">
+      <span id="pushVal">2.0</span> m/s</label>
     <label>前進 <input type="range" id="vx" min="-0.05" max="0.15" step="0.01" value="0.12">
       <span id="vxVal">0.12</span> m/s</label>
     <label>旋回 <input type="range" id="wz" min="-0.35" max="0.35" step="0.05" value="0">
@@ -92,11 +96,13 @@ async function main() {
   }));
 
   setProgress(85, '学習済み方策を読み込み中…');
-  const bundle = await (await fetch('policy.json')).json();
+  const [bundle, bundleImu] = await Promise.all(
+      ['policy.json', 'policy_imu.json'].map(async f => (await fetch(f)).json()));
 
   const model = mujoco.MjModel.from_xml_string(xml, vfs);
   const data = new mujoco.MjData(model);
-  const policy = new QuadPolicy(bundle);
+  const policies = {rl: new QuadPolicy(bundle), imu: new QuadPolicy(bundleImu)};
+  let policy = policies.rl;
   const ctl = makeController(mujoco, model, data, policy);
   const gait = new NaiveGait();   // 本文 13.5 の trot (sin/cos + 2リンク IK)
 
@@ -179,8 +185,26 @@ async function main() {
     }
   }
 
+  // 押した向きを示す矢印 (押した瞬間から 0.6 s 表示)
+  const arrow = new THREE.ArrowHelper(
+      new THREE.Vector3(1, 0, 0), new THREE.Vector3(), 0.15, 0xdc2626, 0.05, 0.035);
+  arrow.visible = false;
+  scene.add(arrow);
+  let arrowUntil = 0;
+
   // ---------- simulation ----------
   let walking = false;
+  // 倒れたら止める。学習と同じく足先の球しか床と当たらないので、
+  // そのまま進めると胴体が床を突き抜ける。
+  let fallen = false;
+  const FALL_TILT_DEG = 60;
+  // 制御ごとの「押した回数 / 倒れた回数」(IMU なし・あり の比較用)
+  const tally = {};
+  const tallyOf = m => (tally[m] ??= {push: 0, fall: 0});
+  function tiltDeg() {
+    const g = ctl.imu().gravity;
+    return Math.acos(Math.max(-1, Math.min(1, -g[2]))) * 180 / Math.PI;
+  }
   function reset() {
     mujoco.mj_resetDataKeyframe(model, data, 0);
     mujoco.mj_forward(model, data);
@@ -189,6 +213,7 @@ async function main() {
     ctl.reset();
     for (let i = 0; i < policy.nj; i++) data.ctrl[i] = policy.defaultQ[i];
     walking = false;
+    fallen = false;
     $('walkBtn').textContent = '歩く';
   }
   reset();
@@ -197,7 +222,7 @@ async function main() {
   // 前進量を変える (vx 0.15 -> ストライド 0.06 m)。naive に旋回は無い。
   function stepOnce() {
     const vx = +$('vx').value;
-    if ($('mode').value === 'rl') {
+    if ($('mode').value !== 'naive') {
       ctl.controlStep([vx, 0, +$('wz').value]);
     } else {
       gait.stepX = vx * 0.4;
@@ -206,18 +231,57 @@ async function main() {
   }
 
   $('walkBtn').onclick = () => {
+    if (fallen) reset();
     walking = !walking;
     $('walkBtn').textContent = walking ? '一時停止' : '歩く';
   };
   $('resetBtn').onclick = reset;
+  // 押す: 学習中の push と同じく、胴体の速度に水平方向の速度を一瞬で足す。
+  // 向きはランダム。学習時は最大 0.25 m/s (IMU 版の仕上げは 0.75 m/s) だが、
+  // 足先が滑るので 1 m/s 程度ではどちらの方策も倒れない。差が出るのは
+  // 前進 0 で立っているときの 2 m/s 前後から。
+  $('pushBtn').onclick = () => {
+    if (fallen) return;
+    tallyOf($('mode').value).push += 1;
+    const v = +$('push').value, th = Math.random() * 2 * Math.PI;
+    data.qvel[0] += v * Math.cos(th);
+    data.qvel[1] += v * Math.sin(th);
+    const dir = new THREE.Vector3(Math.cos(th), Math.sin(th), 0);
+    arrow.setDirection(dir);
+    arrow.position.set(data.qpos[0], data.qpos[1], data.qpos[2])
+        .addScaledVector(dir, -0.2);
+    arrow.visible = true;
+    arrowUntil = performance.now() + 600;
+    if (!walking) $('walkBtn').click();
+  };
+  $('push').oninput = () => $('pushVal').textContent = (+$('push').value).toFixed(1);
+  function selectMode() {
+    const m = $('mode').value;
+    if (m !== 'naive') {
+      policy = policies[m];
+      ctl.setPolicy(policy);
+    }
+  }
   $('mode').onchange = () => {
+    selectMode();
     policy.reset();
     gait.reset();
-    $('wz').disabled = $('mode').value !== 'rl';
+    $('wz').disabled = $('mode').value === 'naive';
     if ($('wz').disabled) { $('wz').value = 0; $('wzVal').textContent = '0.00'; }
   };
   $('vx').oninput = () => $('vxVal').textContent = (+$('vx').value).toFixed(2);
   $('wz').oninput = () => $('wzVal').textContent = (+$('wz').value).toFixed(2);
+  // ?mode=imu&vx=0 などで最初の制御と前進速度を選べる (IMU のページから開くとき)
+  const params = new URLSearchParams(location.search);
+  const initialMode = params.get('mode');
+  if ([...$('mode').options].some(o => o.value === initialMode)) {
+    $('mode').value = initialMode;
+    $('mode').onchange();
+  }
+  if (params.has('vx') && Number.isFinite(+params.get('vx'))) {
+    $('vx').value = params.get('vx');
+    $('vx').oninput();
+  }
 
   let acc = 0, lastT = performance.now();
   const followTarget = new THREE.Vector3();
@@ -233,18 +297,29 @@ async function main() {
         stepOnce();
         acc -= policy.dt;
         n += 1;
+        if (tiltDeg() > FALL_TILT_DEG) {
+          fallen = true;
+          walking = false;
+          tallyOf($('mode').value).fall += 1;
+          $('walkBtn').textContent = '歩く';
+          break;
+        }
       }
       if (n === 4) acc = 0;
     }
     syncPose();
+    if (arrow.visible && now > arrowUntil) arrow.visible = false;
     if ($('follow').checked) {
       followTarget.set(data.qpos[0], data.qpos[1], 0.1);
       const delta = followTarget.clone().sub(controls.target);
       controls.target.add(delta);
       camera.position.add(delta);
     }
+    // 傾き = 重力の向きと胴体の -z 軸のなす角
+    const t = tallyOf($('mode').value);
     $('status').textContent =
-        `x ${data.qpos[0].toFixed(2)} m / t ${data.time.toFixed(1)} s`;
+        `x ${data.qpos[0].toFixed(2)} m / 傾き ${tiltDeg().toFixed(0)}° / 押した ${t.push} 回・倒れた ${t.fall} 回`
+        + (fallen ? ' / 転倒（「歩く」でやり直し）' : '');
     controls.update();
     renderer.render(scene, camera);
   }

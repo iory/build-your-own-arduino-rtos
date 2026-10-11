@@ -28,6 +28,44 @@ The gravity direction is a unit vector saying "which way is down, seen from the 
 Standing level it is (0, 0, −1). Lowering the head makes x (forward) positive;
 lowering the right side makes y (left) negative.
 
+## Push it in the browser
+
+The simulation from "Try it in the browser" in {doc}`walk` can run the IMU policy too.
+The one below opens with "RL 方策（IMU あり）" (RL policy with IMU) at zero forward
+speed. **押す** (Push) gives the body a sudden velocity in a random direction, as
+large as the 強さ (strength) slider says. Switch 制御 (control) to "RL 方策" (no IMU)
+and push the same way to compare. When the robot falls the simulation stops, and the
+bottom right shows how many times it was pushed and how many times it fell.
+
+```{raw} html
+<p>
+  <a class="sd-btn sd-btn-primary" href="../../assembly/quadruped/walk/index.html?mode=imu&vx=0"
+     target="_blank" rel="noopener">Open the IMU simulation ↗</a>
+</p>
+<iframe src="../../assembly/quadruped/walk/index.html?mode=imu&vx=0"
+        style="width:100%; height:70vh; border:1px solid var(--pst-color-border, #ddd); border-radius:8px;"
+        loading="lazy"
+        title="Quadruped IMU push simulation"></iframe>
+```
+
+Falls out of 60 pushes each, standing at zero forward speed in the same simulation:
+
+| Push | Without IMU | IMU version |
+|---|---|---|
+| 1.2 m/s | 3 | 2 |
+| 1.6 m/s | 6 | 6 |
+| 2.0 m/s | 18 | 6 |
+| 2.4 m/s | 25 | 12 |
+
+Training pushes reach at most 0.75 m/s even for the IMU version, but in the
+simulation the feet slide away along the floor, so neither policy falls below about
+1 m/s. The difference shows from about 2 m/s. While standing, the policy without the
+IMU also stays tilted by about 6°; the IMU version stands almost exactly level.
+
+Pushed **while walking** (0.12 m/s forward), on the other hand, it does no better: at
+1.6 m/s the IMU version fell more often (out of 60: 32 without the IMU, 41 with it).
+What the IMU policy gained is bracing while standing.
+
 ## What you need
 
 On top of the parts in {doc}`bom`, two things:
@@ -186,7 +224,7 @@ version yet. Its policy observation is fixed to the 87 values without the IMU.
 - **Getting up after a fall** is not trained in the IMU version either.
 - **Slopes and tilted floors** were never in training. The training floor is always
   level, so do not expect it to keep the body level on a slope.
-- The browser simulation ("Try it in the browser" in {doc}`walk`) runs the policy
-  without the IMU.
+- **Pushes while walking**: as "Push it in the browser" above shows, the IMU version
+  does no better than the policy without it in simulation.
 - Only the KRS version (USB and WiFi) has been checked on hardware. The Feetech
   `_imu` targets have only been checked to build.

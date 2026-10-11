@@ -45,6 +45,7 @@
     <mesh name="Assem130__STS3215_03a_nopassivehorn_1_31" file="Assem130__STS3215_03a_nopassivehorn_1_31.stl" />
     <mesh name="Assem130__bracket_outline_1_2_32" file="Assem130__bracket_outline_1_2_32.stl" />
     <mesh name="Assem130__bracket_outline_1_2_33" file="Assem130__bracket_outline_1_2_33.stl" />
+    <mesh name="sensor_board_34" file="sensor_board_34.stl" />
   </asset>
   <worldbody>
     <light pos="0 0 3" dir="0 0 -1" directional="true" />
@@ -151,6 +152,11 @@
         </body>
       </body>
       <site name="imu_in_body" pos="0 0 0" size="0.005" group="4" rgba="0 1 0 1" />
+      <!-- 胴体前面の IMU 基板 (見た目だけ。質量 0)。IMU 版の方策が見る角速度と
+           重力の向きは walk_core.js が胴体 (freejoint) の状態から計算する。 -->
+      <body name="sensor_board" pos="0.106 0 0.009" quat="0.27059805 -0.653281482 0.653281482 -0.27059805">
+        <geom pos="0 0 0" quat="1 0 0 0" group="2" contype="0" conaffinity="0" type="mesh" mesh="sensor_board_34" rgba="0.647058824 0.639215686 0.57254902 1" name="sensor_board_visual0" mass="0" />
+      </body>
     </body>
   </worldbody>
   <actuator>
