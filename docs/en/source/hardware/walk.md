@@ -101,7 +101,7 @@ every cycle on the Arduino UNO R4.
 | Network | Fully connected [96, 64], ELU (Exponential Linear Unit) activation |
 | Output | 8 (one per joint). Servo target = home angle + 0.25 × action. The home angle is the joint angle in the home pose (the reference standing pose the robot starts walking from) |
 | Control period | 50 Hz (0.02 s), gait clock 0.32 s |
-| Sensors | **Joint angles and velocities only. No IMU** (inertial measurement unit, a sensor for the body's tilt and rotation rate; the robot has none, so the policy cannot see the body's attitude) |
+| Sensors | **Joint angles and velocities only. No IMU** (inertial measurement unit, a sensor for the body's tilt and rotation rate; the robot has none, so the policy cannot see the body's attitude. The version with an IMU is in {doc}`imu`) |
 
 With no abduction joints (joints that swing a leg out sideways) it cannot move sideways (vy); it turns by taking longer
 steps on one side.
@@ -383,7 +383,7 @@ too, but on a hard, smooth floor such as wood flooring the feet slip more easily
 
 **Can it get up after falling?** — No. With no IMU it cannot observe its own attitude
 (even with training, the success rate was 1%). This is where adding an IMU pays off
-most.
+most. {doc}`imu` adds an IMU to recover from pushes, but getting up is not trained yet.
 
 **Can it go faster?** — With 45 rpm servos and 0.19 m legs, 0.05–0.2 m/s is what the
 hardware can do (0.16 m/s at the maximum command in simulation). The limit is the

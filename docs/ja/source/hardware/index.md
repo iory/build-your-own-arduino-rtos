@@ -46,6 +46,14 @@ PDF 版もあります。
 （ブラウザで Python を動かせる Google のサービス）の無料枠の T4（GPU の機種名）で最後まで通せます。**
 :::
 
+:::{grid-item-card} 🧭 IMU で姿勢を見て踏ん張らせる
+:link: imu
+:link-type: doc
+
+胴体に IMU（傾きや回転の速さを測るセンサ）を載せ、その値も見て学習した方策で歩かせる版。
+押されても脚で踏ん張って戻し、止まっている間も倒れないように立ち続けます。
+:::
+
 :::{grid-item-card} 🦿 近藤科学の KRS サーボで組む
 :link: krs
 :link-type: doc
@@ -62,6 +70,7 @@ bom
 assembly
 walk
 train
+imu
 krs
 krs_bom
 ```
