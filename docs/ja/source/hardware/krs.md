@@ -28,7 +28,7 @@ STL とは形が違います（STL は {doc}`krs_bom` にあります）。
 | サーボをまとめる基板 | Waveshare Bus Servo Adapter (A) | 近藤科学 RCB-4mini |
 | ID を振る道具 | 基板の USB と `feetech` コマンド | **Dual USB アダプター HS** と `ics-manager` コマンド |
 | Arduino との配線 | D0 / D1（Serial1） | **D8 / D9**（D0 / D1 は空けておく） |
-| 電源 | 12 V | ROBO パワーセル E タイプ（Ni-MH 7.2 V） 1 本で、Arduino も同じ電池から |
+| 電源 | 12 V | 近藤科学の AC アダプター（5.9 V）か、ケーブルなしで歩かせるときは ROBO パワーセル E タイプ（Ni-MH 7.2 V）。Arduino も同じ電源から |
 | 書き込み | `pio run -e uno_r4_wifi` | `pio run -e uno_r4_wifi_rcb4` |
 
 ID の振り方と、どの ID をどの関節に使うかは Feetech 版と同じです。
@@ -627,7 +627,7 @@ RCB-4mini は 1〜3 と 5〜7 の 6 個で、決まり方は同じ
 |---|---|---|
 | 1 | RCB-4mini | SIO ポートにサーボ 8 個、COM ポートに 4、空いた SIO ポートに 5、電源端子にバッテリー |
 | 2 | Arduino UNO R4 WiFi | D8・D9・GND に 4、VIN に 5 |
-| 3 | バッテリー（ROBO パワーセル E タイプ（Ni-MH 7.2 V）） | RCB-4mini の電源端子 |
+| 3 | バッテリー（ROBO パワーセル E タイプ（Ni-MH 7.2 V））か AC アダプター | RCB-4mini の電源端子 |
 | 4 | ZH接続ケーブル2 Bタイプ ＋ ジャンパワイヤ 3 本（COM 用） | RCB-4mini の COM ポート → Arduino の D8・D9・GND |
 | 5 | ZH接続ケーブル2 Bタイプ ＋ ジャンパワイヤ 1 本（電源用） | RCB-4mini の空いた SIO ポートの Vcc → Arduino の VIN |
 
@@ -676,22 +676,72 @@ D8 / D9 をタイマーと DMA で直接動かして話します。D0 / D1 は�
 
 ### 電源
 
-近藤科学の **ROBO パワーセル E タイプ（Ni-MH 7.2 V）** 1 本で、サーボ・RCB-4mini・Arduino をまとめて動かします
-（KXR アドバンスセット B に入っているバッテリーです）。
+電源は 2 通りあります。どちらも RCB-4mini の **電源端子** に入れ、サーボと Arduino には
+そこから配ります。
 
-1. バッテリーを RCB-4mini の **電源端子** につなぐ。サーボの電源はここから SIO ポート
-   経由で配られます。
+| | AC アダプター | バッテリー |
+|---|---|---|
+| 使うもの | 近藤科学の **AC アダプター（5.9 V 2 A）**。付属の LV 変換 DC ジャックを付ける | **ROBO パワーセル E タイプ（Ni-MH 7.2 V）**（KXR アドバンスセット B に入っている） |
+| 電圧 | 5.9 V | 公称 7.2 V |
+| 向いている使い方 | 机の上で何度も試す。電池切れを気にしなくてよい | ケーブルなしで歩かせる |
+
+LV 変換 DC ジャックの先はバッテリーと同じ VH 2 ピンのコネクターなので、バッテリーを
+挿すところにそのまま挿せます。
+
+1. AC アダプターかバッテリーを RCB-4mini の **電源端子** につなぐ。サーボの電源はここから
+   SIO ポート経由で配られます。
 2. **空いている SIO ポート** の **Vcc を Arduino の VIN** へつなぐ。SIO ポートの Vcc には
-   バッテリーの電圧（公称 7.2 V）がそのまま出ていて、Arduino の VIN は 6〜24 V を
-   受け付けます。GND は COM ポートの GND でつながっています。
+   電源端子の電圧がそのまま出ています。GND は COM ポートの GND でつながっています。
    **SIO ポートの SIO（信号）ピンはつながないでください**（サーボの通信線そのものです）。
 
-USB ケーブルを同時に差していても問題ありません。書き込みのときに外す必要はありません。
+USB ケーブルを同時に差していても問題ありません（理由は下の「VIN と USB を同時に
+つないでよい理由」）。書き込みのときに外す必要はありません。
 
 ```{warning}
-バッテリーが減って電圧が 6 V を切ると、Arduino の VIN の範囲を外れます。
-その前に充電してください。
+Arduino の VIN が受け付けるのは 6〜24 V です。
+
+- **AC アダプター**の 5.9 V はこの範囲を少し下回ります。Arduino の 5 V が下がることが
+  あるので、**AC アダプターのときは USB ケーブルも差しておいてください。** 足りない分は
+  USB から入ります。
+- **バッテリー**が減って 6 V を切ったときも同じです。その前に充電してください。
 ```
+
+AC アダプターは 2 A までです。サーボ 8 個が同時に強く踏ん張ると足りなくなることがあり、
+近藤科学の商品ページにも、サーボの数や動きの負荷によっては正常に動かないことがある、
+とあります。歩かせている最中に RCB-4mini や Arduino がリセットするなら、バッテリーで
+試してください。
+
+#### VIN と USB を同時につないでよい理由
+
+UNO R4 WiFi の回路図（電源まわり）の抜粋です。
+
+```{figure} ../_static/uno_r4_wifi_power_schematic.png
+:target: ../_static/uno_r4_wifi_power_schematic.png
+:alt: UNO R4 WiFi の回路図の電源部分。左から DC ジャック J5、逆接続保護のショットキーダイオード D1、降圧コンバーター U3（ISL854102）、コイル L3 を経て +5V。右上の VUSB からショットキーダイオード D2 を通って同じ +5V へ
+
+Arduino UNO R4 WiFi 回路図（ABX00087）の DC JACK・BUCK CONVERTER・USB SCHOTTKY の部分。
+出典：Arduino SA、CC BY-SA 4.0
+```
+
+ピンヘッダーの VIN は、DC ジャック（J5）と同じ `VIN` の線です。電気の通り道は次のように
+なっています。
+
+```text
+VIN ピン / DC ジャック ──D1──> 降圧コンバーター U3 ──> +5V ──> マイコン・3.3 V レギュレーター
+USB-C の VBUS ─────────D2─────────────────────────> +5V
+```
+
+- **D1、D2 はショットキーダイオード**（PMEG6020AELRX）で、電流を矢印の向きにしか
+  流しません。+5V には 2 つの電源がダイオードを挟んでつながっていて、電圧の高いほうから
+  電気が入ります。
+- VIN に電圧があると、降圧コンバーター U3 が +5V を 5.0 V に保ちます。USB 側は D2 で
+  電圧が下がって約 4.7 V しか出せないので、D2 には逆向きの電圧がかかり、USB からは
+  電流が流れません。**+5V から PC の USB へ流れ込むこともありません**（D2 が止める）。
+- USB だけのときは、+5V が U3 の中を通って VIN 側へ漏れても D1 で止まるので、
+  **USB からバッテリーや AC アダプターのほうへ流れることもありません。**
+- VIN が 6 V より下がると U3 は 5 V を保てなくなりますが、USB を差していれば、
+  +5V が USB 側の約 4.7 V より下がった分を D2 から USB が補います。上の warning で
+  AC アダプターのときに USB を差しておく理由です。
 
 ### 下側の配線
 
@@ -758,7 +808,7 @@ USB ケーブルを同時に差していても問題ありません。書き込�
 | 1 本の脚だけ逆に動く | そのサーボの `Reverse Mode` が `Enabled` になっていないか（`ics-manager` の `v` で戻す）。`QUAD_RCB4_SIGN` の値 |
 | 関節が止まらずに回り続ける | そのサーボの `Rotation Mode` が `Enabled`（連続回転モード）になっていないか（`ics-manager` の `r` で戻す） |
 | 関節が途中までしか曲がらない | ホーンを大きくずらして付けていないか。上の「サーボを真ん中に合わせてから、ホーンと脚を付ける」からやり直す |
-| 歩いている最中に Arduino がリセットする | バッテリーの電圧。6 V を切っていないか |
+| 歩いている最中に Arduino がリセットする | バッテリーの電圧。6 V を切っていないか。AC アダプターなら USB ケーブルも差しているか、バッテリーに替えるとどうか |
 
 ```{admonition} RCB-4mini に書き込まれたプロジェクトについて
 :class: tip
@@ -785,7 +835,14 @@ RCB-4mini は、近藤科学の Heart to Heart 4 で書き込んだプロジェ�
   <https://kondo-robot.com/w/wp-content/uploads/ICS3.5_3.6_SoftwareManual_2_9.pdf>
 - 新品の KRS サーボの ID（0）: KRS シリーズ取扱説明書 V2.1（上と同じ）
 - ROBO パワーセル E タイプ（Ni-MH 6 セル、公称 7.2 V、800 mAh、VH 2 ピン）: <https://kondo-robot.com/product/02335>
-- Arduino UNO R4 WiFi の VIN（6〜24 V）: <https://docs.arduino.cc/resources/datasheets/ABX00087-datasheet.pdf>
+- Arduino UNO R4 WiFi の VIN（6〜24 V）、VUSB（4.8〜5.5 V）、USB 給電時の約 4.7 V、
+  D1・D2 の品番: <https://docs.arduino.cc/resources/datasheets/ABX00087-datasheet.pdf>
+  （2 章「Recommended Operating Conditions」、11 章「Power Options」）
+- Arduino UNO R4 WiFi の回路図（電源まわりの図の出典、CC BY-SA 4.0）:
+  <https://docs.arduino.cc/resources/schematics/ABX00087-schematics.pdf>
+- AC アダプター（5.9 V 2 A、品番 04052、LV 変換 DC ジャック付属、サーボの数や負荷で
+  正常に動かないことがあるという注意）: <https://kondo-robot.com/product/04052>
+- LV 変換 DC ジャック（VH 2 ピン ⇔ DC プラグ 5.5 × 2.1 mm）: <https://kondo-robot.com/product/02186>
 - ホーン止めビス（KRS-3300 シリーズは M3-6 低頭ホーン止めビスが付属）、ホーン用ビス、
   フリーホーン側だけ 2.6-4 フラットヘッドビス: KRS シリーズ取扱説明書 V2.1 の 10 ページ
   「サーボホーンの取り付けについて」（上と同じ）
