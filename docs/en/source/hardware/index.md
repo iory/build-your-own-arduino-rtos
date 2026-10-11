@@ -53,6 +53,15 @@ Retrain with different rewards or speed limits. **Works end to end on Google Col
 (Google's service for running Python in the browser) on its free T4 (a GPU model)
 even without a GPU of your own.**
 :::
+
+:::{grid-item-card} 🧭 Balancing with an IMU
+:link: imu
+:link-type: doc
+
+Put an IMU (a sensor for tilt and rotation rate) on the body and walk with a policy
+trained on it. It braces with its legs to recover from pushes and keeps standing
+while stopped.
+:::
 ::::
 
 ```{toctree}
@@ -62,6 +71,7 @@ bom
 assembly
 walk
 train
+imu
 ```
 
 ## STL downloads
