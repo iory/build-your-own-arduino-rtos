@@ -23,6 +23,8 @@ A simulation that runs the trained policy in the WebAssembly build (the form tha
 runs inside a browser) of the physics simulator **MuJoCo**. The same
 neural network you flash onto the robot runs a 50 Hz control loop inside the
 browser. Use the sliders to change the forward and turning commands.
+押す (Push) shoves the body sideways; "RL 方策（IMU あり）" is the policy from
+{doc}`imu`.
 
 The physics is **the same as in training**. Only the four foot spheres touch the
 ground, the servos are position-controlled (kp 25, kd 0.5) with a viscous damper for
