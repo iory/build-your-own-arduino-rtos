@@ -80,6 +80,7 @@ const ROBOTS = {
     delay: {min: DELAY_MIN, max: DELAY_MAX},
     naive: true,
     vx: {min: -0.05, max: 0.15, value: 0.12},
+    push: 2.0,   // imu.md の押し比べの強さ
   },
   krs: {
     label: 'KRS 版',
@@ -89,6 +90,9 @@ const ROBOTS = {
     delay: {min: 4, max: 8},     // rl/krs_robot_cfg.py の KRS_DELAY_MIN/MAX_LAG
     naive: false,                // 本文 13.5 の歩行は Feetech 版の脚の寸法
     vx: {min: -0.06, max: 0.12, value: 0.08},
+    // 学習中の押しは最大 0.2 m/s。この強さなら、立っていても歩いていても
+    // 10 回押して 10 回とも立ち直る (1.5 m/s では 2〜4 回倒れる。Node で測定)
+    push: 1.0,
   },
 };
 const robotKey = new URLSearchParams(location.search).get('robot') === 'krs'
@@ -144,6 +148,8 @@ async function main() {
   $('vx').max = ROBOT.vx.max;
   $('vx').value = ROBOT.vx.value;
   $('vxVal').textContent = ROBOT.vx.value.toFixed(2);
+  $('push').value = ROBOT.push;
+  $('pushVal').textContent = ROBOT.push.toFixed(1);
   let policy = policies[$('mode').value];
   const ctl = makeController(mujoco, model, data, policy, ROBOT.delay);
   const gait = new NaiveGait();   // 本文 13.5 の trot (sin/cos + 2リンク IK)
