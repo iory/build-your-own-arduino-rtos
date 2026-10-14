@@ -138,11 +138,14 @@ export class QuadPolicy {
 // delay_min_lag / delay_max_lag) と同じく、目標角は物理ステップ (5 ms) ごとに
 // 遅延線へ入り、4〜7 ステップ (20〜35 ms) 前の値がサーボに届く。遅れは
 // ステップごとに引き直す。実機で測ったサーボの不感時間 + バス + 推論が 27 ms。
+// KRS 版は rl/krs_robot_cfg.py の 4〜8 ステップ (推定値)。makeController の
+// delay で機体ごとに渡す。
 export const DELAY_MIN = 4, DELAY_MAX = 7;
 
 // MuJoCo の model/data に方策を接続する。qpos/qvel のインデックスは
 // 関節名から引く (方策の出力順とアクチュエータ順は XML で一致している)。
-export function makeController(mujoco, model, data, initialPolicy) {
+export function makeController(mujoco, model, data, initialPolicy,
+                               delay = {min: DELAY_MIN, max: DELAY_MAX}) {
   let policy = initialPolicy;
   const qadr = [], vadr = [];
   for (const name of policy.jointNames) {
@@ -155,7 +158,7 @@ export function makeController(mujoco, model, data, initialPolicy) {
   const nSub = Math.max(1, Math.round(policy.dt / model.opt.timestep));
   const q = new Float32Array(nj), qd = new Float32Array(nj);
   const angVel = new Float32Array(3), gravity = new Float32Array(3);
-  const L = DELAY_MAX + 1;
+  const L = delay.max + 1;
   const hist = Array.from({length: L}, () => new Float64Array(nj));
   let head = 0, pushes = 0;
 
@@ -168,7 +171,7 @@ export function makeController(mujoco, model, data, initialPolicy) {
       if (pushes === 0) for (const h of hist) h.set(targets);
       pushes = Math.min(pushes + 1, L);
       const lag = Math.min(
-          DELAY_MIN + Math.floor(Math.random() * (DELAY_MAX - DELAY_MIN + 1)),
+          delay.min + Math.floor(Math.random() * (delay.max - delay.min + 1)),
           pushes - 1);
       const d = hist[(head - lag + L) % L];
       for (let i = 0; i < nj; i++) data.ctrl[i] = d[i];
