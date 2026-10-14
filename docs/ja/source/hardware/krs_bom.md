@@ -112,11 +112,12 @@ STL は下からダウンロードできる（単位はミリメートル。{ref
 
 | 部品 | ファイル | 外形 [mm] | 個数 | 実体積 |
 |---|---|---|---|---|
-| 胴体 | `body_krs.stl` | **230.0 × 110.0 × 50.0** | 1 | 227.6 cm³ |
+| 胴体 | `body_krs.stl` | **176.0 × 110.0 × 50.0** | 1 | 179.2 cm³ |
+| 蓋 | `lid_krs.stl` | 174.0 × 110.0 × 37.0 | 1 | 32.3 cm³ |
 | 脚ブラケット | `bracket_outline_krs.stl` | 127.9 × 52.2 × 12.0 | 4 | 19.1 cm³ |
 | 脚リンク | `leg_link1_krs.stl` | 84.0 × 43.0 × 26.0 | 4 | 33.6 cm³ |
 
-::::{grid} 3
+::::{grid} 2 4 4 4
 :gutter: 2
 
 :::{grid-item}
@@ -125,6 +126,15 @@ STL は下からダウンロードできる（単位はミリメートル。{ref
 :color: primary
 :expand:
 body_krs.stl（×1）
+```
+
+:::
+:::{grid-item}
+
+```{button-link} ../assembly/quadruped_krs/stl/lid_krs.stl
+:color: primary
+:expand:
+lid_krs.stl（×1）
 ```
 
 :::
@@ -151,13 +161,17 @@ leg_link1_krs.stl（×4）
 ### スライス済みプロジェクト（Bambu Studio 用）
 
 設定・配置が入った Bambu Studio のプロジェクトファイルです（どれも 0.4 ノズル・
-Textured PEI プレート）。胴体は実機を刷ったときのもの、脚の 2 枚は A1 と PLA で
+Textured PEI プレート）。胴体と蓋は第 2 版の形を PLA Matte（白）で、脚の 2 枚は A1 と PLA で
 スライスしたものです。別の機種やフィラメントで刷る場合は、開いてからプリンターと
 フィラメントを変えてください。
 
 | プロジェクト | 中身 | プリンター | フィラメント | 積層 | サポート |
 |---|---|---|---|---|---|
-| `body_krs.3mf` | 胴体 ×1 | Bambu Lab P1S | ABS | 0.28mm | なし |
+| `body_krs.3mf` | 胴体 ×1 | Bambu Lab H2D | PLA Matte | 0.2mm | ツリー（自動） |
+| `lid_krs.3mf` | 蓋 ×1（裏返して置く） | Bambu Lab X1 Carbon | PLA Matte | 0.2mm | ツリー（自動） |
+
+スライサーの見積もりは、胴体が 4 時間 01 分・125.3 g、蓋が 3 時間 46 分・68.6 g です（どちらもサポート込み）。
+胴体は 176 × 110 mm なので、A1 mini（180 mm 角）のプレートにも載ります。
 | `leg_links_krs.3mf` | 脚リンク ×4 | Bambu Lab A1 | PLA | 0.2mm | ツリー（自動） |
 | `leg_brackets_krs.3mf` | 脚ブラケット ×4 | Bambu Lab A1 | PLA | 0.2mm | ツリー（自動） |
 
@@ -166,7 +180,7 @@ Textured PEI プレート）。胴体は実機を刷ったときのもの、脚�
 開くので「This file is not from a trusted site」と確認が出ます。
 **Yes** を押せば開きます。
 
-::::{grid} 1 3 3 3
+::::{grid} 1 2 2 2
 :gutter: 2
 
 :::{grid-item}
@@ -180,6 +194,18 @@ body_krs.3mf（胴体）
 <a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-w-100 bambu-open" data-file="../assembly/quadruped_krs/stl/body_krs.3mf" hidden>Bambu Studio で開く</a>
 
 ![KRS 版の胴体のプレート](print_img/bambulab-krs-body_krs.png)
+:::
+:::{grid-item}
+
+```{button-link} ../assembly/quadruped_krs/stl/lid_krs.3mf
+:color: secondary
+:expand:
+lid_krs.3mf（蓋）
+```
+
+<a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-w-100 bambu-open" data-file="../assembly/quadruped_krs/stl/lid_krs.3mf" hidden>Bambu Studio で開く</a>
+
+![KRS 版の蓋のプレート](print_img/bambulab-krs-lid_krs.png)
 :::
 :::{grid-item}
 
