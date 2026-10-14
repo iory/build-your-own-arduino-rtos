@@ -43,6 +43,7 @@
         <option value="naive">sin/cos 歩行（本文 13.5）</option>
       </select>
     </label>
+    <span id="robotName"></span>
     <button id="pushBtn">押す</button>
     <label>強さ <input type="range" id="push" min="0.5" max="3.0" step="0.1" value="2.0">
       <span id="pushVal">2.0</span> m/s</label>
@@ -67,7 +68,36 @@
 import * as THREE from 'three';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import loadMujoco from './vendor/mujoco.js';
-import {QuadPolicy, makeController, NaiveGait} from './walk_core.js';
+import {QuadPolicy, makeController, NaiveGait, DELAY_MIN, DELAY_MAX} from './walk_core.js';
+
+// 機体ごとの設定。?robot=krs で KRS 版 (KRS-3302 ICS) の機体と方策になる。
+// 既定は Feetech 版 (STS3215) で、こちらは今までと同じ。
+const ROBOTS = {
+  feetech: {
+    label: '',
+    xml: 'model/arduino_os_quad_robot.xml',
+    policies: {rl: 'policy.json', imu: 'policy_imu.json'},
+    delay: {min: DELAY_MIN, max: DELAY_MAX},
+    naive: true,
+    vx: {min: -0.05, max: 0.15, value: 0.12},
+    push: 2.0,   // imu.md の押し比べの強さ
+  },
+  krs: {
+    label: 'KRS 版',
+    xml: 'model/krs_quad_robot.xml',
+    // KRS 版は IMU ありの方策だけ (rl/krs_env_cfgs.py)
+    policies: {imu: 'policy_krs_imu.json'},
+    delay: {min: 4, max: 8},     // rl/krs_robot_cfg.py の KRS_DELAY_MIN/MAX_LAG
+    naive: false,                // 本文 13.5 の歩行は Feetech 版の脚の寸法
+    vx: {min: -0.06, max: 0.12, value: 0.08},
+    // 学習中の押しは最大 0.2 m/s。この強さなら、立っていても歩いていても
+    // 10 回押して 10 回とも立ち直る (1.5 m/s では 2〜4 回倒れる。Node で測定)
+    push: 1.0,
+  },
+};
+const robotKey = new URLSearchParams(location.search).get('robot') === 'krs'
+    ? 'krs' : 'feetech';
+const ROBOT = ROBOTS[robotKey];
 
 const $ = id => document.getElementById(id);
 const setProgress = (v, msg) => {
@@ -85,8 +115,11 @@ async function main() {
   const mujoco = await loadMujoco();
   setProgress(30, 'ロボットモデルを読み込み中…');
 
-  const xml = await (await fetch('model/arduino_os_quad_robot.xml')).text();
-  const meshFiles = [...xml.matchAll(/file="([^"]+\.stl)"/g)].map(m => m[1]);
+  const xml = await (await fetch(ROBOT.xml)).text();
+  // 同じ STL を複数の <mesh> が参照する (KRS 版はネジなどを 1 ファイルにまとめてある)
+  // ので、ファイル名ごとに 1 回だけ読む。VFS は同じ名前を 2 度足すと失敗する。
+  const meshFiles = [...new Set(
+      [...xml.matchAll(/file="([^"]+\.stl)"/g)].map(m => m[1]))];
   const vfs = new mujoco.MjVFS();
   let done = 0;
   await Promise.all(meshFiles.map(async f => {
@@ -96,14 +129,29 @@ async function main() {
   }));
 
   setProgress(85, '学習済み方策を読み込み中…');
-  const [bundle, bundleImu] = await Promise.all(
-      ['policy.json', 'policy_imu.json'].map(async f => (await fetch(f)).json()));
+  const policies = {};
+  await Promise.all(Object.entries(ROBOT.policies).map(async ([mode, f]) => {
+    const res = await fetch(f);
+    if (!res.ok) throw new Error(f + ': ' + res.status);
+    policies[mode] = new QuadPolicy(await res.json());
+  }));
 
   const model = mujoco.MjModel.from_xml_string(xml, vfs);
   const data = new mujoco.MjData(model);
-  const policies = {rl: new QuadPolicy(bundle), imu: new QuadPolicy(bundleImu)};
-  let policy = policies.rl;
-  const ctl = makeController(mujoco, model, data, policy);
+  // この機体に無い制御 (KRS 版の IMU なし・sin/cos 歩行) は選択肢から外す
+  for (const o of [...$('mode').options]) {
+    const ok = o.value === 'naive' ? ROBOT.naive : o.value in policies;
+    if (!ok) o.remove();
+  }
+  $('robotName').textContent = ROBOT.label;
+  $('vx').min = ROBOT.vx.min;
+  $('vx').max = ROBOT.vx.max;
+  $('vx').value = ROBOT.vx.value;
+  $('vxVal').textContent = ROBOT.vx.value.toFixed(2);
+  $('push').value = ROBOT.push;
+  $('pushVal').textContent = ROBOT.push.toFixed(1);
+  let policy = policies[$('mode').value];
+  const ctl = makeController(mujoco, model, data, policy, ROBOT.delay);
   const gait = new NaiveGait();   // 本文 13.5 の trot (sin/cos + 2リンク IK)
 
   // ---------- three.js ----------
@@ -194,8 +242,8 @@ async function main() {
 
   // ---------- simulation ----------
   let walking = false;
-  // 倒れたら止める。学習と同じく足先の球しか床と当たらないので、
-  // そのまま進めると胴体が床を突き抜ける。
+  // 倒れたら止める。Feetech 版は学習と同じく足先の球しか床と当たらないので、
+  // そのまま進めると胴体が床を突き抜ける (KRS 版は胴体の箱と膝も当たる)。
   let fallen = false;
   const FALL_TILT_DEG = 60;
   // 制御ごとの「押した回数 / 倒れた回数」(IMU なし・あり の比較用)

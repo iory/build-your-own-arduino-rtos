@@ -829,6 +829,71 @@ USB-C の VBUS ─────────D2────────────
 [code/13_quadruped/README.md](https://github.com/iory/build-your-own-arduino-rtos/blob/main/code/13_quadruped/README.md)
 にあります。
 
+## KRS 版の歩行方策
+
+KRS 版には、Feetech 版とは別に学習した歩行方策があります。KRS-3302 のトルクは
+0.54〜0.66 N·m（電源 5.9〜7.4 V）で、Feetech 版の STS3215（2.94 N·m）の 4 分の 1 以下です。
+そのため、機体のモデル・関節の範囲（±135°）・質量（実測 610.8 g）をすべて KRS 版に合わせて、
+最初から学習しました。観測には IMU（胴体の角速度と重力の向き）が入ります。
+
+### ブラウザで歩かせてみる
+
+{doc}`walk` と同じシミュレーションを、KRS 版の機体と方策で動かします。
+**歩く** を押すと、「前進」と「旋回」の指令で歩きます。
+
+```{raw} html
+<p>
+  <a class="sd-btn sd-btn-primary" href="../assembly/quadruped/walk/index.html?robot=krs"
+     target="_blank" rel="noopener">KRS 版のシミュレーションを開く ↗</a>
+</p>
+<iframe src="../assembly/quadruped/walk/index.html?robot=krs"
+        style="width:100%; height:70vh; border:1px solid var(--pst-color-border, #ddd); border-radius:8px;"
+        loading="lazy"
+        title="KRS 版四脚ロボット 歩行シミュレーション"></iframe>
+```
+
+シミュレーション（64 台 × 10 秒）での成績です。
+
+| 指令 | 実測 | 胴体の傾き（99 %） |
+|---|---|---|
+| 前進 0.04 m/s | 0.040 m/s | 4.1° |
+| 前進 0.08 m/s | 0.083 m/s | 3.1° |
+| 前進 0.12 m/s | 0.122 m/s | 3.7° |
+| 後退 0.06 m/s | 0.055 m/s | 5.4° |
+| 旋回 0.4 rad/s（前進 0.08 m/s） | 0.066 rad/s | 4.2° |
+
+- 対角の 2 本ずつが交互に接地するトロットで、4 本とも 1 秒に 3.2〜3.9 歩踏みます。
+- 胴体と膝は床に着きません。4 本とも浮く時間はほぼありません（0.1 % 以下）。
+- 関節は ±135° に対して 32° 以上の余裕があります。トルクは 99 % 値で 0.33 N·m 以下です
+  （最大トルクの約 5 割）。
+- **旋回は苦手です。** 外転の関節が無いので、左右の歩幅の差で曲がるしかなく、
+  指令の 2 割ほどしか回りません。
+
+### 書き込む
+
+```bash
+cd code
+uv run pio run -d 13_quadruped -e uno_r4_wifi_rcb4_krs -t upload       # USB シリアル
+uv run pio run -d 13_quadruped -e uno_r4_wifi_rcb4_udp_krs -t upload   # WiFi
+```
+
+方策は `include/krs_quad_policy.h` です。Feetech 版の `arduino_quad_policy.h` とは混ざりません。
+home の姿勢は股 +53.9°、膝 −89.3°（胴体の底面が床から 0.13 m）で、Feetech 版とは違います。
+
+```{warning}
+IMU が必要です。IMU の値は胴体の座標（x 前・y 左・z 上、水平で静止して重力が (0, 0, −1)）で
+方策に渡します。センサ基板の取り付けの向きが Feetech 版と違うときは、
+`src/quad_imu.cpp` のチップから胴体への回転を、KRS の胴体に合わせてください。
+```
+
+学習に使った値のうち、次は実測していない**仮定**です。
+
+- サーボの位置ループのゲイン（kp 5.5 N·m/rad、kd 0.11）。学習では 0.5〜2 倍でばらつかせた
+- 指令が届くまでの遅れ（20〜40 ms）
+- 電池の位置と Arduino UNO R4 WiFi の質量（25 g）
+
+学習のしかたは `code/13_quadruped/rl/README.md` の「KRS 版」にあります。
+
 ## うまくいかないとき
 
 | 症状 | 確かめること |
