@@ -66,6 +66,18 @@ BASE_BOX_HALF = (0.088, 0.055, 0.039)
 BASE_BOX_POS = (0.0, 0.0, 0.039)
 KNEE_BALL_RADIUS = 0.012  # the knee servo's case end around the axis
 
+# Leg capsules, for leg-against-leg contact. Measured on the meshes in the
+# body frames (thigh frame = hip axis, foot frame = knee axis, legs at q = 0):
+#   thigh (leg link + knee servo): x +-13 mm, y 17..65 mm, z +12..-97 mm
+#   shank (bracket):               y 3..16 mm, from the knee down to the toe
+# The front and rear legs of one side swing in the same planes, so with the
+# hips only 132 mm apart a front knee and a rear leg can meet. A capsule per
+# segment, centred in the part's y band, with the part's half-width as radius.
+THIGH_CAP_Y = 0.041
+THIGH_CAP_RADIUS = 0.013
+SHANK_CAP_Y = 0.0095
+SHANK_CAP_RADIUS = 0.008
+
 
 def toe_points(model, data, mujoco):
     """Centre of each foot's tip face at q = 0, in the foot body's frame.
@@ -170,6 +182,20 @@ def post_process(mjcf_path, toe_local, home):
         geom(foot, name="{}_knee_ball".format(leg), type="sphere",
              size="{:g}".format(KNEE_BALL_RADIUS), pos="0 {:g} 0".format(y),
              group="3", rgba="0.8 0.2 0.2 0.3")
+        side = 1.0 if leg.endswith("L") else -1.0
+        thigh = bodies["{}_thigh".format(leg)]
+        knee = [float(v) for v in foot.get("pos").split()]
+        geom(thigh, name="{}_thigh_cap".format(leg), type="capsule",
+             size="{:g}".format(THIGH_CAP_RADIUS),
+             fromto="0 {y:.6g} 0 {x:.6g} {y:.6g} {z:.6g}".format(
+                 x=knee[0], y=side * THIGH_CAP_Y, z=knee[2]),
+             group="3", rgba="0.2 0.8 0.2 0.3")
+        ys = side * SHANK_CAP_Y
+        geom(foot, name="{}_shank_cap".format(leg), type="capsule",
+             size="{:g}".format(SHANK_CAP_RADIUS),
+             fromto="0 {:.6g} 0 {:.6g} {:.6g} {:.6g}".format(
+                 ys, centre[0], ys, centre[2]),
+             group="3", rgba="0.2 0.8 0.2 0.3")
 
     base = bodies[BASE_BODY]
     geom(base, name="base_box", type="box",

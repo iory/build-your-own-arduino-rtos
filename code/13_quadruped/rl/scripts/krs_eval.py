@@ -38,6 +38,10 @@ def _parse_args() -> argparse.Namespace:
   p.add_argument("--warmup", type=float, default=2.0, help="ignored at the start [s]")
   p.add_argument("--json", default=None, help="write the results here")
   p.add_argument("--device", default="cuda:0")
+  p.add_argument("--push-scale", type=float, default=0.0,
+                 help="push every 2 s with the training push ranges x this "
+                      "(0 = no pushes). Falls and leg-leg contact then measure "
+                      "how the policy recovers")
   return p.parse_args()
 
 
@@ -89,6 +93,7 @@ def main() -> int:
   robot = base.scene["robot"]
   belly = base.scene["belly_ground_contact"]
   knees = base.scene["knee_ground_contact"]
+  legleg = base.scene["leg_leg_contact"]
   cmd_term = base.command_manager.get_term("twist")
   site_ids = robot.find_sites(K.TOE_SITES, preserve_order=True)[0]
   b_emf = R.STALL_TORQUE / R.NO_LOAD_SPEED
@@ -105,17 +110,26 @@ def main() -> int:
   act_peak = np.zeros(len(joint_names))
   qd_peak = np.zeros(len(joint_names))
 
+  from mjlab.envs.mdp.events import push_by_setting_velocity
+  push_ranges = {k: (args.push_scale * lo, args.push_scale * hi) for k, (lo, hi) in {
+    "x": (-0.2, 0.2), "y": (-0.2, 0.2), "z": (-0.1, 0.1),
+    "roll": (-0.3, 0.3), "pitch": (-0.3, 0.3), "yaw": (-0.4, 0.4)}.items()}
+  all_ids = torch.arange(args.num_envs, device=args.device)
+  results["push_scale"] = args.push_scale
+
   for vx, wz in COMMANDS:
     env.reset()
     obs = env.get_observations()
     rec = {k: [] for k in ("vx", "wz", "contact", "roll", "pitch", "z", "vz",
-                           "slip", "belly", "knee", "acc", "tau", "qd")}
+                           "slip", "belly", "knee", "legleg", "acc", "tau", "qd")}
     falls = torch.zeros(args.num_envs, dtype=torch.bool, device=args.device)
     prev = [None, None]
     for t in range(n_steps):
       cmd_term.command[:, 0] = vx
       cmd_term.command[:, 1] = 0.0
       cmd_term.command[:, 2] = wz
+      if args.push_scale > 0 and t % int(2.0 / dt) == int(1.0 / dt):
+        push_by_setting_velocity(base, all_ids, push_ranges)
       with torch.inference_mode():
         a = policy(obs)
       obs, _, dones, _ = env.step(a)
@@ -136,6 +150,7 @@ def main() -> int:
       rec["slip"].append((speed * found).sum(1) / found.sum(1).clamp(min=1))
       rec["belly"].append((belly.data.found > 0).any(1))
       rec["knee"].append((knees.data.found > 0).any(1))
+      rec["legleg"].append((legleg.data.found > 0).any(1))
       if prev[1] is not None:
         rec["acc"].append((a - 2 * prev[0] + prev[1]).abs().mean(1))
       prev = [a.clone(), prev[0]]
@@ -187,6 +202,7 @@ def main() -> int:
       "vz_rms": float(S["vz"][:, ok].pow(2).mean().sqrt()),
       "belly_contact": float(S["belly"][:, ok].mean()),
       "knee_contact": float(S["knee"][:, ok].mean()),
+      "leg_leg_contact": float(S["legleg"][:, ok].mean()),
       "action_jerk": float(S["acc"][:, ok].mean()),
       "net_torque_rms_max_joint": float(tau.pow(2).mean((0, 1)).sqrt().max()),
       "net_torque_p99": float(torch.quantile(tau.abs().flatten()[:500000], 0.99)),

@@ -49,6 +49,7 @@ from . import rewards as local_mdp
 from . import slow_robot
 from .krs_robot_cfg import (
   BASE_BODY,
+  FRONT_LEG_CAPS,
   HOME_BASE_HEIGHT,
   KRS_QUAD_ACTION_SCALE,
   NO_LOAD_SPEED,
@@ -127,6 +128,12 @@ def krs_quad_walk_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
                   fields=("found", "force"), track_air_time=True),
     ground_sensor("belly_ground_contact", ("base_box",), fields=("found",)),
     ground_sensor("knee_ground_contact", KNEE_GEOMS, fields=("found",)),
+    # Front leg capsules can only touch rear ones (krs_robot_cfg.py), so any
+    # contact they report is a leg striking another leg.
+    ContactSensorCfg(
+      name="leg_leg_contact",
+      primary=ContactMatch(mode="geom", pattern=FRONT_LEG_CAPS, entity="robot"),
+      reduce="netforce", num_slots=1, fields=("found",)),
   )
 
   # --- observations: the IMU version's 105-dim layout -----------------------
@@ -294,6 +301,9 @@ def krs_quad_walk_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
   r["knee_contact"] = RewardTermCfg(
     func=krs_rewards.contact_count, weight=-2.0,
     params={"sensor_name": "knee_ground_contact"})
+  r["leg_leg_contact"] = RewardTermCfg(
+    func=krs_rewards.contact_count, weight=-5.0,
+    params={"sensor_name": "leg_leg_contact"})
   # Smoothness: no 50 Hz chatter, no trembling.
   r["action_rate_l2"].weight = -0.2
   r["action_acc_l2"] = RewardTermCfg(func=envs_mdp.action_acc_l2, weight=-0.1)

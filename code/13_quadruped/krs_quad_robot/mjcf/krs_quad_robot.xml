@@ -261,7 +261,9 @@
           <geom name="FL_toe" type="sphere" size="0.006" pos="0.00708299 0.009796 -0.113374" rgba="0.1 0.1 0.1 1" />
           <site name="FL" pos="0.00708299 0.009796 -0.119374" size="0.004" group="4" rgba="1 0 0 1" />
           <geom name="FL_knee_ball" type="sphere" size="0.012" pos="0 -0.012 0" group="3" rgba="0.8 0.2 0.2 0.3" />
+          <geom name="FL_shank_cap" type="capsule" size="0.008" fromto="0 0.0095 0 0.00708299 0.0095 -0.113374" group="3" rgba="0.2 0.8 0.2 0.3" />
         </body>
+        <geom name="FL_thigh_cap" type="capsule" size="0.013" fromto="0 0.041 0 -4.60082e-11 0.041 -0.08838" group="3" rgba="0.2 0.8 0.2 0.3" />
       </body>
       <body name="RL_thigh" pos="-0.066 0.03064 0.01643" quat="1 0 0 0">
         <joint name="RL_hip_joint" pos="0 0 0" axis="0 1 0" type="hinge" range="-2.35619 2.35619" />
@@ -293,7 +295,9 @@
           <geom name="RL_toe" type="sphere" size="0.006" pos="0.00708299 0.009796 -0.113374" rgba="0.1 0.1 0.1 1" />
           <site name="RL" pos="0.00708299 0.009796 -0.119374" size="0.004" group="4" rgba="1 0 0 1" />
           <geom name="RL_knee_ball" type="sphere" size="0.012" pos="0 -0.012 0" group="3" rgba="0.8 0.2 0.2 0.3" />
+          <geom name="RL_shank_cap" type="capsule" size="0.008" fromto="0 0.0095 0 0.00708299 0.0095 -0.113374" group="3" rgba="0.2 0.8 0.2 0.3" />
         </body>
+        <geom name="RL_thigh_cap" type="capsule" size="0.013" fromto="0 0.041 0 -6.17561e-11 0.041 -0.08838" group="3" rgba="0.2 0.8 0.2 0.3" />
       </body>
       <body name="RR_thigh" pos="-0.066 -0.03064 0.01643" quat="1 0 0 0">
         <joint name="RR_hip_joint" pos="0 0 0" axis="0 1 0" type="hinge" range="-2.35619 2.35619" />
@@ -325,7 +329,9 @@
           <geom name="RR_toe" type="sphere" size="0.006" pos="0.00708299 -0.009796 -0.113374" rgba="0.1 0.1 0.1 1" />
           <site name="RR" pos="0.00708299 -0.009796 -0.119374" size="0.004" group="4" rgba="1 0 0 1" />
           <geom name="RR_knee_ball" type="sphere" size="0.012" pos="0 0.012 0" group="3" rgba="0.8 0.2 0.2 0.3" />
+          <geom name="RR_shank_cap" type="capsule" size="0.008" fromto="0 -0.0095 0 0.00708299 -0.0095 -0.113374" group="3" rgba="0.2 0.8 0.2 0.3" />
         </body>
+        <geom name="RR_thigh_cap" type="capsule" size="0.013" fromto="0 -0.041 0 4.18946e-11 -0.041 -0.08838" group="3" rgba="0.2 0.8 0.2 0.3" />
       </body>
       <body name="FR_thigh" pos="0.066 -0.03064 0.01643" quat="1 0 0 0">
         <joint name="FR_hip_joint" pos="0 0 0" axis="0 1 0" type="hinge" range="-2.35619 2.35619" />
@@ -357,7 +363,9 @@
           <geom name="FR_toe" type="sphere" size="0.006" pos="0.00708299 -0.009796 -0.113374" rgba="0.1 0.1 0.1 1" />
           <site name="FR" pos="0.00708299 -0.009796 -0.119374" size="0.004" group="4" rgba="1 0 0 1" />
           <geom name="FR_knee_ball" type="sphere" size="0.012" pos="0 0.012 0" group="3" rgba="0.8 0.2 0.2 0.3" />
+          <geom name="FR_shank_cap" type="capsule" size="0.008" fromto="0 -0.0095 0 0.00708299 -0.0095 -0.113374" group="3" rgba="0.2 0.8 0.2 0.3" />
         </body>
+        <geom name="FR_thigh_cap" type="capsule" size="0.013" fromto="0 -0.041 0 2.33066e-11 -0.041 -0.08838" group="3" rgba="0.2 0.8 0.2 0.3" />
       </body>
       <geom name="base_box" type="box" size="0.088 0.055 0.039" pos="0 0 0.039" group="3" rgba="0.2 0.2 0.8 0.3" />
       <site name="imu_in_body" pos="0 0 0" size="0.005" group="4" rgba="0 1 0 1" />

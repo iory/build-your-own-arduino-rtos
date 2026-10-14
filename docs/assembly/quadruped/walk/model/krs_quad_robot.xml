@@ -252,6 +252,7 @@
         <geom name="FL_thigh_visual11" pos="-1.83118e-06 0.0419597 -0.0332599" quat="3.53705e-10 0.707107 3.53547e-10 -0.707107" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 1 1 1" mesh="leg_left_krs__leg_link1_krs_1_47" />
         <geom name="FL_thigh_visual12" pos="-1.28432e-11 0.0217758 0" quat="-5.62077e-10 0.707107 5.62077e-10 0.707107" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.792157 0.819608 0.933333 1" mesh="leg_left_krs__M3x6_horn_lowhead_1_48" />
         <geom name="FL_thigh_visual13" quat="1 0 0 2.94897e-10" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.294118 0.294118 0.294118 1" mesh="KRS3300__small_diameter_hornB_1_2_49" />
+        <geom name="FL_thigh_cap" size="0.013 0.04419" pos="-2.30041e-11 0.041 -0.04419" type="capsule" contype="4" conaffinity="0" group="3" friction="0.3" rgba="0.2 0.8 0.2 0.3" />
         <body name="FL_foot" pos="-4.60082e-11 0.056864 -0.08838">
           <inertial pos="0.00463137 0.0096686 -0.0455396" quat="0.593401 0.623162 0.353093 -0.367247" mass="0.0114821" diaginertia="7.69821e-07 1.48295e-05 1.53926e-05" />
           <joint name="FL_knee_joint" pos="0 0 0" axis="0 1 0" range="-2.35619 2.35619" damping="0.100382" frictionloss="0.005" />
@@ -264,6 +265,7 @@
           <geom name="FL_foot_visual6" quat="1 1.02663e-10 0 1.92242e-10" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.294118 0.294118 0.294118 1" mesh="KRS3300__small_diameter_hornB_1_3_68" />
           <geom name="FL_toe" size="0.006" pos="0.00708299 0.009796 -0.113374" contype="1" conaffinity="0" priority="1" friction="0.6" solimp="0.9 0.95 0.023" rgba="0.1 0.1 0.1 1" />
           <geom name="FL_knee_ball" size="0.012" pos="0 -0.012 0" contype="1" conaffinity="0" group="3" friction="0.4" rgba="0.8 0.2 0.2 0.3" />
+          <geom name="FL_shank_cap" size="0.008 0.0567975" pos="0.00354149 0.0095 -0.056687" quat="0.999513 0 -0.0311917 0" type="capsule" contype="4" conaffinity="0" group="3" friction="0.3" rgba="0.2 0.8 0.2 0.3" />
           <site name="FL" pos="0.00708299 0.009796 -0.119374" size="0.004" group="4" rgba="1 0 0 1" />
         </body>
       </body>
@@ -284,6 +286,7 @@
         <geom name="RL_thigh_visual11" pos="-1.83117e-06 0.0419597 -0.0332599" quat="-1.94898e-11 0.707107 -1.95377e-11 -0.707107" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 1 1 1" mesh="leg_left_krs__leg_link1_krs_1_87" />
         <geom name="RL_thigh_visual12" pos="0 0.0217758 0" quat="1.71102e-10 0.707107 -1.71102e-10 0.707107" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.792157 0.819608 0.933333 1" mesh="leg_left_krs__M3x6_horn_lowhead_1_88" />
         <geom name="RL_thigh_visual13" quat="1 0 2.94897e-10 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.294118 0.294118 0.294118 1" mesh="KRS3300__small_diameter_hornB_1_2_89" />
+        <geom name="RL_thigh_cap" size="0.013 0.04419" pos="-3.0878e-11 0.041 -0.04419" type="capsule" contype="0" conaffinity="4" group="3" friction="0.3" rgba="0.2 0.8 0.2 0.3" />
         <body name="RL_foot" pos="-6.17561e-11 0.056864 -0.08838">
           <inertial pos="0.00463137 0.0096686 -0.0455396" quat="0.593401 0.623162 0.353093 -0.367247" mass="0.0114821" diaginertia="7.69821e-07 1.48295e-05 1.53926e-05" />
           <joint name="RL_knee_joint" pos="0 0 0" axis="0 1 0" range="-2.35619 2.35619" damping="0.100382" frictionloss="0.005" />
@@ -296,6 +299,7 @@
           <geom name="RL_foot_visual6" quat="1 1.02683e-10 2.94897e-10 -1.02655e-10" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.294118 0.294118 0.294118 1" mesh="KRS3300__small_diameter_hornB_1_3_108" />
           <geom name="RL_toe" size="0.006" pos="0.00708299 0.009796 -0.113374" contype="1" conaffinity="0" priority="1" friction="0.6" solimp="0.9 0.95 0.023" rgba="0.1 0.1 0.1 1" />
           <geom name="RL_knee_ball" size="0.012" pos="0 -0.012 0" contype="1" conaffinity="0" group="3" friction="0.4" rgba="0.8 0.2 0.2 0.3" />
+          <geom name="RL_shank_cap" size="0.008 0.0567975" pos="0.00354149 0.0095 -0.056687" quat="0.999513 0 -0.0311917 0" type="capsule" contype="0" conaffinity="4" group="3" friction="0.3" rgba="0.2 0.8 0.2 0.3" />
           <site name="RL" pos="0.00708299 0.009796 -0.119374" size="0.004" group="4" rgba="1 0 0 1" />
         </body>
       </body>
@@ -316,6 +320,7 @@
         <geom name="RR_thigh_visual11" pos="1.83117e-06 -0.0419597 -0.0332599" quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 1 1 1" mesh="leg_left_krs__leg_link1_krs_1_127" />
         <geom name="RR_thigh_visual12" pos="0 -0.0217758 0" quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.792157 0.819608 0.933333 1" mesh="leg_left_krs__M3x6_horn_lowhead_1_128" />
         <geom name="RR_thigh_visual13" quat="1 0 -2.94897e-10 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.294118 0.294118 0.294118 1" mesh="KRS3300__small_diameter_hornB_1_129" />
+        <geom name="RR_thigh_cap" size="0.013 0.04419" pos="2.09473e-11 -0.041 -0.04419" type="capsule" contype="0" conaffinity="4" group="3" friction="0.3" rgba="0.2 0.8 0.2 0.3" />
         <body name="RR_foot" pos="4.18946e-11 -0.056864 -0.08838">
           <inertial pos="0.00463137 -0.0096686 -0.0455396" quat="0.623162 0.593401 0.367247 -0.353093" mass="0.0114821" diaginertia="7.69821e-07 1.48295e-05 1.53926e-05" />
           <joint name="RR_knee_joint" pos="0 0 0" axis="0 1 0" range="-2.35619 2.35619" damping="0.100382" frictionloss="0.005" />
@@ -328,6 +333,7 @@
           <geom name="RR_foot_visual6" quat="1 -1.02588e-10 -2.94897e-10 -1.02552e-10" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.294118 0.294118 0.294118 1" mesh="KRS3300__small_diameter_hornB_1_4_148" />
           <geom name="RR_toe" size="0.006" pos="0.00708299 -0.009796 -0.113374" contype="1" conaffinity="0" priority="1" friction="0.6" solimp="0.9 0.95 0.023" rgba="0.1 0.1 0.1 1" />
           <geom name="RR_knee_ball" size="0.012" pos="0 0.012 0" contype="1" conaffinity="0" group="3" friction="0.4" rgba="0.8 0.2 0.2 0.3" />
+          <geom name="RR_shank_cap" size="0.008 0.0567975" pos="0.00354149 -0.0095 -0.056687" quat="0.999513 0 -0.0311917 0" type="capsule" contype="0" conaffinity="4" group="3" friction="0.3" rgba="0.2 0.8 0.2 0.3" />
           <site name="RR" pos="0.00708299 -0.009796 -0.119374" size="0.004" group="4" rgba="1 0 0 1" />
         </body>
       </body>
@@ -348,6 +354,7 @@
         <geom name="FR_thigh_visual11" pos="1.83118e-06 -0.0419597 -0.0332599" quat="0.707107 -3.53518e-10 0.707107 3.53589e-10" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 1 1 1" mesh="leg_left_krs__leg_link1_krs_1_167" />
         <geom name="FR_thigh_visual12" pos="1.28432e-11 -0.0217758 0" quat="0.707107 -2.08523e-10 0.707107 2.08523e-10" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.792157 0.819608 0.933333 1" mesh="leg_left_krs__M3x6_horn_lowhead_1_168" />
         <geom name="FR_thigh_visual13" quat="1 0 0 2.94897e-10" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.294118 0.294118 0.294118 1" mesh="KRS3300__small_diameter_hornB_1_169" />
+        <geom name="FR_thigh_cap" size="0.013 0.04419" pos="1.16533e-11 -0.041 -0.04419" type="capsule" contype="4" conaffinity="0" group="3" friction="0.3" rgba="0.2 0.8 0.2 0.3" />
         <body name="FR_foot" pos="2.33066e-11 -0.056864 -0.08838">
           <inertial pos="0.00463137 -0.0096686 -0.0455396" quat="0.623162 0.593401 0.367247 -0.353093" mass="0.0114821" diaginertia="7.69821e-07 1.48295e-05 1.53926e-05" />
           <joint name="FR_knee_joint" pos="0 0 0" axis="0 1 0" range="-2.35619 2.35619" damping="0.100382" frictionloss="0.005" />
@@ -360,6 +367,7 @@
           <geom name="FR_foot_visual6" quat="1 -1.02602e-10 0 1.92345e-10" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.294118 0.294118 0.294118 1" mesh="KRS3300__small_diameter_hornB_1_4_188" />
           <geom name="FR_toe" size="0.006" pos="0.00708299 -0.009796 -0.113374" contype="1" conaffinity="0" priority="1" friction="0.6" solimp="0.9 0.95 0.023" rgba="0.1 0.1 0.1 1" />
           <geom name="FR_knee_ball" size="0.012" pos="0 0.012 0" contype="1" conaffinity="0" group="3" friction="0.4" rgba="0.8 0.2 0.2 0.3" />
+          <geom name="FR_shank_cap" size="0.008 0.0567975" pos="0.00354149 -0.0095 -0.056687" quat="0.999513 0 -0.0311917 0" type="capsule" contype="4" conaffinity="0" group="3" friction="0.3" rgba="0.2 0.8 0.2 0.3" />
           <site name="FR" pos="0.00708299 -0.009796 -0.119374" size="0.004" group="4" rgba="1 0 0 1" />
         </body>
       </body>

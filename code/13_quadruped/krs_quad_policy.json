@@ -1,12 +1,12 @@
 {
   "export_env_task": "KrsQuad-Walk",
   "training": {
-    "run_dir": "2026-10-14_22-48-54_seed2",
+    "run_dir": "2026-10-14_23-00-25_seed3",
     "experiment_name": "krs_quad_velocity",
-    "run_name": "seed2",
+    "run_name": "seed3",
     "load_run": ".*",
     "load_checkpoint": "model_.*.pt",
-    "seed": "2",
+    "seed": "3",
     "reset_randomization": {
       "base_roll_pitch": 0.0,
       "base_z": 0.0,
@@ -16,7 +16,7 @@
     },
     "robustified": false
   },
-  "checkpoint": "/mnt/workspace/krs-quad-rl-deps/unitree_rl_mjlab/logs/rsl_rl/krs_quad_velocity/2026-10-14_22-48-54_seed2/model_1600.pt",
+  "checkpoint": "/mnt/workspace/krs-quad-rl-deps/unitree_rl_mjlab/logs/rsl_rl/krs_quad_velocity/2026-10-14_23-00-25_seed3/model_2999.pt",
   "obs_dim": 105,
   "act_dim": 8,
   "hidden_dims": [
@@ -137,5 +137,5 @@
   "gait_period_s": 0.32,
   "phase_command_threshold": 0.03,
   "obs_normalizer_eps": 0.01,
-  "verify_max_abs_err": 3.814697265625e-06
+  "verify_max_abs_err": 3.4570693969726562e-06
 }

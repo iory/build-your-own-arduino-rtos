@@ -112,7 +112,10 @@ async function main() {
   setProgress(30, 'ロボットモデルを読み込み中…');
 
   const xml = await (await fetch(ROBOT.xml)).text();
-  const meshFiles = [...xml.matchAll(/file="([^"]+\.stl)"/g)].map(m => m[1]);
+  // 同じ STL を複数の <mesh> が参照する (KRS 版はネジなどを 1 ファイルにまとめてある)
+  // ので、ファイル名ごとに 1 回だけ読む。VFS は同じ名前を 2 度足すと失敗する。
+  const meshFiles = [...new Set(
+      [...xml.matchAll(/file="([^"]+\.stl)"/g)].map(m => m[1]))];
   const vfs = new mujoco.MjVFS();
   let done = 0;
   await Promise.all(meshFiles.map(async f => {

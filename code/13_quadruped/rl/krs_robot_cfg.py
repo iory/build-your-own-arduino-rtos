@@ -147,18 +147,34 @@ HOME_KEYFRAME = EntityCfg.InitialStateCfg(
 # sitting on the belly or kneeling is a real contact the task can see and punish
 # instead of the body sinking through the ground unnoticed.
 ##
+#
+# The legs also collide with each other, front against rear: the hips are only
+# 132 mm apart and a front knee trails 71 mm behind its hip, so a rear leg
+# swinging forward can strike it. Without these capsules the simulation lets
+# the legs pass through each other, and a policy can learn moves the real robot
+# cannot make (seen on hardware: rear feet hitting the front legs when the body
+# was tilted). Contact bits: floor geoms 1/0 (they hit the terrain, 1/1, and
+# nothing else); front capsules 4/0 and rear capsules 0/4, so a front capsule
+# touches only a rear one -- (4 & 4) -- and never the floor or its own pair.
+##
 TOE_GEOMS = tuple(f"{leg}_toe" for leg in LEGS)
 _TOE_REGEX = r"^(FL|FR|RL|RR)_toe$"
 _BODY_REGEX = r"^(base_box|(FL|FR|RL|RR)_knee_ball)$"
+_FRONT_CAP_REGEX = r"^(FL|FR)_(thigh|shank)_cap$"
+_REAR_CAP_REGEX = r"^(RL|RR)_(thigh|shank)_cap$"
+FRONT_LEG_CAPS = tuple(f"{leg}_{part}_cap" for leg in ("FL", "FR")
+                       for part in ("thigh", "shank"))
 
 KRS_COLLISION = CollisionCfg(
-  geom_names_expr=(_TOE_REGEX, _BODY_REGEX),
-  contype=1,
-  conaffinity=0,
-  condim={_TOE_REGEX: 3, _BODY_REGEX: 3},
+  geom_names_expr=(_TOE_REGEX, _BODY_REGEX, _FRONT_CAP_REGEX, _REAR_CAP_REGEX),
+  contype={_TOE_REGEX: 1, _BODY_REGEX: 1, _FRONT_CAP_REGEX: 4, _REAR_CAP_REGEX: 0},
+  conaffinity={_TOE_REGEX: 0, _BODY_REGEX: 0, _FRONT_CAP_REGEX: 0,
+               _REAR_CAP_REGEX: 4},
+  condim={_TOE_REGEX: 3, _BODY_REGEX: 3, _FRONT_CAP_REGEX: 3, _REAR_CAP_REGEX: 3},
   priority={_TOE_REGEX: 1},
   # A bare printed PLA bracket on a hard floor is ~0.3-0.5; randomized in env_cfgs.
-  friction={_TOE_REGEX: (0.6,), _BODY_REGEX: (0.4,)},
+  friction={_TOE_REGEX: (0.6,), _BODY_REGEX: (0.4,), _FRONT_CAP_REGEX: (0.3,),
+            _REAR_CAP_REGEX: (0.3,)},
   solimp={_TOE_REGEX: (0.9, 0.95, 0.023)},
   disable_other_geoms=True,
 )
