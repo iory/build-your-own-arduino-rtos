@@ -23,7 +23,7 @@ A simulation that runs the trained policy in the WebAssembly build (the form tha
 runs inside a browser) of the physics simulator **MuJoCo**. The same
 neural network you flash onto the robot runs a 50 Hz control loop inside the
 browser. Use the sliders to change the forward and turning commands.
-押す (Push) shoves the body sideways; "RL 方策（IMU あり）" is the policy from
+**Push** shoves the body sideways; "RL policy (with IMU)" is the policy from
 {doc}`imu`.
 
 The physics is **the same as in training**. Only the four foot spheres touch the
@@ -33,10 +33,10 @@ the back-EMF and gearbox friction, and every command reaches the servo 20–35 m
 
 ```{raw} html
 <p>
-  <a class="sd-btn sd-btn-primary" href="../../assembly/quadruped/walk/index.html"
+  <a class="sd-btn sd-btn-primary" href="../../assembly/quadruped/walk/index.html?lang=en"
      target="_blank" rel="noopener">Open the walking simulation ↗</a>
 </p>
-<iframe src="../../assembly/quadruped/walk/index.html"
+<iframe src="../../assembly/quadruped/walk/index.html?lang=en"
         style="width:100%; height:70vh; border:1px solid var(--pst-color-border, #ddd); border-radius:8px;"
         loading="lazy"
         title="Quadruped walking simulation"></iframe>

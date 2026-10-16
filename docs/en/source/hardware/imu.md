@@ -31,18 +31,18 @@ lowering the right side makes y (left) negative.
 ## Push it in the browser
 
 The simulation from "Try it in the browser" in {doc}`walk` can run the IMU policy too.
-The one below opens with "RL 方策（IMU あり）" (RL policy with IMU) at zero forward
-speed. **押す** (Push) gives the body a sudden velocity in a random direction, as
-large as the 強さ (strength) slider says. Switch 制御 (control) to "RL 方策" (no IMU)
+The one below opens with "RL policy (with IMU)" at zero forward
+speed. **Push** gives the body a sudden velocity in a random direction, as
+large as the Strength slider says. Switch Control to "RL policy" (no IMU)
 and push the same way to compare. When the robot falls the simulation stops, and the
 bottom right shows how many times it was pushed and how many times it fell.
 
 ```{raw} html
 <p>
-  <a class="sd-btn sd-btn-primary" href="../../assembly/quadruped/walk/index.html?mode=imu&vx=0"
+  <a class="sd-btn sd-btn-primary" href="../../assembly/quadruped/walk/index.html?mode=imu&vx=0&lang=en"
      target="_blank" rel="noopener">Open the IMU simulation ↗</a>
 </p>
-<iframe src="../../assembly/quadruped/walk/index.html?mode=imu&vx=0"
+<iframe src="../../assembly/quadruped/walk/index.html?mode=imu&vx=0&lang=en"
         style="width:100%; height:70vh; border:1px solid var(--pst-color-border, #ddd); border-radius:8px;"
         loading="lazy"
         title="Quadruped IMU push simulation"></iframe>
@@ -68,7 +68,7 @@ What the IMU policy gained is bracing while standing.
 
 ## What you need
 
-On top of the parts in {doc}`bom`, two things:
+On top of the parts in {doc}`bom` (Feetech version) or {doc}`krs_bom` (KRS version), two things:
 
 | | |
 |---|---|

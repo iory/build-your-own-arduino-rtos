@@ -21,7 +21,8 @@ myst_enable_extensions = ["colon_fence", "dollarmath"]
 myst_heading_anchors = 3
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build"]
+# hardware/_tips は複数のページから {include} で読み込む部品で、単独のページではない
+exclude_patterns = ["_build", "hardware/_tips"]
 
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
