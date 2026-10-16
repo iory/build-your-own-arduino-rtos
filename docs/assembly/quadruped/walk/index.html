@@ -34,31 +34,31 @@
 <div id="wrap">
   <canvas id="canvas3d"></canvas>
   <div id="bar">
-    <button id="walkBtn" class="primary">歩く</button>
-    <button id="resetBtn">リセット</button>
-    <label>制御
+    <button id="walkBtn" class="primary" data-en="Walk">歩く</button>
+    <button id="resetBtn" data-en="Reset">リセット</button>
+    <label><span data-en="Control">制御</span>
       <select id="mode">
-        <option value="rl">RL 方策</option>
-        <option value="imu">RL 方策（IMU あり）</option>
-        <option value="naive">sin/cos 歩行（本文 13.5）</option>
+        <option value="rl" data-en="RL policy">RL 方策</option>
+        <option value="imu" data-en="RL policy (with IMU)">RL 方策（IMU あり）</option>
+        <option value="naive" data-en="sin/cos gait (book §13.5)">sin/cos 歩行（本文 13.5）</option>
       </select>
     </label>
     <span id="robotName"></span>
-    <button id="pushBtn">押す</button>
-    <label>強さ <input type="range" id="push" min="0.5" max="3.0" step="0.1" value="2.0">
+    <button id="pushBtn" data-en="Push">押す</button>
+    <label><span data-en="Strength">強さ</span> <input type="range" id="push" min="0.5" max="3.0" step="0.1" value="2.0">
       <span id="pushVal">2.0</span> m/s</label>
-    <label>前進 <input type="range" id="vx" min="-0.05" max="0.15" step="0.01" value="0.12">
+    <label><span data-en="Forward">前進</span> <input type="range" id="vx" min="-0.05" max="0.15" step="0.01" value="0.12">
       <span id="vxVal">0.12</span> m/s</label>
-    <label>旋回 <input type="range" id="wz" min="-0.35" max="0.35" step="0.05" value="0">
+    <label><span data-en="Turn">旋回</span> <input type="range" id="wz" min="-0.35" max="0.35" step="0.05" value="0">
       <span id="wzVal">0.00</span> rad/s</label>
-    <label><input type="checkbox" id="follow" checked> カメラ追従</label>
+    <label><input type="checkbox" id="follow" checked> <span data-en="Follow camera">カメラ追従</span></label>
     <span id="status"></span>
   </div>
 </div>
 <div id="overlay">
-  <div id="loadMsg">物理エンジン (MuJoCo WASM) を読み込み中…</div>
+  <div id="loadMsg" data-en="Loading the physics engine (MuJoCo WASM)…">物理エンジン (MuJoCo WASM) を読み込み中…</div>
   <progress id="loadBar" max="100" value="0"></progress>
-  <div class="small">初回は約 16 MB ダウンロードします</div>
+  <div class="small" data-en="The first visit downloads about 16 MB">初回は約 16 MB ダウンロードします</div>
 </div>
 
 <script type="importmap">
@@ -84,6 +84,7 @@ const ROBOTS = {
   },
   krs: {
     label: 'KRS 版',
+    labelEn: 'KRS version',
     xml: 'model/krs_quad_robot.xml',
     // KRS 版は IMU ありの方策だけ (rl/krs_env_cfgs.py)
     policies: {imu: 'policy_krs_imu.json'},
@@ -99,6 +100,16 @@ const robotKey = new URLSearchParams(location.search).get('robot') === 'krs'
     ? 'krs' : 'feetech';
 const ROBOT = ROBOTS[robotKey];
 
+// ?lang=en で表示を英語にする (英語版のページから開くとき)。既定は日本語。
+const EN = new URLSearchParams(location.search).get('lang') === 'en';
+const L = (ja, en) => EN ? en : ja;
+if (EN) {
+  document.documentElement.lang = 'en';
+  document.title = 'Quadruped walking simulation';
+  document.querySelectorAll('[data-en]').forEach(
+      el => el.textContent = el.dataset.en);
+}
+
 const $ = id => document.getElementById(id);
 const setProgress = (v, msg) => {
   $('loadBar').value = v;
@@ -113,7 +124,7 @@ async function fetchBinary(url) {
 
 async function main() {
   const mujoco = await loadMujoco();
-  setProgress(30, 'ロボットモデルを読み込み中…');
+  setProgress(30, L('ロボットモデルを読み込み中…', 'Loading the robot model…'));
 
   const xml = await (await fetch(ROBOT.xml)).text();
   // 同じ STL を複数の <mesh> が参照する (KRS 版はネジなどを 1 ファイルにまとめてある)
@@ -128,7 +139,7 @@ async function main() {
     setProgress(30 + 50 * done / meshFiles.length);
   }));
 
-  setProgress(85, '学習済み方策を読み込み中…');
+  setProgress(85, L('学習済み方策を読み込み中…', 'Loading the trained policy…'));
   const policies = {};
   await Promise.all(Object.entries(ROBOT.policies).map(async ([mode, f]) => {
     const res = await fetch(f);
@@ -143,7 +154,7 @@ async function main() {
     const ok = o.value === 'naive' ? ROBOT.naive : o.value in policies;
     if (!ok) o.remove();
   }
-  $('robotName').textContent = ROBOT.label;
+  $('robotName').textContent = L(ROBOT.label, ROBOT.labelEn || '');
   $('vx').min = ROBOT.vx.min;
   $('vx').max = ROBOT.vx.max;
   $('vx').value = ROBOT.vx.value;
@@ -262,7 +273,7 @@ async function main() {
     for (let i = 0; i < policy.nj; i++) data.ctrl[i] = policy.defaultQ[i];
     walking = false;
     fallen = false;
-    $('walkBtn').textContent = '歩く';
+    $('walkBtn').textContent = L('歩く', 'Walk');
   }
   reset();
 
@@ -281,7 +292,8 @@ async function main() {
   $('walkBtn').onclick = () => {
     if (fallen) reset();
     walking = !walking;
-    $('walkBtn').textContent = walking ? '一時停止' : '歩く';
+    $('walkBtn').textContent = walking
+        ? L('一時停止', 'Pause') : L('歩く', 'Walk');
   };
   $('resetBtn').onclick = reset;
   // 押す: 学習中の push と同じく、胴体の速度に水平方向の速度を一瞬で足す。
@@ -349,7 +361,7 @@ async function main() {
           fallen = true;
           walking = false;
           tallyOf($('mode').value).fall += 1;
-          $('walkBtn').textContent = '歩く';
+          $('walkBtn').textContent = L('歩く', 'Walk');
           break;
         }
       }
@@ -366,8 +378,11 @@ async function main() {
     // 傾き = 重力の向きと胴体の -z 軸のなす角
     const t = tallyOf($('mode').value);
     $('status').textContent =
-        `x ${data.qpos[0].toFixed(2)} m / 傾き ${tiltDeg().toFixed(0)}° / 押した ${t.push} 回・倒れた ${t.fall} 回`
-        + (fallen ? ' / 転倒（「歩く」でやり直し）' : '');
+        `x ${data.qpos[0].toFixed(2)} m / ` + L(
+            `傾き ${tiltDeg().toFixed(0)}° / 押した ${t.push} 回・倒れた ${t.fall} 回`,
+            `tilt ${tiltDeg().toFixed(0)}° / pushed ${t.push} / fell ${t.fall}`)
+        + (fallen ? L(' / 転倒（「歩く」でやり直し）',
+                      ' / fell over (press Walk to restart)') : '');
     controls.update();
     renderer.render(scene, camera);
   }
@@ -377,7 +392,8 @@ async function main() {
 }
 
 main().catch(err => {
-  $('loadMsg').textContent = '読み込みに失敗しました: ' + err;
+  $('loadMsg').textContent =
+      L('読み込みに失敗しました: ', 'Failed to load: ') + err;
   console.error(err);
 });
 </script>

@@ -136,6 +136,51 @@ import * as THREE from 'three';
 import { GLTFLoader } from './vendor/GLTFLoader.js';
 import { OrbitControls } from './vendor/OrbitControls.js';
 
+// ?lang=en switches the UI, and the sentences the plan was generated
+// with, to English. The default stays Japanese.
+const EN = new URLSearchParams(location.search).get('lang') === 'en';
+const L = (ja, en) => EN ? en : ja;
+const PLAN_EN = [
+  [/^ネジ (\S+) ×(\d+) を締める（対象: (.+)）$/, 'Tighten $1 ×$2 (into $3)'],
+  [/^(.+?) へ — /, 'Onto $1 — '],
+  [/同軸 φ([\d.]+)mm：本部品の ?(.+?) を ?(.+?) に合わせて差し込む（×(\d+)）/g,
+   'concentric φ$1 mm: insert this part\'s $2 into $3 (×$4)'],
+  [/同軸 φ([\d.]+)mm（×(\d+)）/g, 'concentric φ$1 mm (×$2)'],
+  [/噛み込み ([\d.]+)mm（必要 ([\d.]+)mm、(.+?)）/g,
+   'thread engagement $1 mm (needs $2 mm, $3)'],
+  [/this part's 本体/g, 'this part'],
+  [/into 本体/g, 'into the target'],
+  [/面合わせ ×/g, 'coincident ×'],
+  [/平行 ×/g, 'parallel ×'],
+  [/距離 ×/g, 'distance ×'],
+  [/本体/g, 'Body'],
+  [/；/g, '; '],
+  [/、/g, ', '],
+];
+const tr = text => EN
+    ? PLAN_EN.reduce((t, [re, to]) => t.replace(re, to), text) : text;
+if (EN) {
+  document.documentElement.lang = 'en';
+  const title = document.title.replace(' 組立タイムライン',
+                                       ' assembly timeline');
+  document.title = title;
+  document.querySelector('#sidebar h1').textContent = title;
+  const text = {
+    exportBtn: 'Export the order as YAML',
+    saveBtn: 'Save order and re-render',
+    prevBtn: '◀ Prev', playBtn: '▶ Play', nextBtn: 'Next ▶',
+    lineBtn: 'Line art', wireBtn: 'Wiring mode',
+    loading: 'Loading parts…',
+  };
+  Object.entries(text).forEach(
+      ([id, t]) => document.getElementById(id).textContent = t);
+  document.getElementById('saveBtn').title =
+      'Re-validate the new order on the server, save it to plan.yaml '
+      + 'and re-render only the changed steps';
+  document.getElementById('ataCheck').nextSibling.textContent =
+      ' ATA physical path';
+}
+
 const PLAN = {"robot": "sts3215_quadruped", "units": [{"id": "leg_left", "count": 2, "instances": ["leg_left-1", "leg_left-2"], "is_subassembly": true, "parts": ["ISO 7045 M2x6-1", "ISO 7045 M2x6-2", "ISO 7045 M2x6-3", "ISO 7045 M2x6-4", "ISO 7045 M3x6-6", "ISO 7045 M3x6-7", "ISO 7045 M3x6-8", "ISO 7045 M3x6-9", "STS3215-3", "bracket_outline-1", "leg_link1-2"]}, {"id": "leg_right", "count": 2, "instances": ["leg_right-1", "leg_right-2"], "is_subassembly": true, "parts": ["ISO 7045 M2x6-1", "ISO 7045 M2x6-2", "ISO 7045 M2x6-3", "ISO 7045 M2x6-4", "ISO 7045 M3x6-5", "ISO 7045 M3x6-6", "ISO 7045 M3x6-7", "ISO 7045 M3x6-8", "STS3215-3", "bracket_outline-1", "leg_link1-2"]}, {"id": "body_servo", "count": 1, "instances": ["body_servo-1"], "is_subassembly": true, "parts": ["ISO 7045 M3x6-1", "ISO 7045 M3x6-2", "ISO 7045 M3x6-3", "ISO 7045 M3x6-4", "ISO 7045 M3x6-5", "ISO 7045 M3x6-6", "ISO 7045 M3x6-7", "ISO 7045 M3x6-8", "STS3215-1", "STS3215-2", "STS3215-3", "STS3215-4", "body-1"]}], "islands": [{"id": 0, "name": "本体", "members": ["body_servo-1", "leg_left-1", "leg_left-2", "leg_right-1", "leg_right-2"], "base": "body_servo-1", "dock": null}], "recipes": [{"id": "STS3215", "count": 8, "parts": [{"id": "STS3215_case", "count": 1, "is_subassembly": false}, {"id": "STS3215_horn", "count": 1, "is_subassembly": false}], "steps": [{"index": 1, "component": "STS3215_horn-1", "part": "STS3215_horn", "base": true, "floating": false, "attach_to": [], "connections": [], "direction": null, "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": []}, {"index": 2, "component": "STS3215_case-1", "part": "STS3215_case", "base": false, "floating": false, "attach_to": ["STS3215_horn-1"], "connections": [{"to": "STS3215_horn-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.8, "self_part": "本体", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.8, "self_part": "本体", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "本体"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "本体", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "本体"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "本体", "other_part": "本体"}]}], "direction": [-0.0, -0.0, 1.0], "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["STS3215_horn-1 へ — 同軸 φ4.8mm（×2）；面合わせ ×2、平行 ×2"]}]}, {"id": "body_servo", "count": 1, "parts": [{"id": "ISO 7045 M3x6", "count": 8, "is_subassembly": false}, {"id": "STS3215", "count": 4, "is_subassembly": true}, {"id": "body", "count": 1, "is_subassembly": false}], "steps": [{"index": 1, "component": "body-1", "part": "body", "base": true, "floating": false, "attach_to": [], "connections": [], "direction": null, "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": []}, {"index": 2, "component": "STS3215-4", "part": "STS3215", "base": false, "floating": false, "attach_to": ["body-1"], "connections": [{"to": "body-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "STS3215_case-1", "other_part": "本体"}]}], "direction": [-0.0, 0.5257311121191336, -0.85065080835204], "motion": null, "blockers": [], "tight_fit": true, "verified": true, "fasteners": [], "connection_text": ["body-1 へ — 同軸 φ4.2mm：本部品の STS3215_case-1 を 本体 に合わせて差し込む（×4）；面合わせ ×2"]}, {"index": 3, "kind": "fasten", "component": "M3x6 ×2", "names": ["ISO 7045 M3x6-3", "ISO 7045 M3x6-4"], "directions": {"ISO 7045 M3x6-3": [0.0, -1.0, 0.0], "ISO 7045 M3x6-4": [0.0, -1.0, 0.0]}, "base": false, "floating": false, "attach_to": ["STS3215-4", "body-1"], "connections": [], "direction": null, "motion": null, "blockers": [], "verified": true, "fasteners": [{"size": "M3x6", "count": 2}], "connection_text": ["ネジ M3x6 ×2 を締める（対象: STS3215-4、body-1）"]}, {"index": 4, "component": "STS3215-3", "part": "STS3215", "base": false, "floating": false, "attach_to": ["body-1"], "connections": [{"to": "body-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "STS3215_case-1", "other_part": "本体"}]}], "direction": [0.16062203564002314, 0.6937804775604492, -0.7020464447761631], "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["body-1 へ — 同軸 φ4.2mm：本部品の STS3215_case-1 を 本体 に合わせて差し込む（×4）；面合わせ ×2"]}, {"index": 5, "kind": "fasten", "component": "M3x6 ×2", "names": ["ISO 7045 M3x6-7", "ISO 7045 M3x6-8"], "directions": {"ISO 7045 M3x6-7": [0.0, -1.0, 0.0], "ISO 7045 M3x6-8": [0.0, -1.0, 0.0]}, "base": false, "floating": false, "attach_to": ["STS3215-3", "body-1"], "connections": [], "direction": null, "motion": null, "blockers": [], "verified": true, "fasteners": [{"size": "M3x6", "count": 2}], "connection_text": ["ネジ M3x6 ×2 を締める（対象: STS3215-3、body-1）"]}, {"index": 6, "component": "STS3215-2", "part": "STS3215", "base": false, "floating": false, "attach_to": ["body-1"], "connections": [{"to": "body-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "STS3215_case-1", "other_part": "本体"}]}], "direction": [-0.0, -0.5257311121191336, -0.85065080835204], "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["body-1 へ — 同軸 φ4.2mm：本部品の STS3215_case-1 を 本体 に合わせて差し込む（×4）；面合わせ ×2"]}, {"index": 7, "kind": "fasten", "component": "M3x6 ×2", "names": ["ISO 7045 M3x6-5", "ISO 7045 M3x6-6"], "directions": {"ISO 7045 M3x6-5": [-0.0, 1.0, -0.0], "ISO 7045 M3x6-6": [-0.0, 1.0, -0.0]}, "base": false, "floating": false, "attach_to": ["STS3215-2", "body-1"], "connections": [], "direction": null, "motion": null, "blockers": [], "verified": true, "fasteners": [{"size": "M3x6", "count": 2}], "connection_text": ["ネジ M3x6 ×2 を締める（対象: STS3215-2、body-1）"]}, {"index": 8, "component": "STS3215-1", "part": "STS3215", "base": false, "floating": false, "attach_to": ["body-1"], "connections": [{"to": "body-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 4.2, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "STS3215_case-1", "other_part": "本体"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "STS3215_case-1", "other_part": "本体"}]}], "direction": [-0.0, -0.5257311121191336, -0.85065080835204], "motion": null, "blockers": [], "tight_fit": true, "verified": true, "fasteners": [], "connection_text": ["body-1 へ — 同軸 φ4.2mm：本部品の STS3215_case-1 を 本体 に合わせて差し込む（×4）；面合わせ ×2"]}, {"index": 9, "kind": "fasten", "component": "M3x6 ×2", "names": ["ISO 7045 M3x6-1", "ISO 7045 M3x6-2"], "directions": {"ISO 7045 M3x6-1": [-0.0, 1.0, -0.0], "ISO 7045 M3x6-2": [-0.0, 1.0, -0.0]}, "base": false, "floating": false, "attach_to": ["STS3215-1", "body-1"], "connections": [], "direction": null, "motion": null, "blockers": [], "verified": true, "fasteners": [{"size": "M3x6", "count": 2}], "connection_text": ["ネジ M3x6 ×2 を締める（対象: STS3215-1、body-1）"]}]}, {"id": "leg_left", "count": 2, "parts": [{"id": "ISO 7045 M2x6", "count": 4, "is_subassembly": false}, {"id": "ISO 7045 M3x6", "count": 4, "is_subassembly": false}, {"id": "STS3215", "count": 1, "is_subassembly": true}, {"id": "bracket_outline", "count": 1, "is_subassembly": false}, {"id": "leg_link1", "count": 1, "is_subassembly": false}], "steps": [{"index": 1, "component": "STS3215-3", "part": "STS3215", "base": true, "floating": false, "attach_to": [], "connections": [], "direction": null, "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": []}, {"index": 2, "component": "bracket_outline-1", "part": "bracket_outline", "base": false, "floating": false, "attach_to": ["STS3215-3"], "connections": [{"to": "STS3215-3", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.2, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.2, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.2, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.2, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}]}], "direction": [-0.791992370503131, -0.6052610227805555, -0.08004485846990718], "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["STS3215-3 へ — 同軸 φ3.2mm：本部品の 本体 を STS3215_horn-1 に合わせて差し込む（×4）；面合わせ ×2、平行 ×2"]}, {"index": 3, "kind": "fasten", "component": "M3x6 ×4", "names": ["ISO 7045 M3x6-6", "ISO 7045 M3x6-7", "ISO 7045 M3x6-8", "ISO 7045 M3x6-9"], "directions": {"ISO 7045 M3x6-6": [-0.7919923705031306, -0.6052610227805559, -0.08004485846990722], "ISO 7045 M3x6-7": [-0.7919923705031306, -0.6052610227805559, -0.08004485846990722], "ISO 7045 M3x6-8": [-0.7919923705031306, -0.6052610227805559, -0.08004485846990722], "ISO 7045 M3x6-9": [-0.7919923705031306, -0.6052610227805559, -0.08004485846990722]}, "base": false, "floating": false, "attach_to": ["STS3215-3", "bracket_outline-1"], "connections": [], "direction": null, "motion": null, "blockers": [], "verified": true, "fasteners": [{"size": "M3x6", "count": 4}], "connection_text": ["ネジ M3x6 ×4 を締める（対象: STS3215-3、bracket_outline-1）"]}, {"index": 4, "component": "leg_link1-2", "part": "leg_link1", "base": false, "floating": false, "attach_to": ["STS3215-3"], "connections": [{"to": "STS3215-3", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 2.0, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 2.0, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 2.0, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 2.0, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}]}], "direction": [-0.518654965859503, 0.5978340595664232, 0.611221288578538], "motion": null, "blockers": [], "tight_fit": true, "verified": true, "fasteners": [], "connection_text": ["STS3215-3 へ — 同軸 φ2.0mm：本部品の 本体 を STS3215_case-1 に合わせて差し込む（×4）；面合わせ ×2"]}, {"index": 5, "kind": "fasten", "component": "M2x6 ×4", "names": ["ISO 7045 M2x6-1", "ISO 7045 M2x6-2", "ISO 7045 M2x6-3", "ISO 7045 M2x6-4"], "directions": {"ISO 7045 M2x6-1": [0.7919923705031308, 0.6052610227805559, 0.08004485846990655], "ISO 7045 M2x6-2": [0.7919923705031308, 0.6052610227805559, 0.08004485846990655], "ISO 7045 M2x6-3": [-0.7919923705031308, -0.6052610227805558, -0.08004485846990672], "ISO 7045 M2x6-4": [-0.7919923705031308, -0.6052610227805558, -0.08004485846990672]}, "base": false, "floating": false, "attach_to": ["STS3215-3", "leg_link1-2"], "connections": [], "direction": null, "motion": null, "blockers": [], "verified": true, "fasteners": [{"size": "M2x6", "count": 4}], "connection_text": ["ネジ M2x6 ×4 を締める（対象: STS3215-3、leg_link1-2）"]}]}, {"id": "leg_right", "count": 2, "parts": [{"id": "ISO 7045 M2x6", "count": 4, "is_subassembly": false}, {"id": "ISO 7045 M3x6", "count": 4, "is_subassembly": false}, {"id": "STS3215", "count": 1, "is_subassembly": true}, {"id": "bracket_outline", "count": 1, "is_subassembly": false}, {"id": "leg_link1", "count": 1, "is_subassembly": false}], "steps": [{"index": 1, "component": "STS3215-3", "part": "STS3215", "base": true, "floating": false, "attach_to": [], "connections": [], "direction": null, "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": []}, {"index": 2, "component": "bracket_outline-1", "part": "bracket_outline", "base": false, "floating": false, "attach_to": ["STS3215-3"], "connections": [{"to": "STS3215-3", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 20.0, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.2, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 20.0, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.2, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}]}], "direction": [-0.7919923705031309, -0.6052610227805559, -0.08004485846990453], "motion": null, "blockers": [], "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["STS3215-3 へ — 同軸 φ20.0mm：本部品の 本体 を STS3215_horn-1 に合わせて差し込む（×2）；同軸 φ3.2mm：本部品の 本体 を STS3215_horn-1 に合わせて差し込む（×2）；面合わせ ×2、平行 ×2"]}, {"index": 3, "kind": "fasten", "component": "M3x6 ×4", "names": ["ISO 7045 M3x6-5", "ISO 7045 M3x6-6", "ISO 7045 M3x6-7", "ISO 7045 M3x6-8"], "directions": {"ISO 7045 M3x6-5": [-0.7919923705031309, -0.6052610227805559, -0.08004485846990453], "ISO 7045 M3x6-6": [-0.7919923705031309, -0.6052610227805559, -0.08004485846990453], "ISO 7045 M3x6-7": [-0.7919923705031309, -0.6052610227805559, -0.08004485846990453], "ISO 7045 M3x6-8": [-0.7919923705031309, -0.6052610227805559, -0.08004485846990453]}, "base": false, "floating": false, "attach_to": ["STS3215-3", "bracket_outline-1"], "connections": [], "direction": null, "motion": null, "blockers": [], "verified": true, "fasteners": [{"size": "M3x6", "count": 4}], "connection_text": ["ネジ M3x6 ×4 を締める（対象: STS3215-3、bracket_outline-1）"]}, {"index": 4, "component": "leg_link1-2", "part": "leg_link1", "base": false, "floating": false, "attach_to": ["STS3215-3"], "connections": [{"to": "STS3215-3", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 2.0, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 2.0, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "本体", "other_part": "STS3215_case-1"}]}], "direction": [0.5186549658595028, -0.5978340595664228, -0.6112212885785385], "motion": null, "blockers": [], "tight_fit": true, "verified": true, "fasteners": [], "connection_text": ["STS3215-3 へ — 同軸 φ2.0mm：本部品の 本体 を STS3215_case-1 に合わせて差し込む（×2）；面合わせ ×4"]}, {"index": 5, "kind": "fasten", "component": "M2x6 ×4", "names": ["ISO 7045 M2x6-1", "ISO 7045 M2x6-2", "ISO 7045 M2x6-3", "ISO 7045 M2x6-4"], "directions": {"ISO 7045 M2x6-1": [0.7919923705031306, 0.6052610227805558, 0.0800448584699067], "ISO 7045 M2x6-2": [0.7919923705031306, 0.6052610227805558, 0.0800448584699067], "ISO 7045 M2x6-3": [-0.7919923705031306, -0.6052610227805559, -0.08004485846990653], "ISO 7045 M2x6-4": [-0.7919923705031306, -0.6052610227805559, -0.08004485846990653]}, "base": false, "floating": false, "attach_to": ["STS3215-3", "leg_link1-2"], "connections": [], "direction": null, "motion": null, "blockers": [], "verified": true, "fasteners": [{"size": "M2x6", "count": 4}], "connection_text": ["ネジ M2x6 ×4 を締める（対象: STS3215-3、leg_link1-2）"]}]}], "bom": {"ISO 7045 M3x6": 40, "ISO 7045 M2x6": 16, "STS3215_case": 8, "STS3215_horn": 8, "bracket_outline": 4, "leg_link1": 4, "body": 1}, "steps": [{"index": 1, "kind": "part", "component": "body_servo-1", "unit": "body_servo", "island": 0, "base": true, "floating": false, "attach_to": [], "connections": [], "inferred_contacts": [], "direction": null, "motion": null, "clearance_mm": null, "blockers": [], "screw_blocked": 0, "tight_fit": false, "verified": true, "fasteners": [], "connection_text": []}, {"index": 2, "kind": "part", "component": "leg_right-2", "unit": "leg_right", "island": 0, "base": false, "floating": false, "attach_to": ["body_servo-1"], "connections": [{"to": "body_servo-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-4/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-4/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-4/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-4/STS3215_horn-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-4/STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-4/STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-4/STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-4/STS3215_case-1"}]}], "inferred_contacts": [], "direction": [3.2841573781886954e-17, 1.0, 1.1074220453885766e-16], "motion": null, "clearance_mm": 32.74, "blockers": [], "screw_blocked": 0, "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["body_servo-1 へ — 同軸 φ3.0mm：本部品の leg_link1-2 を STS3215-4/STS3215_horn-1 に合わせて差し込む（×4）；面合わせ ×2、平行 ×2"]}, {"index": 3, "kind": "fasten", "component": "M3x6 ×4", "names": ["ISO 7045 M3x6-13", "ISO 7045 M3x6-14", "ISO 7045 M3x6-15", "ISO 7045 M3x6-16"], "directions": {"ISO 7045 M3x6-13": [-2.220446049250313e-16, 1.0, -4.073800584091322e-16], "ISO 7045 M3x6-14": [-2.220446049250313e-16, 1.0, -4.073800584091322e-16], "ISO 7045 M3x6-15": [-2.220446049250313e-16, 1.0, -4.073800584091322e-16], "ISO 7045 M3x6-16": [-2.220446049250313e-16, 1.0, -4.073800584091322e-16]}, "unit": null, "island": 0, "base": false, "floating": false, "attach_to": ["body_servo-1", "leg_right-2"], "connections": [], "inferred_contacts": [], "direction": null, "motion": null, "clearance_mm": null, "blockers": [], "screw_blocked": 0, "verified": true, "fasteners": [{"size": "M3x6", "count": 4}], "connection_text": ["ネジ M3x6 ×4 を締める（対象: body_servo-1、leg_right-2）"]}, {"index": 4, "kind": "part", "component": "leg_right-1", "unit": "leg_right", "island": 0, "base": false, "floating": false, "attach_to": ["body_servo-1"], "connections": [{"to": "body_servo-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-3/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-3/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-3/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-3/STS3215_horn-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-3/STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-3/STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-3/STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-3/STS3215_case-1"}]}], "inferred_contacts": [], "direction": [-5.575598162264781e-17, 1.0, 1.9409903422455352e-16], "motion": null, "clearance_mm": 32.74, "blockers": [], "screw_blocked": 0, "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["body_servo-1 へ — 同軸 φ3.0mm：本部品の leg_link1-2 を STS3215-3/STS3215_horn-1 に合わせて差し込む（×4）；面合わせ ×2、平行 ×2"]}, {"index": 5, "kind": "fasten", "component": "M3x6 ×4", "names": ["ISO 7045 M3x6-10", "ISO 7045 M3x6-11", "ISO 7045 M3x6-12", "ISO 7045 M3x6-9"], "directions": {"ISO 7045 M3x6-10": [-5.551115123125783e-16, 1.0, -3.865633766974105e-16], "ISO 7045 M3x6-11": [-5.551115123125783e-16, 1.0, -3.865633766974105e-16], "ISO 7045 M3x6-12": [-5.551115123125783e-16, 1.0, -3.865633766974105e-16], "ISO 7045 M3x6-9": [-5.551115123125783e-16, 1.0, -3.865633766974105e-16]}, "unit": null, "island": 0, "base": false, "floating": false, "attach_to": ["body_servo-1", "leg_right-1"], "connections": [], "inferred_contacts": [], "direction": null, "motion": null, "clearance_mm": null, "blockers": [], "screw_blocked": 0, "verified": true, "fasteners": [{"size": "M3x6", "count": 4}], "connection_text": ["ネジ M3x6 ×4 を締める（対象: body_servo-1、leg_right-1）"]}, {"index": 6, "kind": "part", "component": "leg_left-2", "unit": "leg_left", "island": 0, "base": false, "floating": false, "attach_to": ["body_servo-1"], "connections": [{"to": "body_servo-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-2/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-2/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-2/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-2/STS3215_horn-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-2/STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-2/STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-2/STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-2/STS3215_case-1"}]}], "inferred_contacts": [], "direction": [-7.216449660063526e-16, -1.0, -1.4085954624931678e-15], "motion": null, "clearance_mm": 32.74, "blockers": [], "screw_blocked": 0, "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["body_servo-1 へ — 同軸 φ3.0mm：本部品の leg_link1-2 を STS3215-2/STS3215_horn-1 に合わせて差し込む（×4）；面合わせ ×2、平行 ×2"]}, {"index": 7, "kind": "fasten", "component": "M3x6 ×4", "names": ["ISO 7045 M3x6-5", "ISO 7045 M3x6-6", "ISO 7045 M3x6-7", "ISO 7045 M3x6-8"], "directions": {"ISO 7045 M3x6-5": [-6.93889390390723e-16, -1.0, -1.4065807805717734e-15], "ISO 7045 M3x6-6": [-6.93889390390723e-16, -1.0, -1.4065807805717734e-15], "ISO 7045 M3x6-7": [-6.93889390390723e-16, -1.0, -1.4065807805717734e-15], "ISO 7045 M3x6-8": [-6.93889390390723e-16, -1.0, -1.4065807805717734e-15]}, "unit": null, "island": 0, "base": false, "floating": false, "attach_to": ["body_servo-1", "leg_left-2"], "connections": [], "inferred_contacts": [], "direction": null, "motion": null, "clearance_mm": null, "blockers": [], "screw_blocked": 0, "verified": true, "fasteners": [{"size": "M3x6", "count": 4}], "connection_text": ["ネジ M3x6 ×4 を締める（対象: body_servo-1、leg_left-2）"]}, {"index": 8, "kind": "part", "component": "leg_left-1", "unit": "leg_left", "island": 0, "base": false, "floating": false, "attach_to": ["body_servo-1"], "connections": [{"to": "body_servo-1", "inferred": false, "mates": [{"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-1/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-1/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-1/STS3215_horn-1"}, {"type": "CONCENTRIC", "label": "同軸", "diameter_mm": 3.0, "self_part": "leg_link1-2", "other_part": "STS3215-1/STS3215_horn-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-1/STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-1/STS3215_case-1"}, {"type": "COINCIDENT", "label": "面合わせ", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-1/STS3215_horn-1"}, {"type": "PARALLEL", "label": "平行", "diameter_mm": null, "self_part": "leg_link1-2", "other_part": "STS3215-1/STS3215_case-1"}]}], "inferred_contacts": [], "direction": [-8.049116928532388e-16, -1.0, -1.2816806903014421e-15], "motion": null, "clearance_mm": 32.74, "blockers": [], "screw_blocked": 0, "tight_fit": false, "verified": true, "fasteners": [], "connection_text": ["body_servo-1 へ — 同軸 φ3.0mm：本部品の leg_link1-2 を STS3215-1/STS3215_horn-1 に合わせて差し込む（×4）；面合わせ ×2、平行 ×2"]}, {"index": 9, "kind": "fasten", "component": "M3x6 ×4", "names": ["ISO 7045 M3x6-1", "ISO 7045 M3x6-2", "ISO 7045 M3x6-3", "ISO 7045 M3x6-4"], "directions": {"ISO 7045 M3x6-1": [-8.049116928532388e-16, -1.0, -1.2816806903014421e-15], "ISO 7045 M3x6-2": [-8.049116928532388e-16, -1.0, -1.2816806903014421e-15], "ISO 7045 M3x6-3": [-8.049116928532388e-16, -1.0, -1.2816806903014421e-15], "ISO 7045 M3x6-4": [-8.049116928532388e-16, -1.0, -1.2816806903014421e-15]}, "unit": null, "island": 0, "base": false, "floating": false, "attach_to": ["body_servo-1", "leg_left-1"], "connections": [], "inferred_contacts": [], "direction": null, "motion": null, "clearance_mm": null, "blockers": [], "screw_blocked": 0, "verified": true, "fasteners": [{"size": "M3x6", "count": 4}], "connection_text": ["ネジ M3x6 ×4 を締める（対象: body_servo-1、leg_left-1）"]}], "fasteners": [{"size": "M2x6", "count": 16}, {"size": "M3x6", "count": 40}]};
 const GLB = {"ISO 7045 M3x6-1": "glb/ISO 7045 M3x6-1.glb", "ISO 7045 M3x6-10": "glb/ISO 7045 M3x6-10.glb", "ISO 7045 M3x6-11": "glb/ISO 7045 M3x6-11.glb", "ISO 7045 M3x6-12": "glb/ISO 7045 M3x6-12.glb", "ISO 7045 M3x6-13": "glb/ISO 7045 M3x6-13.glb", "ISO 7045 M3x6-14": "glb/ISO 7045 M3x6-14.glb", "ISO 7045 M3x6-15": "glb/ISO 7045 M3x6-15.glb", "ISO 7045 M3x6-16": "glb/ISO 7045 M3x6-16.glb", "ISO 7045 M3x6-2": "glb/ISO 7045 M3x6-2.glb", "ISO 7045 M3x6-3": "glb/ISO 7045 M3x6-3.glb", "ISO 7045 M3x6-4": "glb/ISO 7045 M3x6-4.glb", "ISO 7045 M3x6-5": "glb/ISO 7045 M3x6-5.glb", "ISO 7045 M3x6-6": "glb/ISO 7045 M3x6-6.glb", "ISO 7045 M3x6-7": "glb/ISO 7045 M3x6-7.glb", "ISO 7045 M3x6-8": "glb/ISO 7045 M3x6-8.glb", "ISO 7045 M3x6-9": "glb/ISO 7045 M3x6-9.glb", "body_servo-1": "glb/body_servo-1.glb", "leg_left-1": "glb/leg_left-1.glb", "leg_left-2": "glb/leg_left-2.glb", "leg_right-1": "glb/leg_right-1.glb", "leg_right-2": "glb/leg_right-2.glb"};
 const RECIPE_GLB = {"STS3215": {"STS3215_case-1": "glb/units/STS3215/STS3215_case-1.glb", "STS3215_horn-1": "glb/units/STS3215/STS3215_horn-1.glb"}, "body_servo": {"ISO 7045 M3x6-1": "glb/units/body_servo/ISO 7045 M3x6-1.glb", "ISO 7045 M3x6-2": "glb/units/body_servo/ISO 7045 M3x6-2.glb", "ISO 7045 M3x6-3": "glb/units/body_servo/ISO 7045 M3x6-3.glb", "ISO 7045 M3x6-4": "glb/units/body_servo/ISO 7045 M3x6-4.glb", "ISO 7045 M3x6-5": "glb/units/body_servo/ISO 7045 M3x6-5.glb", "ISO 7045 M3x6-6": "glb/units/body_servo/ISO 7045 M3x6-6.glb", "ISO 7045 M3x6-7": "glb/units/body_servo/ISO 7045 M3x6-7.glb", "ISO 7045 M3x6-8": "glb/units/body_servo/ISO 7045 M3x6-8.glb", "STS3215-1": "glb/units/body_servo/STS3215-1.glb", "STS3215-2": "glb/units/body_servo/STS3215-2.glb", "STS3215-3": "glb/units/body_servo/STS3215-3.glb", "STS3215-4": "glb/units/body_servo/STS3215-4.glb", "body-1": "glb/units/body_servo/body-1.glb"}, "leg_left": {"ISO 7045 M2x6-1": "glb/units/leg_left/ISO 7045 M2x6-1.glb", "ISO 7045 M2x6-2": "glb/units/leg_left/ISO 7045 M2x6-2.glb", "ISO 7045 M2x6-3": "glb/units/leg_left/ISO 7045 M2x6-3.glb", "ISO 7045 M2x6-4": "glb/units/leg_left/ISO 7045 M2x6-4.glb", "ISO 7045 M3x6-6": "glb/units/leg_left/ISO 7045 M3x6-6.glb", "ISO 7045 M3x6-7": "glb/units/leg_left/ISO 7045 M3x6-7.glb", "ISO 7045 M3x6-8": "glb/units/leg_left/ISO 7045 M3x6-8.glb", "ISO 7045 M3x6-9": "glb/units/leg_left/ISO 7045 M3x6-9.glb", "STS3215-3": "glb/units/leg_left/STS3215-3.glb", "bracket_outline-1": "glb/units/leg_left/bracket_outline-1.glb", "leg_link1-2": "glb/units/leg_left/leg_link1-2.glb"}, "leg_right": {"ISO 7045 M2x6-1": "glb/units/leg_right/ISO 7045 M2x6-1.glb", "ISO 7045 M2x6-2": "glb/units/leg_right/ISO 7045 M2x6-2.glb", "ISO 7045 M2x6-3": "glb/units/leg_right/ISO 7045 M2x6-3.glb", "ISO 7045 M2x6-4": "glb/units/leg_right/ISO 7045 M2x6-4.glb", "ISO 7045 M3x6-5": "glb/units/leg_right/ISO 7045 M3x6-5.glb", "ISO 7045 M3x6-6": "glb/units/leg_right/ISO 7045 M3x6-6.glb", "ISO 7045 M3x6-7": "glb/units/leg_right/ISO 7045 M3x6-7.glb", "ISO 7045 M3x6-8": "glb/units/leg_right/ISO 7045 M3x6-8.glb", "STS3215-3": "glb/units/leg_right/STS3215-3.glb", "bracket_outline-1": "glb/units/leg_right/bracket_outline-1.glb", "leg_link1-2": "glb/units/leg_right/leg_link1-2.glb"}};
@@ -146,7 +191,7 @@ const HOLE_ANCHORS = [];
 const UNIT_COUNT = {};
 PLAN.units.forEach(u => UNIT_COUNT[u.id] = u.count);
 const ISLAND_NAME = {};
-(PLAN.islands || []).forEach(i => ISLAND_NAME[i.id] = i.name);
+(PLAN.islands || []).forEach(i => ISLAND_NAME[i.id] = tr(i.name));
 const RECIPES = (PLAN.recipes || []).filter(r => RECIPE_GLB[r.id]);
 const RECIPE_BY_ID = {};
 RECIPES.forEach(r => RECIPE_BY_ID[r.id] = r);
@@ -518,14 +563,15 @@ function updateUi() {
   const info = document.getElementById('info');
   const prefix = view === mainView ? '' : `[${view.id}] `;
   if (current === 0) {
-    label.textContent = prefix + '（未組立）';
+    label.textContent = prefix + L('（未組立）', '(not assembled)');
     hud.textContent = '';
     info.style.display = 'none';
   } else {
     const s = view.steps[current - 1];
     if (s.kind === 'dock') {
       label.textContent = prefix +
-          `Step ${current}/${view.steps.length}: ${s.component} を取り付け`;
+          `Step ${current}/${view.steps.length}: ` +
+          L(`${s.component} を取り付け`, `attach ${s.component}`);
       hud.textContent = '';
     } else {
       label.textContent = prefix +
@@ -542,21 +588,24 @@ function updateUi() {
     if (s.base) {
       const where = view === mainView
           ? (ISLAND_NAME[s.island] || '') : view.label;
-      info.innerHTML = `<b>${where}</b> — この部品から組み始める`;
+      info.innerHTML = `<b>${where}</b> — ` +
+          L('この部品から組み始める', 'start the assembly from this part');
       info.style.display = 'block';
     } else if (s.floating) {
-      info.innerHTML = 'CAD 上で遊離（固定方法は要確認）';
+      info.innerHTML = L('CAD 上で遊離（固定方法は要確認）',
+          'Floating in the CAD (check how it is fixed)');
       info.style.display = 'block';
     } else if (texts.length) {
       const clearance = s.clearance_mm != null
-          ? `<div style="color:#888">経路クリアランス `
+          ? `<div style="color:#888">${L('経路クリアランス', 'Path clearance')} `
             + `${s.clearance_mm} mm</div>` : '';
       const screws = (s.fasteners && s.fasteners.length)
-          ? '<div>🔩 ネジ（推定）: ' + s.fasteners.map(
-                f => `${f.size} ×${f.count}`).join('、') + '</div>'
+          ? '<div>🔩 ' + L('ネジ（推定）', 'Screws (estimated)') + ': '
+            + s.fasteners.map(
+                f => `${f.size} ×${f.count}`).join(L('、', ', ')) + '</div>'
           : '';
-      info.innerHTML = '<b>取り付け</b><ul>' +
-          texts.map(t => `<li>${t}</li>`).join('') + '</ul>'
+      info.innerHTML = `<b>${L('取り付け', 'Attach')}</b><ul>` +
+          texts.map(t => `<li>${tr(t)}</li>`).join('') + '</ul>'
           + screws + clearance;
       info.style.display = 'block';
     } else {
@@ -622,7 +671,7 @@ function setLineMode(on) {
   Object.values(recipeViews).forEach(v =>
       Object.values(v.parts).forEach(applyLineMode));
   document.getElementById('lineBtn').textContent =
-      on ? '通常表示' : '線画';
+      on ? L('通常表示', 'Shaded') : L('線画', 'Line art');
 }
 document.getElementById('lineBtn').onclick =
     () => setLineMode(!lineMode);
@@ -655,7 +704,9 @@ document.getElementById('saveBtn').onclick = async () => {
   btn.disabled = true;
   const summary = document.getElementById('summary');
   summary.textContent =
-      `保存中… サーバで再検証と差分再描画 (Step ${lo + 1}–${hi + 1})`;
+      L('保存中… サーバで再検証と差分再描画',
+        'Saving… re-validating and re-rendering on the server')
+      + ` (Step ${lo + 1}–${hi + 1})`;
   const order = mainView.steps.map(s =>
       s.kind === 'dock' ? {kind: 'dock', island: s.island}
       : (s.kind === 'fasten' || s.kind === 'wire')
@@ -668,10 +719,11 @@ document.getElementById('saveBtn').onclick = async () => {
       body: JSON.stringify({order, lo, hi}),
     });
     if (!res.ok) throw new Error(await res.text());
-    summary.textContent = '保存完了 — 再読み込みします…';
+    summary.textContent = L('保存完了 — 再読み込みします…',
+                            'Saved — reloading…');
     setTimeout(() => location.reload(), 800);
   } catch (e) {
-    summary.textContent = `保存失敗: ${e.message}`;
+    summary.textContent = `${L('保存失敗', 'Save failed')}: ${e.message}`;
     btn.disabled = false;
   }
 };
@@ -710,14 +762,16 @@ async function revalidate(lo, hi) {
   try {
     // Tier 1: coarse check, near-instant feedback.
     summary.textContent =
-        `粗チェック中… (Step ${lo + 1}–${hi + 1})`;
+        L('粗チェック中…', 'Quick check…') + ` (Step ${lo + 1}–${hi + 1})`;
     const quick = await postValidate(order, lo, hi, true);
     if (token !== revalidateToken) return;
     applyValidation(quick);
     buildSidebar();
     // Tier 2: precise sweep with clearance scoring.
     summary.textContent =
-        `粗チェック済み — 精密再計算中… (Step ${lo + 1}–${hi + 1})`;
+        L('粗チェック済み — 精密再計算中…',
+          'Quick check done — precise re-check…')
+        + ` (Step ${lo + 1}–${hi + 1})`;
     const full = await postValidate(order, lo, hi, false);
     if (token !== revalidateToken) return;
     applyValidation(full);
@@ -727,7 +781,8 @@ async function revalidate(lo, hi) {
       const s = mainView.steps[i];
       if (s.kind !== 'dock' && !s.base) {
         s.verified = false;
-        s.revalidate_reason = '再計算サーバに接続できず（未検証）';
+        s.revalidate_reason = L('再計算サーバに接続できず（未検証）',
+            'Could not reach the re-check server (unverified)');
       }
     }
   }
@@ -1497,12 +1552,12 @@ canvas.addEventListener('pointerup', e => {
 let playing = null;
 function stopPlay() {
   if (playing) { clearInterval(playing); playing = null; }
-  document.getElementById('playBtn').textContent = '▶ 再生';
+  document.getElementById('playBtn').textContent = L('▶ 再生', '▶ Play');
 }
 document.getElementById('playBtn').onclick = () => {
   if (playing) { stopPlay(); return; }
   if (current >= view.steps.length) setStep(0, false);
-  document.getElementById('playBtn').textContent = '⏸ 停止';
+  document.getElementById('playBtn').textContent = L('⏸ 停止', '⏸ Stop');
   playing = setInterval(() => {
     if (current >= view.steps.length) { stopPlay(); return; }
     setStep(current + 1);
@@ -1521,21 +1576,27 @@ function buildSidebar() {
   const nIslands = (PLAN.islands || []).length || 1;
   document.getElementById('summary').textContent =
       nIslands <= 1
-        ? `連結島 1 つ（分割なし）・全 ${mainView.steps.length} 手順・`
-          + `ユニット ${RECIPES.length} 種`
-        : `全 ${nIslands} 島・${mainView.steps.length} 手順・`
-          + `ユニット ${RECIPES.length} 種`;
+        ? L(`連結島 1 つ（分割なし）・全 ${mainView.steps.length} 手順・`
+            + `ユニット ${RECIPES.length} 種`,
+            `One connected island · ${mainView.steps.length} steps · `
+            + `${RECIPES.length} unit types`)
+        : L(`全 ${nIslands} 島・${mainView.steps.length} 手順・`
+            + `ユニット ${RECIPES.length} 種`,
+            `${nIslands} islands · ${mainView.steps.length} steps · `
+            + `${RECIPES.length} unit types`);
   stepsDiv.innerHTML = '';
 
   if (view !== mainView) {
     const back = document.createElement('div');
     back.className = 'backRow';
-    back.textContent = '← 全体の組立に戻る';
+    back.textContent = L('← 全体の組立に戻る',
+                         '← Back to the full assembly');
     back.onclick = () => showView(mainView);
     stepsDiv.appendChild(back);
     const header = document.createElement('div');
     header.className = 'islandHeader';
-    header.textContent = view.label + ' の内部組立';
+    header.textContent = L(view.label + ' の内部組立',
+                           'Inside ' + view.label);
     stepsDiv.appendChild(header);
     view.steps.forEach((s, i) => {
       const div = document.createElement('div');
@@ -1555,7 +1616,8 @@ function buildSidebar() {
     const header = document.createElement('div');
     header.className = 'islandHeader';
     header.textContent =
-        `ユニットレシピ（種類ごとに 1 回・${RECIPES.length} 種）`;
+        L(`ユニットレシピ（種類ごとに 1 回・${RECIPES.length} 種）`,
+          `Unit recipes (once per type · ${RECIPES.length} types)`);
     stepsDiv.appendChild(header);
     RECIPES.forEach(r => {
       const div = document.createElement('div');
@@ -1564,7 +1626,7 @@ function buildSidebar() {
           ? `<span class="badge">×${r.count}</span>` : '';
       div.innerHTML =
           `${r.id}${badge}<span class="badge blue">` +
-          `${r.steps.length} 手順</span>`;
+          `${r.steps.length} ${L('手順', 'steps')}</span>`;
       div.onclick = () => enterRecipe(r.id);
       stepsDiv.appendChild(div);
     });
@@ -1578,9 +1640,12 @@ function buildSidebar() {
       lastIsland = s.island;
       const header = document.createElement('div');
       header.className = 'islandHeader';
-      const label = ISLAND_NAME[s.island] || `モジュール${s.island}`;
+      const label = ISLAND_NAME[s.island]
+          || L(`モジュール${s.island}`, `Module ${s.island}`);
       const size = islandSize[s.island];
-      header.textContent = size ? `${label}（${size} 部品）` : label;
+      header.textContent = size
+          ? L(`${label}（${size} 部品）`, `${label} (${size} parts)`)
+          : label;
       stepsDiv.appendChild(header);
     }
     const div = document.createElement('div');
@@ -1593,42 +1658,53 @@ function buildSidebar() {
     if (s.kind === 'wire') {
       const warn = (s.collides && s.collides.length)
           ? `<div class="floating-note">⚠️ ` +
-            `${s.collides.join('、')} と干渉</div>` : '';
+            L(`${s.collides.join('、')} と干渉`,
+              `collides with ${s.collides.join(', ')}`) + '</div>' : '';
       div.innerHTML = `<div class="idx">Step <span class="pos">${i + 1}
-          </span></div><div class="name">🔌 ${s.component} を配線
+          </span></div><div class="name">🔌 ${L(`${s.component} を配線`,
+          `Wire ${s.component}`)}
           </div>${warn}`;
     } else if (s.kind === 'fasten') {
       const warn = s.verified ? '' :
-          `<div class="floating-note">⚠️ 挿入未検証あり</div>`;
+          `<div class="floating-note">⚠️ ` +
+          `${L('挿入未検証あり', 'Some insertions unverified')}</div>`;
       div.innerHTML = `<div class="idx">Step <span class="pos">${i + 1}
-          </span></div><div class="name">🔩 ${s.component} を締める
+          </span></div><div class="name">🔩 ${L(`${s.component} を締める`,
+          `Tighten ${s.component}`)}
           </div>${warn}`;
     } else if (s.kind === 'dock') {
       const warn = s.verified ? '' :
           `<div class="floating-note">⚠️ ` +
-          `${s.revalidate_reason || '幾何チェック未通過'}</div>`;
+          `${s.revalidate_reason
+             || L('幾何チェック未通過', 'Geometry check failed')}</div>`;
       div.innerHTML = `<div class="idx">Step <span class="pos">${i + 1}
-          </span></div><div class="name">${s.component} を取り付け
-          <span class="badge">合体</span></div>${warn}`;
+          </span></div><div class="name">${L(`${s.component} を取り付け`,
+          `Attach ${s.component}`)}
+          <span class="badge">${L('合体', 'merge')}</span></div>${warn}`;
     } else {
       const n = UNIT_COUNT[s.unit] || 1;
       const badge = n > 1 ? `<span class="badge">×${n}</span>` : '';
       const recipeMark = RECIPE_BY_ID[s.unit]
-          ? ' <span class="badge blue">内部</span>' : '';
+          ? ` <span class="badge blue">${L('内部', 'inside')}</span>` : '';
       let note = s.floating
-          ? '<div class="floating-note">CAD 上で遊離（要確認）</div>'
+          ? '<div class="floating-note">'
+            + L('CAD 上で遊離（要確認）', 'Floating in the CAD (check)')
+            + '</div>'
           : '';
       if (!s.verified && !s.base && !s.floating) {
-        const reason = s.revalidate_reason || '幾何チェック未通過';
+        const reason = s.revalidate_reason
+            || L('幾何チェック未通過', 'Geometry check failed');
         note += `<div class="floating-note">⚠️ ${reason}</div>`;
       }
       if (s.screw_blocked) {
-        note += `<div class="floating-note">🔩⚠️ ネジ` +
-            `${s.screw_blocked}本のアクセス塞がり</div>`;
+        note += `<div class="floating-note">🔩⚠️ ` + L(
+            `ネジ${s.screw_blocked}本のアクセス塞がり`,
+            `${s.screw_blocked} screws hard to reach`) + '</div>';
       }
       if (s.tight_fit) {
-        note += `<div class="floating-note">はめ込み` +
-            `（傾け・たわみで挿入）</div>`;
+        note += '<div class="floating-note">' + L(
+            'はめ込み（傾け・たわみで挿入）',
+            'Snap fit (tilt or flex it in)') + '</div>';
       }
       div.innerHTML = `<div class="idx">Step <span class="pos">${i + 1}
           </span></div><div class="name">${s.component}${badge}` +
@@ -1636,7 +1712,8 @@ function buildSidebar() {
       const mark = div.querySelector('.badge.blue');
       if (mark) {
         mark.style.cursor = 'pointer';
-        mark.title = 'このユニットの内部組立を見る';
+        mark.title = L('このユニットの内部組立を見る',
+                     'Show how this unit is assembled');
         mark.onclick = (e) => {
           e.stopPropagation();
           enterRecipe(s.unit);
@@ -1747,8 +1824,10 @@ fetch('/api/validate', {method: 'POST',
       document.getElementById('saveBtn').style.display = 'none';
       document.getElementById('wireBtn').style.display = 'none';
       const summary = document.getElementById('summary');
-      summary.title = '静的表示モード: 並べ替えの保存と配線編集は' +
-          '配信サーバ (create-assembly-view-serve) が必要';
+      summary.title = L('静的表示モード: 並べ替えの保存と配線編集は' +
+          '配信サーバ (create-assembly-view-serve) が必要',
+          'Static mode: saving the order and editing wires need '
+          + 'the server (create-assembly-view-serve)');
     });
 
 (async () => {
