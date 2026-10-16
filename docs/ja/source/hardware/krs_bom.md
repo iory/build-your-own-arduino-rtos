@@ -169,11 +169,11 @@ Textured PEI プレート）。胴体と蓋は第 2 版の形を PLA Matte（白
 |---|---|---|---|---|---|
 | `body_krs.3mf` | 胴体 ×1 | Bambu Lab H2D | PLA Matte | 0.2mm | ツリー（自動） |
 | `lid_krs.3mf` | 蓋 ×1（裏返して置く） | Bambu Lab X1 Carbon | PLA Matte | 0.2mm | ツリー（自動） |
+| `leg_links_krs.3mf` | 脚リンク ×4 | Bambu Lab A1 | PLA | 0.2mm | ツリー（自動） |
+| `leg_brackets_krs.3mf` | 脚ブラケット ×4 | Bambu Lab A1 | PLA | 0.2mm | ツリー（自動） |
 
 スライサーの見積もりは、胴体が 4 時間 01 分・125.3 g、蓋が 3 時間 46 分・68.6 g です（どちらもサポート込み）。
 胴体は 176 × 110 mm なので、A1 mini（180 mm 角）のプレートにも載ります。
-| `leg_links_krs.3mf` | 脚リンク ×4 | Bambu Lab A1 | PLA | 0.2mm | ツリー（自動） |
-| `leg_brackets_krs.3mf` | 脚ブラケット ×4 | Bambu Lab A1 | PLA | 0.2mm | ツリー（自動） |
 
 「Bambu Studio で開く」を押すと、Bambu Studio が起動してプロジェクトを
 そのまま開きます（Bambu Studio のインストールが必要）。MakerWorld 以外から

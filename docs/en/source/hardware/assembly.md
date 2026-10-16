@@ -41,13 +41,13 @@ view and use the slider to step back and forth.
 
 ```{raw} html
 <p>
-  <a class="sd-btn sd-btn-primary" href="../../assembly/quadruped/index.html"
+  <a class="sd-btn sd-btn-primary" href="../../assembly/quadruped/index.html?lang=en"
      target="_blank" rel="noopener">Open the viewer full screen ↗</a>
   &nbsp;
   <a class="sd-btn sd-btn-outline-primary" href="../../assembly/quadruped/instructions.pdf"
      target="_blank" rel="noopener">PDF instructions</a>
 </p>
-<iframe src="../../assembly/quadruped/index.html"
+<iframe src="../../assembly/quadruped/index.html?lang=en"
         style="width:100%; height:75vh; border:1px solid var(--pst-color-border, #ddd); border-radius:8px;"
         loading="lazy"
         title="Quadruped assembly viewer"></iframe>

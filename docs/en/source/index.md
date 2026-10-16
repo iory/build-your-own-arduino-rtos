@@ -36,7 +36,7 @@ shell. (The page itself is in Japanese.)
 :::
 
 :::{grid-item-card} 🐾 Walk the quadruped
-:link: ../assembly/quadruped/walk/index.html
+:link: ../assembly/quadruped/walk/index.html?lang=en
 :link-type: url
 Walk the chapter-13 robot in a physics simulation, with the same neural
 network that is written to the real board.

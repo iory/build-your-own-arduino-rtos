@@ -62,6 +62,15 @@ Put an IMU (a sensor for tilt and rotation rate) on the body and walk with a pol
 trained on it. It braces with its legs to recover from pushes and keeps standing
 while stopped.
 :::
+
+:::{grid-item-card} 🦿 Building with Kondo Kagaku KRS servos
+:link: krs
+:link-type: doc
+
+A version built with KRS-3302 ICS servos and an RCB-4mini instead of the STS3215.
+Setting IDs with the Dual USB Adapter, aligning the zero point, assembling with the 3D
+viewer, and wiring on a single AC adapter or battery.
+:::
 ::::
 
 ```{toctree}
@@ -72,6 +81,8 @@ assembly
 walk
 train
 imu
+krs
+krs_bom
 ```
 
 ## STL downloads
@@ -138,11 +149,9 @@ Driver board: A/B jumper (yellow), USB Type-C and DC jack
 
 ## Interactive assembly guide
 
-An interactive 3D assembly viewer shows every step as an animation
-(UI labels are in Japanese, but the 3D animation itself is
-language-independent):
+An interactive 3D assembly viewer shows every step as an animation:
 
 ```{raw} html
-<p><a href="../../assembly/quadruped/index.html" target="_blank" rel="noopener">
+<p><a href="../../assembly/quadruped/index.html?lang=en" target="_blank" rel="noopener">
 Open the 3D assembly viewer ↗</a></p>
 ```
