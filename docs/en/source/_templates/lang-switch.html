@@ -1,0 +1,6 @@
+{# いま見ているページの、もう一方の言語版へのリンク（conf.py の lang_switch_*） #}
+<a class="nav-link pst-navbar-icon lang-switch" href="{{ lang_switch_base }}{{ pagename }}.html"
+   title="{{ lang_switch_label }}" hreflang="{{ 'en' if language == 'ja' else 'ja' }}">
+  <i class="fa-solid fa-language fa-lg" aria-hidden="true"></i>
+  <span class="lang-switch-label">{{ lang_switch_label }}</span>
+</a>
