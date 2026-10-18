@@ -117,6 +117,45 @@ On one RTX 4090, 4096 environments × 2300 iterations took **about 41 minutes**
 learned to walk too, but its body swayed more (roll and pitch 4–5°, against 1–2° for
 seed 1), so seed 1 is the one distributed.
 
+`render.py` writes the walk to an mp4. The robot walks in MuJoCo (default) or Genesis
+(`--sim genesis`), and either way MuJoCo draws the frames. On a machine without a
+display, add `MUJOCO_GL=egl`.
+
+```bash
+MUJOCO_GL=egl uv run render.py \
+    --checkpoint logs/rsl_rl/arduino_quad_velocity/<run>/model_2299.pt --out walk.mp4
+```
+
+### Training on Google Colab
+
+Even without a GPU of your own, a notebook takes you from training to export in the
+browser.
+
+```{raw} html
+<p>
+  <a href="https://colab.research.google.com/github/iory/build-your-own-arduino-rtos/blob/main/code/13_quadruped/rl/colab/genesis_colab.ipynb"
+     target="_blank" rel="noopener">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg"
+         alt="Open In Colab"></a>
+</p>
+```
+
+What the notebook does:
+
+1. Checks the GPU (**Runtime → Change runtime type → T4 GPU**)
+2. Fetches the code and installs the training stack (genesis-world + rsl_rl + MuJoCo)
+3. **Walks the distributed MuJoCo policy in Genesis**, to check the environment is
+   put together correctly
+4. Runs 30 iterations on the GPU you were given to **measure the training speed** and
+   estimate the total time
+5. Trains (checkpoints go to Google Drive, so a dropped session can resume)
+6. Walks the trained policy in both Genesis and MuJoCo to compare them, and **shows
+   the walk as two videos side by side** (MuJoCo on the left, Genesis on the right)
+7. Exports the robot's `.h` and the browser's `policy_genesis.json`
+
+Put the exported `policy_genesis.json` in `docs/assembly/quadruped/walk/` and "RL policy
+(trained in Genesis)" in the browser simulation above becomes your own policy.
+
 ### How it differs from the MuJoCo trainers
 
 | | MuJoCo (mjlab, CPU version) | Genesis version |

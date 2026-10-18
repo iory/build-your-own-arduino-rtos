@@ -20,6 +20,11 @@ on:
       - '.github/workflows/md-lint.yml'
   workflow_dispatch:
 
+# 同じ PR に push し直したら、前のコミットの実行は止める（main・定期実行は止めない）
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 

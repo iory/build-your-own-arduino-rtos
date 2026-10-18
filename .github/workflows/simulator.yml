@@ -25,6 +25,11 @@ on:
     - cron: '0 3 * * 1'        # 毎週月曜: ランナーや PlatformIO 側の変化で壊れていないか
   workflow_dispatch:
 
+# 同じ PR に push し直したら、前のコミットの実行は止める（main・定期実行は止めない）
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   # 付録で案内している QEMU のリリース。上げるときは付録も一緒に直す
   QEMU_UNOR4_VERSION: v11.1.1-unor4.5
