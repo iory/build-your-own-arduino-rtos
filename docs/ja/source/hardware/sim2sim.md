@@ -116,6 +116,43 @@ RTX 4090 1 枚で 4096 環境 × 2300 iteration が **約 41 分**でした（1 
 なりましたが、胴体の揺れが大きかった（ロール・ピッチ 4〜5°、seed 1 は 1〜2°）ので
 seed 1 を配布しています。
 
+歩くところは `render.py` で mp4 に書き出せます。歩かせるのは MuJoCo（既定）か
+Genesis（`--sim genesis`）で、絵はどちらも MuJoCo で描きます。画面の無い機械では
+`MUJOCO_GL=egl` を付けてください。
+
+```bash
+MUJOCO_GL=egl uv run render.py \
+    --checkpoint logs/rsl_rl/arduino_quad_velocity/<run>/model_2299.pt --out walk.mp4
+```
+
+### Google Colab で学習する
+
+手元に GPU が無くても、ブラウザだけで学習から書き出しまで通せるノートブックが
+あります。
+
+```{raw} html
+<p>
+  <a href="https://colab.research.google.com/github/iory/build-your-own-arduino-rtos/blob/main/code/13_quadruped/rl/colab/genesis_colab.ipynb"
+     target="_blank" rel="noopener">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg"
+         alt="Open In Colab"></a>
+</p>
+```
+
+ノートブックの流れ:
+
+1. GPU の確認（**ランタイム → ランタイムのタイプを変更 → T4 GPU**）
+2. コードを取ってきて、学習環境（genesis-world + rsl_rl + MuJoCo）を入れる
+3. **配布済みの MuJoCo の方策を Genesis で歩かせる** — 環境が正しく組めたかの確認
+4. 割り当てられた GPU で 30 iteration 回して**学習速度を実測**し、所要時間を見積もる
+5. 学習する（チェックポイントは Google Drive に置いて、切れても続きから再開できる）
+6. 学習した方策を Genesis と MuJoCo の両方で歩かせて比べ、
+   **歩くところを動画で並べて見る**（左が MuJoCo、右が Genesis）
+7. 実機用の `.h` と、ブラウザ版の `policy_genesis.json` に書き出す
+
+書き出した `policy_genesis.json` を `docs/assembly/quadruped/walk/` に置き換えると、
+上のブラウザ版の「RL 方策（Genesis で学習）」が自分の方策になります。
+
 ### MuJoCo 版との違い
 
 | | MuJoCo（mjlab・CPU 版） | Genesis 版 |

@@ -277,7 +277,9 @@ step. How to run it, and the differences that remain, are in `rl/cpu/README.md`.
 
 `rl/genesis/` trains the same task in the Genesis physics simulator (GPU). The
 policy it produces walks in MuJoCo as well. The steps and the comparison between the
-two simulators are in {doc}`sim2sim`.
+two simulators are in {doc}`sim2sim`. The Genesis version also has a notebook that
+runs from training to export on Google Colab ("Training on Google Colab" in
+{doc}`sim2sim`).
 
 ## Taking it to the real robot
 

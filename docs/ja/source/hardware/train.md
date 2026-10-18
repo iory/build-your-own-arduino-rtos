@@ -270,7 +270,8 @@ CPU 版が mjlab 版と同じタスクになっていることは `rl/cpu/parity
 
 同じタスクを物理シミュレータ Genesis（GPU）で学習するコードが `rl/genesis/` に
 あります。学習した方策は MuJoCo でも歩きます。手順と、2 つのシミュレータでの
-比較は {doc}`sim2sim` にまとめました。
+比較は {doc}`sim2sim` にまとめました。Genesis 版にも Google Colab で学習から
+書き出しまで通すノートブックがあります（{doc}`sim2sim` の「Google Colab で学習する」）。
 
 ## 実機に持っていく
 
