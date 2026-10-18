@@ -46,6 +46,14 @@ PDF 版もあります。
 （ブラウザで Python を動かせる Google のサービス）の無料枠の T4（GPU の機種名）で最後まで通せます。**
 :::
 
+:::{grid-item-card} 🔁 Genesis で学習して MuJoCo で歩かせる
+:link: sim2sim
+:link-type: doc
+
+同じタスクを別の物理シミュレータ Genesis で学習し、その方策をブラウザの MuJoCo で
+歩かせます（sim2sim）。2 つのシミュレータで同じ方策を測った比較付き。
+:::
+
 :::{grid-item-card} 🧭 IMU で姿勢を見て踏ん張らせる
 :link: imu
 :link-type: doc
@@ -70,6 +78,7 @@ bom
 assembly
 walk
 train
+sim2sim
 imu
 krs
 krs_bom
