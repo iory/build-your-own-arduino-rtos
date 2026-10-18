@@ -117,12 +117,18 @@ On one RTX 4090, 4096 environments × 2300 iterations took **about 41 minutes**
 learned to walk too, but its body swayed more (roll and pitch 4–5°, against 1–2° for
 seed 1), so seed 1 is the one distributed.
 
+The same commands train on a Mac (Apple silicon). There the default `--device gpu` puts
+Genesis on Metal and the PPO update on MPS (torch on Apple's GPU). On an M4 Max one
+iteration of 4096 environments took about 1.4 s (measured over 5 iterations only). If
+`uv sync` says torch has no wheel, an x86_64 Python was picked; ask for the arm64 one
+with `uv sync --python cpython-3.12-macos-aarch64`.
+
 `render.py` writes the walk to an mp4. The robot walks in MuJoCo (default) or Genesis
-(`--sim genesis`), and either way MuJoCo draws the frames. On a machine without a
-display, add `MUJOCO_GL=egl`.
+(`--sim genesis`), and either way MuJoCo draws the frames. On Linux without a display (Colab, a server
+over ssh), `render.py` sets `MUJOCO_GL=egl` by itself.
 
 ```bash
-MUJOCO_GL=egl uv run render.py \
+uv run render.py \
     --checkpoint logs/rsl_rl/arduino_quad_velocity/<run>/model_2299.pt --out walk.mp4
 ```
 

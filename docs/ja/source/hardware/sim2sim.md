@@ -116,12 +116,18 @@ RTX 4090 1 枚で 4096 環境 × 2300 iteration が **約 41 分**でした（1 
 なりましたが、胴体の揺れが大きかった（ロール・ピッチ 4〜5°、seed 1 は 1〜2°）ので
 seed 1 を配布しています。
 
+Mac（Apple シリコン）でも同じコマンドで学習できます。`--device` の既定の `gpu` は、Mac では
+Genesis が Metal、PPO の更新が MPS（Apple の GPU で torch を動かす仕組み）になります。
+M4 Max では 4096 環境の 1 iteration が約 1.4 秒でした（5 iteration だけ回して測った値）。
+`uv sync` で torch の wheel が無いと言われたら x86_64 の Python が選ばれているので、
+`uv sync --python cpython-3.12-macos-aarch64` で arm64 の Python を指定してください。
+
 歩くところは `render.py` で mp4 に書き出せます。歩かせるのは MuJoCo（既定）か
-Genesis（`--sim genesis`）で、絵はどちらも MuJoCo で描きます。画面の無い機械では
-`MUJOCO_GL=egl` を付けてください。
+Genesis（`--sim genesis`）で、絵はどちらも MuJoCo で描きます。画面の無い Linux（Colab や
+ssh 先のサーバ）では、`render.py` が自動で `MUJOCO_GL=egl` にします。
 
 ```bash
-MUJOCO_GL=egl uv run render.py \
+uv run render.py \
     --checkpoint logs/rsl_rl/arduino_quad_velocity/<run>/model_2299.pt --out walk.mp4
 ```
 
