@@ -40,6 +40,7 @@
       <select id="mode">
         <option value="rl" data-en="RL policy">RL 方策</option>
         <option value="imu" data-en="RL policy (with IMU)">RL 方策（IMU あり）</option>
+        <option value="genesis" data-en="RL policy (trained in Genesis)">RL 方策（Genesis で学習）</option>
         <option value="naive" data-en="sin/cos gait (book §13.5)">sin/cos 歩行（本文 13.5）</option>
       </select>
     </label>
@@ -76,7 +77,9 @@ const ROBOTS = {
   feetech: {
     label: '',
     xml: 'model/arduino_os_quad_robot.xml',
-    policies: {rl: 'policy.json', imu: 'policy_imu.json'},
+    // genesis: Genesis で学習した方策 (rl/genesis/)。ここで動かすのは MuJoCo なので、
+    // 学習とは別のシミュレータで歩かせる sim2sim になる。観測と出力は rl と同じ。
+    policies: {rl: 'policy.json', imu: 'policy_imu.json', genesis: 'policy_genesis.json'},
     delay: {min: DELAY_MIN, max: DELAY_MAX},
     naive: true,
     vx: {min: -0.05, max: 0.15, value: 0.12},

@@ -54,6 +54,14 @@ Retrain with different rewards or speed limits. **Works end to end on Google Col
 even without a GPU of your own.**
 :::
 
+:::{grid-item-card} 🔁 Train in Genesis, walk in MuJoCo
+:link: sim2sim
+:link-type: doc
+
+Train the same task in a different physics simulator, Genesis, and walk the policy in
+MuJoCo in the browser (sim2sim), with the same policy measured in both simulators.
+:::
+
 :::{grid-item-card} 🧭 Balancing with an IMU
 :link: imu
 :link-type: doc
@@ -80,6 +88,7 @@ bom
 assembly
 walk
 train
+sim2sim
 imu
 krs
 krs_bom

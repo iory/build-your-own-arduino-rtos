@@ -273,6 +273,12 @@ sequence and compares the joint angles, the observations and all 26 reward terms
 step. How to run it, and the differences that remain, are in `rl/cpu/README.md`.
 ```
 
+## Training in Genesis
+
+`rl/genesis/` trains the same task in the Genesis physics simulator (GPU). The
+policy it produces walks in MuJoCo as well. The steps and the comparison between the
+two simulators are in {doc}`sim2sim`.
+
 ## Taking it to the real robot
 
 Export the Arduino header from a checkpoint.
