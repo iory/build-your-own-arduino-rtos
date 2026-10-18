@@ -39,15 +39,10 @@ html_theme_options = {
             "url": "https://github.com/iory/build-your-own-arduino-rtos",
             "icon": "fa-brands fa-github",
         },
-        {
-            "name": "Language",
-            "icon": "fa-solid fa-language",
-            "type": "dropdown",
-            "items": [
-                {"name": "日本語", "url": _base + ""},
-            ],
-        },
     ],
+    # 言語の切り替え（_templates/lang-switch.html）。いま見ているページの
+    # もう一方の言語版に飛ぶ。両言語でページの一覧はそろえてある。
+    "navbar_end": ["theme-switcher", "navbar-icon-links", "lang-switch"],
     "show_prev_next": True,
     "footer_start": ["copyright"],
     "footer_end": [],
@@ -78,6 +73,8 @@ sitemap_excludes = ["search.html", "genindex.html"]
 # そのまま出る値なので、ワークフローの env でだけ持たせる。未設定なら出さない。
 html_context = {
     "google_site_verification": os.environ.get("GOOGLE_SITE_VERIFICATION", ""),
+    "lang_switch_base": _base,
+    "lang_switch_label": "日本語",
 }
 
 
