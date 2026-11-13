@@ -212,6 +212,7 @@ Servo ID assignment. Seen from above, the front is the end with the tab in the m
 of the body's short side
 ```
 
+(krs-horn)=
 ## Centre the servo before fitting the horn and leg
 
 A horn goes on the servo's output shaft, and the leg is screwed to the horn.
@@ -309,6 +310,21 @@ Put the servo in the bracket and screw it in place
 
 :::
 ::::
+
+```{tip}
+**When you screw a horn to a leg, put the leg's smooth face (the one without support material) against the horn.**
+The face that was printed on support material is left rough, so the horn does not
+sit flat on it. Check which face goes against the horn before you tighten the
+screws. The same applies to both left and right legs.
+```
+
+```{figure} ../_static/quadruped_bracket_support_side.jpg
+:target: ../_static/quadruped_bracket_support_side.jpg
+:width: 50%
+:alt: The horn mount of two leg brackets side by side. Left, the rough face that had support material. Right, the smooth face
+
+Left: the face that had support material (do not put it against the horn). Right: the smooth face (put this one against the horn)
+```
 
 (krs-assembly)=
 ## Assembly
@@ -494,21 +510,6 @@ the same for left and right; the face the horn goes on is mirrored.
 3. 🔩 Tighten **M2-6 low-head screw ×4** (leg bracket ↔ horn).
 
    ![foot step 3](krs_assembly_img/units/foot_left_krs/step_03.png)
-
-```{tip}
-**Put the smooth face of the leg bracket (the one without support material) against the horn.**
-The face that was printed on support material is left rough, so the horn does not
-sit flat on it. In step 2, check which face of the leg bracket goes against the horn
-before you line them up. The same applies to both left and right.
-```
-
-```{figure} ../_static/quadruped_bracket_support_side.jpg
-:target: ../_static/quadruped_bracket_support_side.jpg
-:width: 50%
-:alt: The horn mount of two leg brackets side by side. Left, the rough face that had support material. Right, the smooth face
-
-Left: the face that had support material (do not put it against the horn). Right: the smooth face (put this one against the horn)
-```
 
 :::
 
