@@ -254,7 +254,7 @@ support marks is flipped on two of them, so on the finished robot the marked fac
 up on the same side (inside or outside) on both the left and right legs.
 All four can put their smooth face (the one without support material) against the
 horn. When you lay out the STLs yourself, flip 2 of the leg brackets as well (for which
-face goes against the horn, see the foot steps in {doc}`krs`).
+face goes against the horn, see {ref}`krs-horn`).
 
 ## Sources
 
