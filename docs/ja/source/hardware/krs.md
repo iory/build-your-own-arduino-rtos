@@ -481,6 +481,21 @@ M2-4・M2-6・M2-8 の低頭ビスと M3-6 のホーン止めビスは、近藤�
 
    ![foot step 3](krs_assembly_img/units/foot_left_krs/step_03.png)
 
+```{tip}
+**脚ブラケットは、サポート材の付いていないなめらかな面をホーンに当てるとよい。**
+3D プリントでサポート材が付いていた面は、跡が残ってザラザラしていて、
+ホーンが平らに当たらない。手順 2 で、脚ブラケットのどちらの面をホーンに
+当てるか確かめてから合わせる（左右とも同じ）。
+```
+
+```{figure} ../_static/quadruped_bracket_support_side.jpg
+:target: ../_static/quadruped_bracket_support_side.jpg
+:width: 50%
+:alt: 脚ブラケットのホーン取り付け部を両面から見比べた写真。左はサポート材が付いていた面でザラザラしている。右はなめらかな面
+
+左: サポート材が付いていた面（ホーンに当てない）。右: なめらかな面（こちらをホーンに当てる）
+```
+
 :::
 
 :::{dropdown} leg_left_krs / leg_right_krs（脚） **各 ×2**

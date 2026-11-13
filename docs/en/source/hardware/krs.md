@@ -495,6 +495,21 @@ the same for left and right; the face the horn goes on is mirrored.
 
    ![foot step 3](krs_assembly_img/units/foot_left_krs/step_03.png)
 
+```{tip}
+**Put the smooth face of the leg bracket (the one without support material) against the horn.**
+The face that was printed on support material is left rough, so the horn does not
+sit flat on it. In step 2, check which face of the leg bracket goes against the horn
+before you line them up. The same applies to both left and right.
+```
+
+```{figure} ../_static/quadruped_bracket_support_side.jpg
+:target: ../_static/quadruped_bracket_support_side.jpg
+:width: 50%
+:alt: The horn mount of two leg brackets side by side. Left, the rough face that had support material. Right, the smooth face
+
+Left: the face that had support material (do not put it against the horn). Right: the smooth face (put this one against the horn)
+```
+
 :::
 
 :::{dropdown} leg_left_krs / leg_right_krs (leg) **×2 each**

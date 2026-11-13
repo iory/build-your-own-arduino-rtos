@@ -339,6 +339,21 @@ Parts: STS3215 ×1, bracket_outline ×1, leg_link1 ×1, M3x6 ×4, M2x6 ×4
 
    ![leg_left step 5](assembly_img/units/leg_left/step_05.png)
 
+```{tip}
+**Put the smooth face of the bracket (the one without support material) against the horn.**
+The face that was printed on support material is left rough, so the horn does not
+sit flat on it. In step 2, check which face of the bracket goes against the horn
+before you insert it. The same applies to the right leg.
+```
+
+```{figure} ../_static/quadruped_bracket_support_side.jpg
+:target: ../_static/quadruped_bracket_support_side.jpg
+:width: 50%
+:alt: The horn mount of two brackets side by side. Left, the rough face that had support material. Right, the smooth face
+
+Left: the face that had support material (do not put it against the horn). Right: the smooth face (put this one against the horn)
+```
+
 **Photos of the real thing** (the steps are the same for left and right legs):
 
 :::::{grid} 2 3 3 3

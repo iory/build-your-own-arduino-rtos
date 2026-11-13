@@ -252,6 +252,9 @@ The leg brackets show opposite faces on the outside on the left and right, so in
 `leg_brackets_krs.3mf` **two of the four are placed upside down.** The face that gets
 support marks is flipped on two of them, so on the finished robot the marked faces end
 up on the same side (inside or outside) on both the left and right legs.
+All four can put their smooth face (the one without support material) against the
+horn. When you lay out the STLs yourself, flip 2 of the leg brackets as well (for which
+face goes against the horn, see the foot steps in {doc}`krs`).
 
 ## Sources
 
