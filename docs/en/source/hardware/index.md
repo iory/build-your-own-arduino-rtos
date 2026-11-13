@@ -1,12 +1,18 @@
-# Quadruped Assembly
+# JEFY Quadruped Assembly
 
-Chapter 13 drives an 8-servo quadruped from your own OS.
+Chapter 13 drives JEFY, an 8-servo quadruped, from your own OS.
+
+```{note}
+**JEFY** is the name of the book's quadruped robot, short for
+**J**SK **E**ducational **F**our-legged walk**Y** robot.
+JSK is the name of the lab the author belongs to. JEFY is not a product of the lab or the university.
+```
 
 ```{figure} ../_static/quadruped_walk.gif
 :name: fig-quadruped-walk
 :width: 80%
 
-The quadruped walking on your own OS, driving 8 servos (1.5x speed)
+JEFY walking on your own OS, driving 8 servos (1.5x speed)
 ```
 
 | Item | Qty | Notes |

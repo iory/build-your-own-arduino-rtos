@@ -1,17 +1,17 @@
 ---
-og:description: Arduino UNO R4 WiFi でプリエンプティブなリアルタイム OS を一から自作する書籍『つくりながら学ぶ！リアルタイムOS自作入門』のサポートページ。開発環境の準備、章ごとのサンプルコード、四脚ロボットの組み立て、正誤表。
+og:description: Arduino UNO R4 WiFi でプリエンプティブなリアルタイム OS を一から自作する書籍『つくりながら学ぶ！リアルタイムOS自作入門』のサポートページ。開発環境の準備、章ごとのサンプルコード、四脚ロボット JEFY の組み立て、正誤表。
 ---
 
 # 『つくりながら学ぶ！リアルタイムOS自作入門』サポートページ
 
 Arduino UNO R4 WiFi の上で、プリエンプティブなリアルタイム OS を
 一から自作する書籍のサポートページです。開発環境の準備、章ごとの
-サンプルコードと動作確認、四脚ロボットの組み立て、正誤表をまとめています。
+サンプルコードと動作確認、四脚ロボット JEFY の組み立て、正誤表をまとめています。
 
 ```{raw} html
 <video src="_static/promo.mp4" poster="_static/og_image.png" controls muted playsinline loop preload="metadata"
        style="width:100%; border-radius:8px;"
-       aria-label="書籍の紹介動画: 自作 OS の起動から四脚ロボットの歩行まで"></video>
+       aria-label="書籍の紹介動画: 自作 OS の起動から四脚ロボット JEFY の歩行まで"></video>
 ```
 
 ## まず触ってみる
@@ -28,7 +28,7 @@ Arduino UNO R4 WiFi の上で、プリエンプティブなリアルタイム OS
 LED マトリクスに CPU の使用率が横棒で出て、シェルに `top` や `kill 3` を打てます。
 :::
 
-:::{grid-item-card} 🐾 四脚ロボットを歩かせる
+:::{grid-item-card} 🐾 四脚ロボット JEFY を歩かせる
 :link: assembly/quadruped/walk/index.html
 :link-type: url
 第13章のロボットを物理シミュレーションで歩かせます。
@@ -62,10 +62,10 @@ LED マトリクスに CPU の使用率が横棒で出て、シェルに `top` �
 各章のサンプルコード・ビルド方法・つまずきやすいポイント。
 :::
 
-:::{grid-item-card} 🤖 四脚ロボットの組み立て
+:::{grid-item-card} 🤖 四脚ロボット JEFY の組み立て
 :link: hardware/index
 :link-type: doc
-第13章で使う四脚ロボットのハードウェア準備と組立ガイド。
+第13章で使う四脚ロボット JEFY のハードウェア準備と組立ガイド。
 :::
 
 :::{grid-item-card} ❓ FAQ / 正誤表
@@ -97,7 +97,7 @@ LED マトリクスに CPU の使用率が横棒で出て、シェルに `top` �
 - 対象ボード: **Arduino UNO R4 WiFi**（Renesas RA4M1 / Arm Cortex-M4）
 - 本編 13 章＋応用編 4 章。ブートシーケンスから始めて、
   コンテキストスイッチ・プリエンプティブスケジューラ・メモリ保護・
-  シェル・インタプリタを積み上げ、最後は自作 OS で四脚ロボットを歩かせます
+  シェル・インタプリタを積み上げ、最後は自作 OS で四脚ロボット JEFY を歩かせます
 
 **試し読み**
 

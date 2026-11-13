@@ -7,9 +7,14 @@ WiFi でプリエンプティブなリアルタイム OS を一から自作す�
 - サイト: https://iory.github.io/build-your-own-arduino-rtos/ （日本語）
   / [English](https://iory.github.io/build-your-own-arduino-rtos/en/)
 - 内容: 開発環境のセットアップ、章ごとのサンプルコード案内、
-  四脚ロボットの組み立て、FAQ・正誤表
+  四脚ロボット JEFY の組み立て、FAQ・正誤表
 
-![自作 OS の起動から四脚ロボットの歩行まで](docs/ja/source/_static/promo.gif)
+![自作 OS の起動から四脚ロボット JEFY の歩行まで](docs/ja/source/_static/promo.gif)
+
+> [!NOTE]
+> **JEFY**（ジェフィー）は本書の四脚ロボットの呼び名で、
+> **J**SK **E**ducational **F**our-legged walk**Y** robot の略です。
+> JSK は著者が所属している研究室の名称です。研究室や大学が提供する製品ではありません。
 
 ## 書籍
 
@@ -121,7 +126,7 @@ uv run --script scripts/md_lint.py fix   README.md docs/ja/source docs/en/source
 
 [Apache License 2.0](LICENSE)（Copyright 2026 Iori Yanokura）。
 
-サンプルコード、四脚ロボットの CAD・STL・3MF・URDF、ファームウェア、
+サンプルコード、四脚ロボット JEFY の CAD・STL・3MF・URDF、ファームウェア、
 学習済み歩行ポリシーを含む。**商用利用可**で、キット化しての販売にも
 事前の許諾・連絡・対価を要しない。独占的な取り扱いの取り決めも行わない。
 
