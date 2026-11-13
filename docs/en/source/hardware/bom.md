@@ -275,6 +275,12 @@ The 9 printed parts and 8 STS3215 servos
 **The left and right legs use the same parts.** Print each bracket and link STL four
 times; there are no separate left and right versions.
 
+The bracket does face the horn with opposite sides on the left and right legs, though.
+`leg_parts.3mf` has **2 of the 4 brackets placed upside down**, so all four can put
+their smooth face (the one without support material) against the horn. When you lay
+out the STLs yourself, flip 2 of the brackets as well (for which face goes against the
+horn, see the left-leg steps in {doc}`assembly`).
+
 ---
 
 ## Printing them yourself
