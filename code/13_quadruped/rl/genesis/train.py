@@ -93,7 +93,10 @@ def main() -> int:
     if args.resume:
         runner.load(args.resume)
         print("[train] resumed from {}".format(args.resume))
-        env.restore_curriculum(runner.current_learning_iteration * agent_cfg["num_steps_per_env"])
+        if args.mode != "single":
+            # single is left as it was (the CPU trainer does not restore the curriculum either,
+            # and --task robust --resume starts from a Walk checkpoint).
+            env.restore_curriculum(runner.current_learning_iteration * agent_cfg["num_steps_per_env"])
     cpu_trainer().write_params(log_dir, args, agent_cfg)
     env_yaml = Path(log_dir) / "params" / "env.yaml"
     env_yaml.write_text(env_yaml.read_text().replace("trainer: plain-mujoco", "trainer: genesis", 1))
