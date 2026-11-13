@@ -161,6 +161,8 @@ def main() -> int:
     if two:                      # 4-frame history, no servo delay: only the Genesis env has it
         if args.sim == "mujoco":
             sys.exit("a two-stage / baseline checkpoint needs --sim genesis")
+        if args.sim == "both":
+            print("two-stage / baseline checkpoint: Genesis only (the MuJoCo side has no 4-frame history)")
         args.sim = "genesis"
     sims = ("genesis", "mujoco") if args.sim == "both" else (args.sim,)
     print("{} ({} envs x {:.0f} s, {} robot)".format(
