@@ -1,5 +1,5 @@
 ---
-og:description: "Support site for the Japanese book on building a preemptive real-time OS from scratch on the Arduino UNO R4 WiFi: setup, per-chapter sample code, quadruped assembly, and errata."
+og:description: "Support site for the Japanese book on building a preemptive real-time OS from scratch on the Arduino UNO R4 WiFi: setup, per-chapter sample code, assembly of the JEFY quadruped, and errata."
 ---
 
 # Build Your Own Arduino RTOS — Book Support
@@ -10,7 +10,7 @@ real-time OS from scratch on the **Arduino UNO R4 WiFi**.
 ```{raw} html
 <video src="_static/promo.mp4" poster="_static/og_image.png" controls muted playsinline loop preload="metadata"
        style="width:100%; border-radius:8px;"
-       aria-label="Book trailer: from booting your own OS to a walking quadruped"></video>
+       aria-label="Book trailer: from booting your own OS to the JEFY quadruped walking"></video>
 ```
 
 ```{note}
@@ -35,7 +35,7 @@ matrix shows CPU usage as bars, and you can type `top` or `kill 3` into the
 shell. (The page itself is in Japanese.)
 :::
 
-:::{grid-item-card} 🐾 Walk the quadruped
+:::{grid-item-card} 🐾 Walk the JEFY quadruped
 :link: ../assembly/quadruped/walk/index.html?lang=en
 :link-type: url
 Walk the chapter-13 robot in a physics simulation, with the same neural
@@ -69,10 +69,10 @@ Run the same firmware on your PC when you do not have the board.
 Sample code locations, build commands, common pitfalls.
 :::
 
-:::{grid-item-card} 🤖 Quadruped Assembly
+:::{grid-item-card} 🤖 JEFY Quadruped Assembly
 :link: hardware/index
 :link-type: doc
-Hardware for the chapter-13 quadruped robot.
+Hardware for JEFY, the chapter-13 quadruped robot.
 :::
 
 :::{grid-item-card} ❓ FAQ / Errata
