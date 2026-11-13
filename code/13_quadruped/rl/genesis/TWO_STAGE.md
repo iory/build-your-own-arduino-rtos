@@ -123,9 +123,12 @@ A (アドバンテージ) は、その行動が平均よりどれだけ良かっ
 - 学習曲線 (平均報酬) は tensorboard (`logs/rsl_rl/.../events.*`) で比較します。
 - `frozen` (既存方策への後付け) は別の比較です (同じ環境での学習前後)。
 
+2 台の GPU マシンに 3 本ずつ割り当てます。2 台目は環境変数で指定します (`REMOTE`: ssh のホスト、`REMOTE_DIR`: そのホスト上の `rl/genesis`、`REMOTE_PY`: そこで使う python)。1 台だけで回すときは `run_queue.sh` を直接使います。
+
 ```
-sh compare_two_stage.sh            # 2300 iter, 4096 env (長時間)
-sh compare_two_stage.sh 300 1024   # 短い確認
+export REMOTE=<ホスト> REMOTE_DIR=<rl/genesis のパス> REMOTE_PY=<python のパス>
+sh compare_two_stage.sh                              # 6 本の学習と評価 (長時間)
+sh run_queue.sh 1024 300 joint:1 baseline:1          # 1 台で、短い確認
 ```
 
 `sim2sim.py` も 2 段/baseline のチェックポイントを自動判定します (`--sim genesis` のみ)。

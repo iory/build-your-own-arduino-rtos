@@ -28,10 +28,10 @@
 | 項目 | 内容 |
 |---|---|
 | 環境 | Genesis 版 `gs_env.py`。両モードとも、アクター観測は 4 フレーム履歴、サーボ遅延は 0〜0 サブステップ (`train.py --mode joint/baseline` の既定) |
-| 学習 | PPO。8192 env、**2300 iteration を 2 回 (`--resume` で延長、合計 4600 iteration、約 9 億ステップ)**。報酬・カリキュラムは `task.py` のまま、`init_std` は 1.0。再開時はコマンドカリキュラムの状態を復元 (`gs_env.restore_curriculum`) |
+| 学習 | PPO。8192 env、**2300 iteration を 2 回 (`--resume` で延長、合計 4600 iteration、約 9 億ステップ)**。報酬・カリキュラムは `task.py` のまま、`init_std` は 1.0。再開時はコマンドカリキュラムの状態を復元 (`gs_env.restore_curriculum`、`--mode single` 以外) |
 | モデル | `joint`: 段 A (87→96→64→8) + 関節ごとの段 B (10→16→16→1 を 8 個、残差)。`baseline`: 段 A のみ (同じ入力: a_{t-4..t-2}、s_{t-3..t-1}) |
 | seed | 各モード 1, 2, 3 |
-| 計算資源 | ローカル RTX 3070 と casys-ml002 の Quadro RTX 8000 に、3 本ずつ割り当て (速度は同じ、1 本あたり約 52 分/2300 iteration) |
+| 計算資源 | ローカルの RTX 3070 と、リモートの Quadro RTX 8000 に、3 本ずつ割り当て (速度は同じ、1 本あたり約 52 分/2300 iteration) |
 | 評価 | `sim2sim.py --sim genesis`、最後のチェックポイント、64 体、20 秒、観測ノイズ・押し外乱なし、評価 seed 0。ドメインランダム化 (DR) なし/あり |
 | 評価コマンド (vx m/s, wz rad/s) | 0.06,0 / 0.12,0 / 0,0.3 / 0.06,−0.3 |
 | 指標の定義 | vx・wz は後半 10 秒の基体変位から求めた速度 (基体の向きに沿った成分)。roll/pitch は RMS (°)。**falls は 20 秒間のリセット回数で、64 体の合計**。離陸は、報酬の 50 iteration 移動平均が初めて 20 (または 50) を超えた iteration |
@@ -128,7 +128,10 @@
 
 ## 7. 再現
 
+2 台目の GPU マシンは環境変数で指定します (`REMOTE`: ssh のホスト、`REMOTE_DIR`: そのホスト上の `rl/genesis`、`REMOTE_PY`: そこで使う python)。
+
 ```
+export REMOTE=<ホスト> REMOTE_DIR=<rl/genesis のパス> REMOTE_PY=<python のパス>
 sh compare_two_stage.sh            # 第 1 回: 6 本の学習 (2300 iteration) と評価、2 台の GPU
 sh compare_two_stage.sh extend     # 第 2 回: 全 6 本を +2300 iteration 延長 (--resume) して再評価
 sh compare_two_stage.sh status
