@@ -24,3 +24,12 @@ cd learning-os-from-arduino/docs/os-on-arduino/code
 ```
 
 Every `docs/os-on-arduino/code/...` path in the book works as-is.
+
+## Notice: sample-code updates
+
+On November 13, 2026, one line was removed from `os_get_stack_used()` in
+Chapter 5's `05_shell/src/os_kernel.cpp`: the variable `base`, which was
+computed but never used
+([#72](https://github.com/iory/build-your-own-arduino-rtos/issues/72)).
+The function's return value and behavior are unchanged. The book's text is
+unaffected, and code you have already cloned keeps working as-is.

@@ -25,3 +25,11 @@ cd learning-os-from-arduino/docs/os-on-arduino/code
 ```
 
 書籍に出てくる `docs/os-on-arduino/code/...` のパスも、そのまま通ります。
+
+## お知らせ: サンプルコードの更新
+
+2026年11月13日、第5章の `05_shell/src/os_kernel.cpp` にある `os_get_stack_used()` から、
+計算するだけで使っていなかった変数 `base` の 1 行を削除しました
+（[#72](https://github.com/iory/build-your-own-arduino-rtos/issues/72)）。
+関数の戻り値と動作は変わりません。書籍の本文に変更はなく、
+すでに `git clone` したコードもそのまま使えます。
