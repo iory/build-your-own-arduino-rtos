@@ -240,6 +240,44 @@ Servos before the horn is fitted. The output shaft is toothed (a spline), and th
 can only be fitted in steps of one tooth
 ```
 
+Once the horn is on the output shaft, put the M3-6 horn screw into the centre hole and
+tighten it.
+
+::::{grid} 1 3 3 3
+:gutter: 2
+
+:::{grid-item}
+
+```{figure} ../_static/krs_horn_m3_1.jpg
+:target: ../_static/krs_horn_m3_1.jpg
+:alt: A horn fitted onto the output shaft of a KRS-3302. The centre hole is still empty
+
+Step 1: fit the horn onto the output shaft
+```
+
+:::
+:::{grid-item}
+
+```{figure} ../_static/krs_horn_m3_2.jpg
+:target: ../_static/krs_horn_m3_2.jpg
+:alt: An M3-6 horn screw inserted into the centre hole of the horn
+
+Step 2: put the M3-6 screw into the centre hole
+```
+
+:::
+:::{grid-item}
+
+```{figure} ../_static/krs_horn_m3_3.jpg
+:target: ../_static/krs_horn_m3_3.jpg
+:alt: The M3-6 horn screw tightened all the way. Its head sits in the centre of the horn
+
+Step 3: tighten it fully with a screwdriver
+```
+
+:::
+::::
+
 ### Why centre it?
 
 The KRS-3302 can measure its angle only within **±135 degrees (270 degrees in total)**
