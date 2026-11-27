@@ -34,12 +34,12 @@ jobs:
       # Search Console の確認は通らない。
       GOOGLE_SITE_VERIFICATION: "ttRuM6a66PsPv-2HcofYi-kCYfJQ5VR9mwSRgdlvRIw"
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
       - run: uv sync
       # ブラウザ版シミュレータ (_site/sim) のために各章を pio run -e sim でビルドする
       - name: Cache PlatformIO
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.platformio
           key: pio-docs-${{ hashFiles('code/*/platformio.ini') }}

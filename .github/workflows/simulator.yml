@@ -59,15 +59,15 @@ jobs:
         working-directory: code
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
           cache-dependency-glob: code/uv.lock
 
       - name: Cache PlatformIO
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.platformio
           key: pio-${{ matrix.name }}-${{ hashFiles('code/*/platformio.ini') }}
@@ -167,15 +167,15 @@ jobs:
       RENODE_VERSION: 1.17.0
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
           cache-dependency-glob: code/uv.lock
 
       - name: Cache PlatformIO
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.platformio
           key: pio-renode-${{ hashFiles('code/*/platformio.ini') }}
@@ -184,7 +184,7 @@ jobs:
       # portable 版は .NET を内蔵しているので、ランナーに何も入れなくてよい。
       - name: Cache Renode
         id: cache-renode
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/renode
           key: renode-${{ env.RENODE_VERSION }}-linux

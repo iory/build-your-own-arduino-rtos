@@ -32,8 +32,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
       # 見つかった箇所は PR の差分に注釈として出る。直し方:
       #   uv run --script scripts/md_lint.py fix README.md docs/ja/source docs/en/source
       - run: uv run --script scripts/md_lint.py check --format=github README.md docs/ja/source docs/en/source
