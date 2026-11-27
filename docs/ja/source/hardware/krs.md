@@ -70,7 +70,9 @@ ID の振り方と、どの ID をどの関節に使うかは Feetech 版と同�
 
 Dual USB アダプター HS は、PC とサーボ（または RCB-4）を USB でつなぐための
 近藤科学の純正アダプターです。**ICS モード**（サーボと話す）と **シリアルモード**
-（RCB-4 と話す）の 2 つを切り替えて使います。このページで使うのは ICS モードだけです。
+（RCB-4 と話す）の 2 つを切り替えて使います。サーボの ID を振るときは ICS モード、
+RCB-4mini の通信速度を設定するとき（下の「RCB-4mini の COM の通信速度を 1.25 Mbps にする」）
+はシリアルモードです。
 
 ```{figure} ../_static/krs_dual_usb.jpg
 :target: ../_static/krs_dual_usb.jpg
@@ -757,6 +759,43 @@ D0 / D1 は Arduino のハードウェアシリアル（Serial1）のピンで�
 D8 / D9 をタイマーと DMA で直接動かして話します。D0 / D1 はほかの機器に使えます。
 ```
 
+### RCB-4mini の COM の通信速度を 1.25 Mbps にする
+
+ファームウェアは RCB-4mini と **1.25 Mbps** で話します（`include/rcb4_link.h` の
+`RCB4_BAUD`）。RCB-4mini の COM の通信速度は 115200・625000・1250000 bps から選べ、電源を
+入れたときに ROM に保存された設定で決まります。**115200 bps のままのボードもあります。**
+
+速度が違うときは、ファームウェアが起動時に 115200・625000 bps で RCB-4mini を探し、
+RCB-4mini の RAM の設定を書き換えて 1.25 Mbps に切り替えます。シリアルモニタには
+次のように出ます。
+
+```text
+!! RCB-4 の COM が 115200 bps だったので、RAM 上で 1250000 bps に切り替えた。電源を切ると戻る。HeartToHeart4 で COM 通信速度を 1250000 にして ROM に保存すること
+```
+
+このままでも動きますが、RAM の設定は電源を切ると元に戻り、起動のたびに切り替えで
+約 3 秒余計にかかります。この表示が出たら、下の手順で ROM に保存してください。
+
+設定は近藤科学の **HeartToHeart4**（Windows）で行います。
+
+1. RCB-4mini の COM ポートから Arduino のケーブルを外し、代わりに
+   **シリアルモード（LED 緑）** の Dual USB アダプター HS をつなぐ。
+2. HeartToHeart4 でプロジェクトを読み込み、プロジェクト設定を開く
+   （プロジェクトを読み込まないと RCB-4 と通信できません）。
+3. **COM 通信速度** を `1250000` にする。つながらないときは、ボードに設定されている
+   速度が分からないので、まず `115200` にしてつながるか確かめてから `1250000` にします。
+4. **ICS 通信速度** も `1250000` にする。サーボの `Baud Rate`（上の `ics-manager` で
+   確かめた `1.25Mbps`）に合わせる設定です。標準値の `115200` のままだと、RCB-4mini が
+   サーボと話せません。
+5. **ROM に全て保存** を押す。選んだだけでは RCB-4mini の RAM が変わるだけで、電源を
+   切ると元に戻ります。
+6. 電源を切り、Arduino のケーブルを COM ポートにつなぎ直す。
+
+```{warning}
+「ROM に全て保存」は、HeartToHeart4 で開いているプロジェクトを RCB-4mini の ROM に丸ごと
+書き込みます。それまでボードに入っていたプロジェクトは置き換わります。
+```
+
 ### 電源
 
 電源は 2 通りあります。どちらも RCB-4mini の **電源端子** に入れ、サーボと Arduino には
@@ -865,6 +904,10 @@ USB-C の VBUS ─────────D2────────────
    サーボ応答: 8 / 8
    ```
 
+   `!! RCB-4 の COM が … bps だった` と出たら、上の「RCB-4mini の COM の通信速度を
+   1.25 Mbps にする」の手順で ROM に保存してください。`!! RCB-4 が返事をしない` と出て
+   `サーボ応答: 0 / 8` なら、COM ポートの配線と RCB-4mini の電源を確かめてください。
+
 2. **脱力させる。** `free` を送ると全部の関節の力が抜けます。
 3. **ゼロ点を測る。** 機体を吊るし、4 本とも脚をまっすぐ真下に伸ばして `raw` を
    送ります。関節ごとのパルス（中央が 7500）が出るので、それを
@@ -952,6 +995,8 @@ IMU が必要です。IMU の値は胴体の座標（x 前・y 左・z 上、水
 | 症状 | 確かめること |
 |---|---|
 | `ics-manager` が `Connection is not open.` のまま | アダプターの LED が赤（ICS モード）か。サーボを 1 個だけつないでいるか。macOS なら libusb、Linux なら上の `new_id` |
+| 起動時に `!! RCB-4 が返事をしない`（`サーボ応答: 0 / 8`） | COM ポートの Rx・Tx が D9・D8 の順か。GND がつながっているか。RCB-4mini に電源が入っているか |
+| 起動時に `!! RCB-4 の COM が … bps だった` | RCB-4mini の ROM の COM 通信速度が 1.25 Mbps でない。上の「RCB-4mini の COM の通信速度を 1.25 Mbps にする」で ROM に保存する |
 | 起動時に一部の関節が `見つからない` | そのサーボの ID と `Baud Rate`（1.25Mbps）を `ics-manager` で確かめる。ケーブルが奥まで差さっているか |
 | 1 本の脚だけ逆に動く | そのサーボの `Reverse Mode` が `Enabled` になっていないか（`ics-manager` の `v` で戻す）。`QUAD_RCB4_SIGN` の値 |
 | 関節が止まらずに回り続ける | そのサーボの `Rotation Mode` が `Enabled`（連続回転モード）になっていないか（`ics-manager` の `r` で戻す） |
@@ -963,8 +1008,9 @@ IMU が必要です。IMU の値は胴体の座標（x 前・y 左・z 上、水
 
 RCB-4mini は、近藤科学の Heart to Heart 4 で書き込んだプロジェクトに「割り当て」られた
 サーボとしか話しません。ファームウェアは起動時に、見つからない関節のサーボを自分で
-割り当てるので、Heart to Heart 4 でプロジェクトを作り直す必要はありません
+割り当てるので、Heart to Heart 4 でサーボを割り当て直す必要はありません
 （RCB-4mini の RAM に書くだけで、中に保存されたプロジェクトは書き換えません）。
+Heart to Heart 4 が要るのは、COM と ICS の通信速度を設定するときだけです。
 ```
 
 ## 出典
@@ -974,6 +1020,13 @@ RCB-4mini は、近藤科学の Heart to Heart 4 で書き込んだプロジェ�
   近藤科学「HeartToHeart4 取扱説明書 Ver.8」6〜7 ページ <https://www.kondokagaku.jp/data_download/HeartToHeart4_manual_Ver8_JP.pdf>
 - ICS 番号の決まり方の図、ICS の割り当て表（RAM `$0044`）: 近藤科学「RCB-4HV コマンドリファレンス」17 ページと
   「RCB-4HV ファームウェアリファレンス」（RCB-4 リファレンスセット Ver.2.2 所収）<https://kondo-robot.com/faq/rcb-4-reference-ver-2_2>
+- RCB-4 の COM 通信速度・ICS 通信速度（ICS の標準値 115200）、選んだだけでは RAM だけが
+  変わり「ROM に全て保存」で残ること、速度が分からないときは 115200 で試すこと、
+  プロジェクトを読み込まないと通信できないこと:
+  近藤科学「HeartToHeart4 取扱説明書 Ver.8」28〜29 ページ、31 ページ（上と同じ URL）
+- RCB-4 の COM 通信速度が設定の 6〜7 ビットで決まり、プロジェクトの無いボードが
+  115200 bps で起動すること（実測）: rcb4 の `rcb4/protocol/references.md`
+  <https://github.com/iory/rcb4/blob/main/rcb4/protocol/references.md>
 - Dual USB アダプター HS（LED 赤が ICS、緑がシリアル）: <https://kondo-robot.com/product/02116>
 - ICS3.5/3.6 マネージャー（Windows）: <https://kondo-robot.com/faq/ics35mag>、
   使い方 <https://kondo-robot.com/faq/how-to-use_ics3-5-manager>

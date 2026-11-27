@@ -73,7 +73,9 @@ All the parts: the KRS version's 3D-printed parts, KRS-3302 ICS ×8, horns and s
 
 The Dual USB Adapter HS is Kondo Kagaku's own adapter for connecting a PC to servos (or
 an RCB-4) over USB. It switches between two modes: **ICS mode** (talks to servos) and
-**serial mode** (talks to an RCB-4). This page uses ICS mode only.
+**serial mode** (talks to an RCB-4). Setting the servo IDs uses ICS mode; setting the
+RCB-4mini's baud rate (below, "Set the RCB-4mini's COM baud rate to 1.25 Mbps") uses
+serial mode.
 
 ```{figure} ../_static/krs_dual_usb.jpg
 :target: ../_static/krs_dual_usb.jpg
@@ -778,6 +780,48 @@ firmware drives D8 / D9 directly with a timer and DMA. D0 / D1 remain free for o
 devices.
 ```
 
+### Set the RCB-4mini's COM baud rate to 1.25 Mbps
+
+The firmware talks to the RCB-4mini **at 1.25 Mbps** (`RCB4_BAUD` in
+`include/rcb4_link.h`). The RCB-4mini's COM baud rate can be 115200, 625000 or
+1250000 bps, and is set at power-up from the setting saved in its ROM. **Some boards are
+still at 115200 bps.**
+
+If the rates differ, the firmware looks for the RCB-4mini at 115200 and 625000 bps at
+startup, rewrites the setting in the RCB-4mini's RAM and switches it to 1.25 Mbps. The
+serial monitor then shows:
+
+```text
+!! RCB-4 の COM が 115200 bps だったので、RAM 上で 1250000 bps に切り替えた。電源を切ると戻る。HeartToHeart4 で COM 通信速度を 1250000 にして ROM に保存すること
+```
+
+(the RCB-4's COM was 115200 bps, so it was switched to 1250000 bps in RAM; it goes back
+at power-off; set COM 通信速度 to 1250000 in HeartToHeart4 and save it to ROM.) It works
+as it is, but the RAM setting goes back when the power is turned off, and every startup
+takes about 3 s longer for the switch. When you see this, save it to ROM with the steps
+below.
+
+Set it with Kondo Kagaku's **HeartToHeart4** (Windows).
+
+1. Unplug the Arduino's cable from the RCB-4mini's COM port and connect the Dual USB
+   Adapter HS there instead, in **serial mode (green LED)**.
+2. Load a project in HeartToHeart4 and open the project settings (HeartToHeart4 cannot
+   talk to the RCB-4 without a project loaded).
+3. Set **COM 通信速度** (COM baud rate) to `1250000`. If it cannot connect, the rate set
+   on the board is unknown: first set `115200` and check that it connects, then set
+   `1250000`.
+4. Set **ICS 通信速度** (ICS baud rate) to `1250000` as well. This must match the servos'
+   `Baud Rate` (`1.25Mbps`, checked with `ics-manager` above). Left at the default
+   `115200`, the RCB-4mini cannot talk to the servos.
+5. Press **ROM に全て保存** (save all to ROM). Selecting the rates only changes the
+   RCB-4mini's RAM, which goes back when the power is turned off.
+6. Turn the power off and plug the Arduino's cable back into the COM port.
+
+```{warning}
+"ROM に全て保存" writes the whole project open in HeartToHeart4 into the RCB-4mini's ROM.
+The project that was on the board before is replaced.
+```
+
 ### Power
 
 There are two ways to power the robot. Both go into the RCB-4mini's **power terminal**,
@@ -889,6 +933,11 @@ flash and the file you write the calibration values into.
    サーボ応答: 8 / 8
    ```
 
+   If it shows `!! RCB-4 の COM が … bps だった` (the RCB-4's COM was … bps), save the
+   rate to ROM with "Set the RCB-4mini's COM baud rate to 1.25 Mbps" above. If it shows
+   `!! RCB-4 が返事をしない` (the RCB-4 does not answer) and `サーボ応答: 0 / 8`, check
+   the COM port wiring and the RCB-4mini's power.
+
 2. **Make it limp.** Sending `free` releases the torque on every joint.
 3. **Measure the zero points.** Hang the robot up, stretch all four legs straight down
    and send `raw`. It prints each joint's pulse (centre is 7500); write those into
@@ -987,6 +1036,8 @@ How it was trained is in the "KRS 版" (KRS version) section of
 | Symptom | Check |
 |---|---|
 | `ics-manager` stays at `Connection is not open.` | The adapter's LED is red (ICS mode). Only one servo is connected. On macOS, libusb; on Linux, the `new_id` step above |
+| `!! RCB-4 が返事をしない` (the RCB-4 does not answer) at startup (`サーボ応答: 0 / 8`) | The COM port's Rx and Tx go to D9 and D8 respectively. GND is connected. The RCB-4mini is powered |
+| `!! RCB-4 の COM が … bps だった` (the RCB-4's COM was … bps) at startup | The COM baud rate in the RCB-4mini's ROM is not 1.25 Mbps. Save it to ROM with "Set the RCB-4mini's COM baud rate to 1.25 Mbps" above |
 | Some joints show `見つからない` (not found) at startup | Check that servo's ID and `Baud Rate` (1.25Mbps) in `ics-manager`. Check that the cable is fully seated |
 | Only one leg moves backwards | That servo's `Reverse Mode` is not `Enabled` (switch it back with `v` in `ics-manager`). The `QUAD_RCB4_SIGN` values |
 | A joint keeps turning without stopping | That servo's `Rotation Mode` is not `Enabled` (continuous rotation mode) (switch it back with `r` in `ics-manager`) |
@@ -998,8 +1049,9 @@ How it was trained is in the "KRS 版" (KRS version) section of
 
 The RCB-4mini only talks to the servos "assigned" in a project written with Kondo
 Kagaku's Heart to Heart 4. The firmware assigns the servos of any joints it cannot find
-by itself at startup, so there is no need to recreate the project in Heart to Heart 4
+by itself at startup, so there is no need to reassign the servos in Heart to Heart 4
 (it only writes to the RCB-4mini's RAM and does not change the project stored inside).
+Heart to Heart 4 is needed only to set the COM and ICS baud rates.
 ```
 
 ## Sources
@@ -1009,6 +1061,13 @@ by itself at startup, so there is no need to recreate the project in Heart to He
   Kondo Kagaku, "HeartToHeart4 Instruction Manual Ver.8", pages 6–7 <https://www.kondokagaku.jp/data_download/HeartToHeart4_manual_Ver8_JP.pdf>
 - Diagram of how ICS numbers are determined, ICS assignment table (RAM `$0044`): Kondo Kagaku, "RCB-4HV Command Reference", page 17, and
   "RCB-4HV Firmware Reference" (in the RCB-4 Reference Set Ver.2.2) <https://kondo-robot.com/faq/rcb-4-reference-ver-2_2>
+- RCB-4 COM and ICS baud rates (ICS default 115200), that selecting them changes only RAM
+  and "ROM に全て保存" keeps them, trying 115200 when the rate is unknown, and that
+  HeartToHeart4 cannot connect without a project loaded: Kondo Kagaku, "HeartToHeart4
+  Instruction Manual Ver.8", pages 28–29 and 31 (same URL as above)
+- The RCB-4's COM baud rate is bits 6–7 of its config, and a board without a project powers
+  up at 115200 bps (measured): rcb4's `rcb4/protocol/references.md`
+  <https://github.com/iory/rcb4/blob/main/rcb4/protocol/references.md>
 - Dual USB Adapter HS (red LED is ICS, green is serial): <https://kondo-robot.com/product/02116>
 - ICS3.5/3.6 Manager (Windows): <https://kondo-robot.com/faq/ics35mag>,
   usage <https://kondo-robot.com/faq/how-to-use_ics3-5-manager>
