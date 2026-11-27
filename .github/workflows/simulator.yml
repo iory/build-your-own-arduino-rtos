@@ -116,6 +116,10 @@ jobs:
           uv run --no-project --with pillow python sim/record.py \
             --chapter 07_led_matrix --out "sim-gif/07_led_matrix-${{ matrix.name }}.gif" \
             --seconds 8 --fps 8
+        env:
+          # record.py は日本語を print する。Windows のランナーは標準出力が
+          # cp1252 なので、このままだと UnicodeEncodeError で落ちる。
+          PYTHONIOENCODING: utf-8
         continue-on-error: true
 
       - name: Summary
