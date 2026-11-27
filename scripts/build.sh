@@ -28,5 +28,4 @@ if "cloudflareinsights" not in html:
 EOF
     done
 fi
-touch _site/.nojekyll
 echo "built into _site/ (open _site/index.html)"
